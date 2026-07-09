@@ -1,0 +1,35 @@
+{
+    "version": 1,
+    "name": "UnboundArcanaControls",
+    "maps": [
+        {
+            "name": "Gameplay",
+            "id": "5e321872-5fa6-418f-8200-26b38c5e7853",
+            "actions": [
+                {
+                    "name": "Cast",
+                    "type": "Button",
+                    "id": "fea69cd6-c9e4-4d41-b4fa-9579b28938b1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "66e4bd9f-c712-484f-ad03-f67b3822b5c8",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Cast",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
