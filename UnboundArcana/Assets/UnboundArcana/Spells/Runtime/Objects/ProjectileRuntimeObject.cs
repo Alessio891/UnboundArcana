@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnboundArcana.Core.Events;
+using UnboundArcana.Core.Combat;
 
 namespace UnboundArcana.Spells.Runtime.Objects
 {
@@ -10,15 +11,22 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		private float speed = 10f;
 		private float lifetime = 2f;
 		private float elapsedTime;
+		private GameObject owner;
+
 
 		public override void Initialize(SpellInstance spell)
 		{
 			base.Initialize(spell);
-
-			position = Vector3.zero;
-			direction = Vector3.right;
 		}
-
+		public void SetInitialState(
+			Vector3 position,
+			Vector3 direction,
+			GameObject owner)
+		{
+			this.position = position;
+			this.direction = direction;
+			this.owner = owner;
+		}
 		public override void Tick(float deltaTime)
 		{
 			elapsedTime += deltaTime;
@@ -38,11 +46,14 @@ namespace UnboundArcana.Spells.Runtime.Objects
 
 		public void Hit(GameObject target)
 		{
-			spell.Events.Publish(
-				new HitEvent(position, target)
-			);
+			if (target != owner && target.GetComponent<IDamageable>() != null)
+			{
+				spell.Events.Publish(
+					new HitEvent(position, target, owner)
+				);
 
-			Destroy();
+				Destroy();
+			}
 		}
 
 	}

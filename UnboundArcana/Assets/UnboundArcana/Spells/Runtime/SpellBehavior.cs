@@ -9,6 +9,6 @@ namespace UnboundArcana.Spells.Runtime
 			this.spell = spell;
 		}
 
-		public abstract void Cast();
+		public abstract void Cast(CastContext context);
 	}
 }

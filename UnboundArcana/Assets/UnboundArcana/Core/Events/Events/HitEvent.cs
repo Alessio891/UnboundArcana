@@ -7,10 +7,13 @@ namespace UnboundArcana.Core.Events
 		public Vector3 Position { get; }
 		public GameObject Target { get; }
 
-		public HitEvent(Vector3 position, GameObject target)
+		public GameObject Owner { get; }
+
+		public HitEvent(Vector3 position, GameObject target, GameObject owner)
 		{
 			Position = position;
 			Target = target;
+			Owner = owner;
 		}
 	}
 }

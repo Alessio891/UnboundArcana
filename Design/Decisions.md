@@ -1,163 +1,131 @@
-# Design Decisions
+# Decision: CastContext
 
----
+Date:
 
-# 2026-07-09
+2026-07-10
 
-## Project Name
 
-Decision:
+## Context
 
-The project name is:
-
-Unbound Arcana
-
-Reason:
-
-The name represents:
-
-* unlimited magical creation
-* freedom from predefined spells
-* experimentation and discovery
-
----
-
-# Engine
-
-Decision:
-
-Use Unity 6000.3.19f1 LTS.
-
-Reason:
-
-Best fit for:
-
-* 2D development
-* ScriptableObjects
-* Editor tooling
-* data-driven architecture
-
----
-
-# Spell Architecture
-
-Decision:
-
-Use composition instead of inheritance.
-
-Reason:
-
-Avoid exponential class growth.
-
-Rejected:
-
-Creating individual spell classes.
+Runtime objects were creating their own initial casting state.
 
 Example:
 
-Rejected:
+ProjectileRuntimeObject created its own:
 
-```text
-Fireball.cs
-IceProjectile.cs
-ExplosiveArrow.cs
-```
+- position
+- direction
 
-Preferred:
 
-```text
-Projectile
-+
-Fire Module
-+
-Explosion Module
-```
+This prevented spells from being created by different sources.
+
+
+## Decision
+
+Introduce CastContext as the input to SpellInstance.Cast().
+
+CastContext contains:
+
+- Owner
+- Position
+- Direction
+
+
+## Consequences
+
+Positive:
+
+- Player, AI, turrets and other sources can use the same casting pipeline.
+- Runtime objects no longer invent initial state.
+- Future modifiers can use cast information.
+
+
+Negative:
+
+- Cast data must be explicitly passed through the pipeline.
+
 
 ---
 
-# Spell Representation
+# Decision: Behavior Spawn Capability
 
-Decision:
+Date:
 
-A spell is a graph of behaviors and modules.
+2026-07-10
 
-Reason:
 
-Allows procedural combinations.
+## Context
 
----
-
-# Runtime Separation
-
-Decision:
-
-Separate editor data from runtime objects.
-
-Reason:
-
-ScriptableObjects should contain configuration only.
-
-Runtime objects should be created during gameplay.
+Modules may need to request additional spell objects.
 
 Example:
 
-SpellDefinition:
+Fork projectile modifier.
 
-```text
-Projectile Behavior
-Fire Module
-Damage 10
-```
 
-Runtime:
+Direct creation inside modules would break the architecture because modules would become coupled to runtime objects.
 
-```text
-ProjectileBehavior instance
-FireModule instance
-Current cooldown
-Active projectiles
-```
 
----
+## Decision
 
-# Event Communication
+Behaviors may expose optional capabilities through interfaces.
 
-Decision:
+Current example:
 
-Modules and behaviors communicate through events.
+ISpellSpawner
 
-Reason:
+Implemented by:
 
-Behaviors should not know modules exist.
+ProjectileBehavior
 
-Example:
 
-Projectile:
+Modules request creation through capabilities rather than creating runtime objects directly.
 
-```text
-Collision
-    |
-    v
-HitEvent
-```
 
-Fire module:
+## Consequences
 
-```text
-HitEvent
-    |
-    v
-Apply fire effect
-```
+Positive:
+
+- Behaviors keep ownership of existence.
+- Modules remain generic.
+- Runtime object creation remains centralized.
+
+
+Negative:
+
+- Additional capabilities may be required as more complex modifiers appear.
+
 
 ---
 
-# First Development Goal
+# Decision: CastEvent carries CastContext
 
-Decision:
+Date:
 
-Build spell sandbox before full game.
+2026-07-10
 
-Reason:
 
-The spell system is the main gameplay feature.
+## Context
+
+Modules reacting to casting need access to the original cast information.
+
+
+## Decision
+
+CastEvent contains:
+
+- SpellInstance
+- CastContext
+
+
+## Consequences
+
+Positive:
+
+- Cast-time modifiers can react without global state.
+- Future modules can use owner, position and direction.
+
+
+Future consideration:
+
+If cast modification becomes complex, introduce a separate modification phase instead of expanding CastEvent indefinitely.

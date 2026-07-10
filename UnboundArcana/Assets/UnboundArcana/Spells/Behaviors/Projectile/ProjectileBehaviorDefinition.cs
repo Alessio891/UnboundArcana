@@ -7,6 +7,7 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 	public class ProjectileBehaviorDefinition : SpellBehaviorDefinition
 	{
 		public GameObject projectilePrefab;
+		public int spawnDelay = 0;
 
 		public override SpellBehavior CreateRuntime()
 		{

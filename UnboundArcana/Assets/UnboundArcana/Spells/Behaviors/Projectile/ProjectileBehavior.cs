@@ -2,10 +2,11 @@ using UnityEngine;
 using UnboundArcana.Spells.Runtime;
 using UnboundArcana.Spells.Runtime.Objects;
 using UnboundArcana.Spells.Runtime.Views;
+using System.Collections;
 
 namespace UnboundArcana.Spells.Behaviors.Projectile
 {
-	public class ProjectileBehavior : SpellBehavior
+	public class ProjectileBehavior : SpellBehavior, ISpellSpawner
 	{
 		private ProjectileBehaviorDefinition definition;
 
@@ -13,10 +14,17 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 		{
 			this.definition = definition;
 		}
-
-		public override void Cast()
+		public void SpawnProjectile(
+			Vector3 position,
+			Vector3 direction)
 		{
 			ProjectileRuntimeObject projectile = new();
+
+			projectile.SetInitialState(
+				position,
+				direction,
+				spell.Owner
+			);
 
 			spell.AddRuntimeObject(projectile);
 
@@ -27,6 +35,14 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 			ProjectileView view = instance.GetComponent<ProjectileView>();
 
 			view.Initialize(projectile);
+		}
+
+		public override void Cast(CastContext context)
+		{
+			SpawnProjectile(
+				context.Position,
+				context.Direction
+			);
 		}
 	}
 }

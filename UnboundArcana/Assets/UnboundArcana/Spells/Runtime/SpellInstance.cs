@@ -15,6 +15,7 @@ namespace UnboundArcana.Spells.Runtime
 		public GameObject Owner { get; private set; }
 		public SpellEventBus Events { get; } = new();
 		public GameEventBus GameEvents { get; }
+		public ISpellSpawner Spawner { get; private set; }
 		public SpellInstance(
 			GameEventBus gameEvents,
 			GameObject owner)
@@ -22,10 +23,14 @@ namespace UnboundArcana.Spells.Runtime
 			GameEvents = gameEvents;
 			Owner = owner;
 		}
+
 		public void Initialize()
 		{
 			behavior.Initialize(this);
-
+			if (behavior is ISpellSpawner spawner)
+			{
+				Spawner = spawner;
+			}
 			foreach (SpellModule module in modules)
 			{
 				module.Initialize(this);
@@ -53,11 +58,11 @@ namespace UnboundArcana.Spells.Runtime
 			}
 		}
 
-		public void Cast()
+		public void Cast(CastContext context)
 		{
-			Events.Publish(new CastEvent(this));
+			Events.Publish(new CastEvent(this, context));
 
-			behavior.Cast();
+			behavior.Cast(context);
 		}
 
 		public void Destroy()

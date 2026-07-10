@@ -6,11 +6,11 @@ Unity 6000.3.19f1 LTS
 
 Project type:
 
-2D
+- 2D
 
-Initial rendering:
+Rendering:
 
-Built-in Render Pipeline
+- Built-in Render Pipeline
 
 ---
 
@@ -18,91 +18,54 @@ Built-in Render Pipeline
 
 Data-driven composition.
 
-Avoid deep inheritance.
-
 Prefer:
 
 - ScriptableObjects
 - Composition
-- Interfaces
+- Runtime objects
 - Events
+- Interfaces
+
+Avoid:
+
+- Deep inheritance
+- Individual spell classes
+- Runtime state inside ScriptableObjects
 
 ---
 
 # Main Systems
 
-
-SpellSystem
-
-CharacterSystem
-
-EnemySystem
-
-RoomSystem
-
-LootSystem
-
-UISystem
-
-SaveSystem
-
+- Spell System
+- Character System
+- Enemy System
+- Combat System
+- Room System
+- Loot System
+- UI System
+- Save System
 
 ---
 
 # Spell Runtime Architecture
 
-## SpellDefinition
-
-Static data.
-
-Likely ScriptableObject.
-
-Contains:
-
-- Behavior definition
-- Initial stats
-- Module definitions
-- Visual information
-
-
----
-
-## SpellInstance
-
-Runtime object.
-
-Contains:
-
-- Current stats
-- Owner
-- Runtime modules
-- Current state
-
-
----
-
-## SpellContext
-
-Shared information.
-
-Contains:
-
-- Stats
-- Owner
-- Position
-- Direction
-- Random state
-- Event system
-
-
----
-
-# SpellFactory
-
-Responsible for:
-
+## Editor Layer
 
 SpellDefinition
+
+Contains:
+
+- SpellBehaviorDefinition
+- SpellModuleDefinition[]
+- Configuration data
+
+ScriptableObjects are configuration only.
+
+---
+
+## Runtime Layer
+
+SpellFactory
 
 ↓
 
@@ -110,87 +73,229 @@ SpellInstance
 
 ↓
 
-Initialize behavior
+SpellBehavior
 
 ↓
 
-Initialize modules
+SpellRuntimeObjects
 
+↓
+
+Views (Unity GameObjects)
+
+SpellInstance owns:
+
+- Behavior
+- Modules
+- Runtime Objects
+- SpellEventBus
+- Reference to GameEventBus
 
 ---
 
-# Event System
+# Behaviors
 
-Each spell has an event bus.
+Behaviors define how a spell exists.
+
+Responsibilities:
+
+- spawning
+- movement
+- lifetime
+- runtime object creation
+
+Behaviors never know modules exist.
+
+Examples:
+
+- Projectile
+- Beam
+- Aura
+- Trap
+- Minion
+
+---
+
+# Modules
+
+Modules extend behaviors.
+
+Responsibilities:
+
+- React to spell events
+- Publish gameplay events
+- Spawn additional runtime objects
+
+Modules never communicate directly.
+
+Examples:
+
+- Fire
+- Explosion
+- Poison
+- Pierce
+- Split
+
+---
+
+# Runtime Objects
+
+Runtime objects represent gameplay entities.
+
+Examples:
+
+- Projectile
+- Explosion
+- Aura
+- Trap
+- Minion
+
+Lifecycle:
+
+Initialize
+
+↓
+
+Tick
+
+↓
+
+Destroy
+
+↓
+
+Removed by SpellInstance
+
+Runtime objects own gameplay state.
+
+---
+
+# Views
+
+Views are MonoBehaviours representing runtime objects.
 
 Example:
 
-
-Projectile
-
-Collision
+ProjectileRuntimeObject
 
 ↓
 
-Hit Event
+ProjectileView
 
-↓
-
-Modules react
-
+Views never own gameplay logic.
 
 ---
 
-# Development Tools
+# Event Architecture
 
-Important early tool:
+Two event buses exist.
 
-Spell Sandbox.
+## SpellEventBus
 
-Features:
+Owned by each SpellInstance.
 
-- Spawn spells
-- Spawn enemies
-- Modify stats
-- Test combinations
+Purpose:
 
-This should exist before final UI.
+Internal communication inside a spell.
+
+Current events:
+
+- CastEvent
+- HitEvent
+
+Future events:
+
+- SpawnEvent
+- TickEvent
+- ExpireEvent
+- DestroyEvent
+
+---
+
+## GameEventBus
+
+Owned by SpellRuntimeManager.
+
+Purpose:
+
+Communication between spells and gameplay systems.
+
+Current events:
+
+- DamageEvent
+
+Future examples:
+
+- HealEvent
+- StatusAppliedEvent
+- DeathEvent
+
+---
+
+# Gameplay Systems
+
+Gameplay systems consume GameEventBus events.
+
+Example:
+
+DamageEvent
+
+↓
+
+DamageSystem
+
+↓
+
+IDamageable
+
+Spells never manipulate gameplay entities directly.
+
+---
+
+# Spell Sandbox
+
+Purpose:
+
+Validate architecture before implementing the complete game loop.
+
+Current goals:
+
+- Test behaviors
+- Test modules
+- Test runtime objects
+- Validate composition
+- Validate event architecture
 
 ---
 
 # Folder Structure
 
-Suggested:
+Assets/
 
+Scripts/
 
-Assets
+UnboundArcana/
 
-Scripts
+Core/
 
-Core
+Spells/
 
-SpellSystem
+Character/
 
-    Runtime
-    Behaviors
-    Modules
-    Events
-    Stats
+Combat/
 
-Character
+Enemy/
 
-Enemy
+Rooms/
 
-Rooms
+Loot/
 
-Loot
+UI/
 
-UI
+ScriptableObjects/
 
-ScriptableObjects
+Prefabs/
 
-Prefabs
+Art/
 
-Art
-
-Audio
+Audio/

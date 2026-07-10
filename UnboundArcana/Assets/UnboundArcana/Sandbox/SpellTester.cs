@@ -3,6 +3,7 @@ using UnboundArcana.Spells.Data;
 using UnboundArcana.Spells.Runtime;
 using UnboundArcana.Core.Runtime;
 using UnboundArcana.Core.Events;
+using UnityEngine.InputSystem;
 
 namespace UnboundArcana.Sandbox
 {
@@ -13,10 +14,11 @@ namespace UnboundArcana.Sandbox
 
 		private SpellInstance spell;
 		private UnboundArcanaControls controls;
-
+		private Camera mainCamera;
 		private void Awake()
 		{
 			controls = new UnboundArcanaControls();
+			mainCamera = Camera.main;
 		}
 
 		private void Start()
@@ -40,7 +42,20 @@ namespace UnboundArcana.Sandbox
 
 		private void OnCast(UnityEngine.InputSystem.InputAction.CallbackContext context)
 		{
-			spell.Cast();
+			Vector3 mousePosition = mainCamera.ScreenToWorldPoint(
+				Mouse.current.position.ReadValue()
+			);
+
+			Vector3 direction = mousePosition - transform.position;
+			direction.z = 0f;
+			
+			spell.Cast(
+				new CastContext(
+					gameObject,
+					transform.position,
+					direction
+				)
+			);
 		}
 		private void OnHit(HitEvent hitEvent)
 		{
