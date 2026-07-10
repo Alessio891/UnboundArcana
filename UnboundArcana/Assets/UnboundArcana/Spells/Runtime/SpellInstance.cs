@@ -12,8 +12,16 @@ namespace UnboundArcana.Spells.Runtime
 
 		private readonly List<SpellRuntimeObject> runtimeObjects = new();
 
+		public GameObject Owner { get; private set; }
 		public SpellEventBus Events { get; } = new();
-
+		public GameEventBus GameEvents { get; }
+		public SpellInstance(
+			GameEventBus gameEvents,
+			GameObject owner)
+		{
+			GameEvents = gameEvents;
+			Owner = owner;
+		}
 		public void Initialize()
 		{
 			behavior.Initialize(this);
@@ -50,6 +58,14 @@ namespace UnboundArcana.Spells.Runtime
 			Events.Publish(new CastEvent(this));
 
 			behavior.Cast();
+		}
+
+		public void Destroy()
+		{
+			foreach (SpellModule module in modules)
+			{
+				module.Destroy();
+			}
 		}
 	}
 }

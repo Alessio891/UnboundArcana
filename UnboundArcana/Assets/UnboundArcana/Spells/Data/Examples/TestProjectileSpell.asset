@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: TestProjectileSpell
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Data.SpellDefinition
   behavior: {fileID: 11400000, guid: fbf2d3d06e26ae446949109b4a9f08fa, type: 2}
-  modules: []
+  modules:
+  - {fileID: 11400000, guid: c318f855860865143b2306c92f3941c2, type: 2}
+  - {fileID: 11400000, guid: 8682e9d1c54ad7943b82f7ac8fef366b, type: 2}
   stats:
     damage: 1
     speed: 10

@@ -1,14 +1,20 @@
+using UnboundArcana.Core.Events;
 using UnboundArcana.Spells.Data;
 using UnboundArcana.Spells.Modules;
 using UnboundArcana.Spells.Runtime;
+using UnityEngine;
 
 namespace UnboundArcana.Spells.Runtime
 {
 	public static class SpellFactory
 	{
-		public static SpellInstance Create(SpellDefinition definition)
+
+		public static SpellInstance Create(
+			SpellDefinition definition,
+			GameEventBus gameEventBus,
+			GameObject owner)
 		{
-			SpellInstance instance = new();
+			SpellInstance instance = new(gameEventBus, owner);
 
 			instance.behavior = definition.behavior.CreateRuntime();
 

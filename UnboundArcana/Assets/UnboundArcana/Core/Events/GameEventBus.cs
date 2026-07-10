@@ -1,0 +1,49 @@
+using System;
+using System.Collections.Generic;
+
+namespace UnboundArcana.Core.Events
+{
+	public class GameEventBus
+	{
+		private readonly Dictionary<Type, List<Delegate>> listeners = new();
+
+		public void Subscribe<T>(Action<T> listener) where T : SpellEvent
+		{
+			Type type = typeof(T);
+
+			if (!listeners.ContainsKey(type))
+			{
+				listeners[type] = new List<Delegate>();
+			}
+
+			listeners[type].Add(listener);
+		}
+
+		public void Unsubscribe<T>(Action<T> listener) where T : SpellEvent
+		{
+			Type type = typeof(T);
+
+			if (!listeners.ContainsKey(type))
+			{
+				return;
+			}
+
+			listeners[type].Remove(listener);
+		}
+
+		public void Publish<T>(T eventData) where T : SpellEvent
+		{
+			Type type = typeof(T);
+
+			if (!listeners.ContainsKey(type))
+			{
+				return;
+			}
+
+			foreach (Delegate listener in listeners[type])
+			{
+				((Action<T>)listener).Invoke(eventData);
+			}
+		}
+	}
+}

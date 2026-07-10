@@ -11,5 +11,9 @@ namespace UnboundArcana.Spells.Runtime
 		{
 			this.spell = spell;
 		}
+
+		public virtual void Destroy()
+		{
+		}
 	}
 }

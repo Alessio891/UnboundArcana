@@ -236,6 +236,7 @@ GameObject:
   - component: {fileID: 446870174}
   - component: {fileID: 446870173}
   - component: {fileID: 446870175}
+  - component: {fileID: 446870176}
   m_Layer: 0
   m_Name: TargetDummy
   m_TagString: Untagged
@@ -353,6 +354,19 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.08
+--- !u!114 &446870176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 446870172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b46be7cb383732e4099925a9f9af5adf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Tests.TargetDummy
+  health: 100
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
