@@ -22,6 +22,10 @@ SpellInstance
 
 ↓
 
+CastContext
+
+↓
+
 ProjectileBehavior
 
 ↓
@@ -30,12 +34,14 @@ ProjectileRuntimeObject
 
 ↓
 
-HitEvent
+Runtime Events
 
 ↓
 
 FireModule
 ExplosionModule
+ForkModule
+SplitOnDestroyModule
 
 ↓
 
@@ -48,6 +54,7 @@ DamageSystem
 ↓
 
 IDamageable
+
 
 ---
 
@@ -65,7 +72,52 @@ SpellRuntimeManager
 
       ├── SpellRuntimeObjects
 
-      └── SpellEventBus
+      ├── SpellEventBus
+
+      └── Optional Behavior Capabilities
+
+            └── ISpellSpawner
+
+
+---
+
+# Spell Casting Flow
+
+Current:
+
+Input / Gameplay Source
+
+↓
+
+CastContext
+
+Contains:
+
+- Owner
+- Position
+- Direction
+
+↓
+
+SpellInstance.Cast(context)
+
+↓
+
+CastEvent
+
+Contains:
+
+- SpellInstance
+- CastContext
+
+↓
+
+SpellBehavior.Cast(context)
+
+↓
+
+SpellRuntimeObjects
+
 
 ---
 
@@ -76,12 +128,24 @@ Implemented:
 - ProjectileRuntimeObject
 - ExplosionRuntimeObject
 
+
+Runtime object responsibilities:
+
+- Maintain gameplay state
+- Execute runtime updates
+- Control lifetime
+
+
+Runtime objects store creation information separately through SpawnContext when required.
+
+
 Future:
 
 - Aura
 - Trap
 - Minion
 - Persistent Zone
+
 
 ---
 
@@ -90,6 +154,12 @@ Future:
 Implemented:
 
 - ProjectileBehavior
+
+
+Capabilities:
+
+- ISpellSpawner
+
 
 Future:
 
@@ -100,6 +170,7 @@ Future:
 - Orbit
 - Meteor
 
+
 ---
 
 # Modules
@@ -108,6 +179,37 @@ Implemented:
 
 - FireModule
 - ExplosionModule
+- ForkModule
+- SplitOnDestroyModule
+
+
+Current module responsibilities:
+
+FireModule
+
+- Reacts to HitEvent
+- Creates DamageEvents
+
+
+ExplosionModule
+
+- Reacts to HitEvent
+- Creates ExplosionRuntimeObjects
+
+
+ForkModule
+
+- Reacts to CastEvent
+- Uses ISpellSpawner capability
+- Requests additional projectile creation
+
+
+SplitOnDestroyModule
+
+- Reacts to ProjectileDestroyedEvent
+- Requests additional projectile creation
+- Uses SpawnContext rules to prevent recursive splitting
+
 
 Future:
 
@@ -121,22 +223,91 @@ Future:
 - Chain
 - Lifesteal
 
+
 ---
 
 # Event Architecture
 
-SpellEventBus
+## SpellEventBus
 
-Current:
+Owned by:
 
-- CastEvent
-- HitEvent
+SpellInstance
 
-GameEventBus
 
-Current:
+Current events:
 
-- DamageEvent
+## CastEvent
+
+Contains:
+
+- SpellInstance
+- CastContext
+
+
+Used for:
+
+- Cast reactions
+- Cast-time modifiers
+
+
+## HitEvent
+
+Contains:
+
+- Runtime object source
+- Hit position
+- Target
+- Owner
+
+
+Used for:
+
+- On-hit effects
+
+
+## ProjectileSpawnedEvent
+
+Contains:
+
+- ProjectileRuntimeObject
+
+
+Used for:
+
+- Projectile lifecycle reactions
+
+
+## ProjectileDestroyedEvent
+
+Contains:
+
+- ProjectileRuntimeObject
+
+
+Used for:
+
+- Destruction-based modifiers
+
+
+---
+
+# GameEventBus
+
+Owned by:
+
+SpellRuntimeManager
+
+
+Current events:
+
+## DamageEvent
+
+Used by:
+
+- FireModule
+- ExplosionModule
+
 
 Future:
 
@@ -144,21 +315,6 @@ Future:
 - StatusAppliedEvent
 - DeathEvent
 
----
-
-# Gameplay Systems
-
-Implemented:
-
-- DamageSystem
-
-Implemented interfaces:
-
-- IDamageable
-
-Current test implementation:
-
-- TargetDummy
 
 ---
 
@@ -170,6 +326,7 @@ Runtime Object
 
 View
 
+
 Examples:
 
 ProjectileRuntimeObject
@@ -178,15 +335,120 @@ ProjectileRuntimeObject
 
 ProjectileView
 
+
 ExplosionRuntimeObject
 
 ↓
 
 ExplosionView
 
+
+Rules:
+
 Runtime owns gameplay.
 
 View owns Unity components.
+
+Views do not create gameplay state.
+
+
+---
+
+# Spawn Capability Pattern
+
+Behaviors may expose optional capabilities.
+
+
+Current:
+
+ProjectileBehavior
+
+implements:
+
+ISpellSpawner
+
+
+Purpose:
+
+Allow modules to request creation of runtime objects without knowing runtime implementations.
+
+
+Example:
+
+ForkModule
+
+↓
+
+ISpellSpawner
+
+↓
+
+ProjectileBehavior
+
+↓
+
+ProjectileRuntimeObject
+
+
+Modules do not:
+
+- instantiate runtime objects
+- create views
+- access prefabs
+- manage lifecycle
+
+
+---
+
+# SpawnContext
+
+Purpose:
+
+Provide creation metadata when runtime objects are spawned.
+
+
+Current fields:
+
+- Position
+- Direction
+- Modifier propagation rules
+
+
+Used by:
+
+- ProjectileBehavior
+- Spawn-based modifiers
+
+
+Runtime objects may retain SpawnContext to determine future behavior.
+
+
+---
+
+# CastContext
+
+Purpose:
+
+Provide external casting information to the spell pipeline.
+
+
+Current fields:
+
+- Owner
+- Position
+- Direction
+
+
+Used by:
+
+- Player casting
+- Future enemy casting
+- Future turret casting
+- Future targeted spells
+
+
+Runtime objects no longer create their own initial state.
+
 
 ---
 
@@ -198,50 +460,68 @@ View owns Unity components.
 
 ✓ Modules react through events
 
+✓ Modules do not communicate directly
+
 ✓ Multiple modules react independently
 
-✓ Modules can spawn runtime objects
+✓ Modules can request creation through behavior capabilities
 
-✓ Runtime objects own gameplay
+✓ Runtime objects own gameplay state
 
 ✓ Gameplay systems communicate through GameEventBus
 
 ✓ ScriptableObjects contain configuration only
 
+✓ Views only represent runtime objects
+
+✓ Casting sources provide initial spell state
+
+✓ Runtime lifecycle events allow independent modifiers
+
+✓ Spawn metadata controls child object behavior
+
+
 ---
 
-# Current Limitation
+# Current Limitations
 
-Projectiles currently spawn at a hardcoded position and direction.
+Current:
 
-Next milestone:
+CastEvent is used for cast reactions.
 
-Introduce CastContext to propagate:
+Future consideration:
 
-- Owner
-- Position
-- Direction
+If cast modification becomes complex, introduce a separate cast modification phase instead of expanding CastEvent responsibilities.
 
-through the cast pipeline.
 
-Target flow:
+SpawnContext currently supports simple modifier inheritance rules.
 
-SpellTester
+Future:
 
-↓
+- Selective module inheritance
+- Modified child compositions
+- More advanced spawn rules
 
-CastContext
 
-↓
+---
 
-SpellInstance.Cast(context)
+# Next Milestone
 
-↓
+Behavior Expansion and Architecture Validation
 
-Behavior.Cast(context)
+Objectives:
 
-↓
+- Implement additional behaviors:
+    - Aura
+    - Beam
+    - Trap
 
-RuntimeObject
+- Verify that the composition model is behavior-independent.
 
-This will support player casting, enemies, turrets, targeted spells and future spell modifiers.
+- Evaluate whether new behaviors require:
+    - additional capabilities
+    - additional runtime events
+    - new runtime object patterns
+
+
+Avoid redesigning existing architecture unless a concrete limitation appears.

@@ -12,19 +12,26 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		private float lifetime = 2f;
 		private float elapsedTime;
 		private GameObject owner;
+		private SpawnContext spawnContext;
 
+		public Vector3 Position => position;
+		public Vector3 Direction => direction;
+		public float Speed => speed;
+		public SpawnContext SpawnContext => spawnContext;
 
 		public override void Initialize(SpellInstance spell)
 		{
 			base.Initialize(spell);
 		}
 		public void SetInitialState(
-			Vector3 position,
-			Vector3 direction,
+			SpawnContext context,
+			float lifetime,
 			GameObject owner)
 		{
-			this.position = position;
-			this.direction = direction;
+			this.lifetime = lifetime;
+			this.spawnContext = context;
+			this.position = context.Position;
+			this.direction = context.Direction;
 			this.owner = owner;
 		}
 		public override void Tick(float deltaTime)
@@ -49,7 +56,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			if (target != owner && target.GetComponent<IDamageable>() != null)
 			{
 				spell.Events.Publish(
-					new HitEvent(position, target, owner)
+					new HitEvent(this, position, target, owner)
 				);
 
 				Destroy();

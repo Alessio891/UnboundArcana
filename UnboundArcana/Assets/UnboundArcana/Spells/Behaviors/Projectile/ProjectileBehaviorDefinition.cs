@@ -7,12 +7,13 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 	public class ProjectileBehaviorDefinition : SpellBehaviorDefinition
 	{
 		public GameObject projectilePrefab;
-		public int spawnDelay = 0;
+		public float lifetime = 1.0f;
 
 		public override SpellBehavior CreateRuntime()
 		{
 			ProjectileBehavior behavior = new();
 			behavior.InitializeDefinition(this);
+			
 
 			return behavior;
 		}

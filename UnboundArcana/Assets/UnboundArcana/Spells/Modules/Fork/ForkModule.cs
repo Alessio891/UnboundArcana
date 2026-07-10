@@ -42,8 +42,10 @@ namespace UnboundArcana.Spells.Modules.Fork
 				) * baseDirection;
 
 				spell.Spawner.SpawnProjectile(
-					castEvent.Context.Position,
-					direction
+					new SpawnContext(
+						castEvent.Context.Position,
+						direction
+					)
 				);
 			}
 		}

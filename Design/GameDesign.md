@@ -87,10 +87,6 @@ Enter Tower
 
 ↓
 
-Clear rooms
-
-↓
-
 Obtain spells and modules
 
 ↓
@@ -162,3 +158,17 @@ The game should prioritize:
 The spell system is the main feature.
 
 Everything else exists to support it.
+
+---
+
+# Current Validation
+
+The spell composition system has validated:
+
+* Behaviors define spell existence
+* Modules extend behavior through events
+* Runtime objects contain gameplay state
+* Spawned objects can carry composition rules
+* Different runtime events can drive different spell interactions
+
+Future systems should continue expanding the composition model rather than introducing predefined spell classes.

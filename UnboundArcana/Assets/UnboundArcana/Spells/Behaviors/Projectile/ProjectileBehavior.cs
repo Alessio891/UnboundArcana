@@ -3,31 +3,38 @@ using UnboundArcana.Spells.Runtime;
 using UnboundArcana.Spells.Runtime.Objects;
 using UnboundArcana.Spells.Runtime.Views;
 using System.Collections;
+using UnboundArcana.Core.Events;
 
 namespace UnboundArcana.Spells.Behaviors.Projectile
 {
 	public class ProjectileBehavior : SpellBehavior, ISpellSpawner
 	{
 		private ProjectileBehaviorDefinition definition;
+		public float lifetime = 1.0f;
 
 		public void InitializeDefinition(ProjectileBehaviorDefinition definition)
 		{
 			this.definition = definition;
+			lifetime = definition.lifetime;
 		}
-		public void SpawnProjectile(
-			Vector3 position,
-			Vector3 direction)
+
+		public void SpawnProjectile(SpawnContext context)
 		{
 			ProjectileRuntimeObject projectile = new();
 
 			projectile.SetInitialState(
-				position,
-				direction,
+				context,
+				lifetime,
 				spell.Owner
 			);
 
 			spell.AddRuntimeObject(projectile);
-
+			spell.Events.Publish(
+				new ProjectileSpawnedEvent(
+					projectile,
+					context.Position
+				)
+			);
 			GameObject instance = Object.Instantiate(
 				definition.projectilePrefab
 			);
@@ -40,8 +47,10 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 		public override void Cast(CastContext context)
 		{
 			SpawnProjectile(
-				context.Position,
-				context.Direction
+				new SpawnContext(
+					context.Position,
+					context.Direction
+				)
 			);
 		}
 	}

@@ -40,7 +40,9 @@ namespace UnboundArcana.Core.Events
 				return;
 			}
 
-			foreach (Delegate listener in listeners[type])
+			var snapshot = listeners[type].ToArray();
+
+			foreach (Delegate listener in snapshot)
 			{
 				((Action<T>)listener).Invoke(eventData);
 			}

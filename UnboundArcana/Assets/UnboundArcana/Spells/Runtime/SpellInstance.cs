@@ -53,6 +53,14 @@ namespace UnboundArcana.Spells.Runtime
 
 				if (!runtimeObject.IsAlive)
 				{
+					if (runtimeObject is ProjectileRuntimeObject projectile)
+					{
+						//if (projectile.)
+						Events.Publish(
+							new ProjectileDestroyedEvent(projectile)
+						);
+					}
+
 					runtimeObjects.RemoveAt(i);
 				}
 			}

@@ -1,3 +1,4 @@
+using UnboundArcana.Spells.Runtime.Objects;
 using UnityEngine;
 
 namespace UnboundArcana.Core.Events
@@ -9,8 +10,11 @@ namespace UnboundArcana.Core.Events
 
 		public GameObject Owner { get; }
 
-		public HitEvent(Vector3 position, GameObject target, GameObject owner)
+		public SpellRuntimeObject Source { get; }
+
+		public HitEvent(SpellRuntimeObject source, Vector3 position, GameObject target, GameObject owner)
 		{
+			Source = source;
 			Position = position;
 			Target = target;
 			Owner = owner;
