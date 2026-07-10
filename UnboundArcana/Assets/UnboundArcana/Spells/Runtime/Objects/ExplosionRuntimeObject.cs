@@ -60,7 +60,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			Debug.Log($"Explosion hit {hits.Length} targets");
 			foreach (Collider2D hit in hits)
 			{
-				spell.GameEvents.Publish(
+				spell.Runtime.GameEvents.Publish(
 					new DamageEvent(
 						spell.Owner,
 						hit.gameObject,

@@ -11,10 +11,10 @@ namespace UnboundArcana.Spells.Runtime
 
 		public static SpellInstance Create(
 			SpellDefinition definition,
-			GameEventBus gameEventBus,
+			SpellRuntimeContext context,
 			GameObject owner)
 		{
-			SpellInstance instance = new(gameEventBus, owner);
+			SpellInstance instance = new(context, owner);
 
 			instance.behavior = definition.behavior.CreateRuntime();
 

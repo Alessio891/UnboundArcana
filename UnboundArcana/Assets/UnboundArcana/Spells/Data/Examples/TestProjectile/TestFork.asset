@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36b6de40d307b05439cd68a42bbb9bc3, type: 3}
   m_Name: TestFork
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.Fork.ForkModuleDefinition
-  additionalProjectiles: 6
+  additionalProjectiles: 2
   angle: 35

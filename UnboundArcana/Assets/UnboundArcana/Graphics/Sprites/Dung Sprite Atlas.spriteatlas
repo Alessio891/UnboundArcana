@@ -1,0 +1,145 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Dung Sprite Atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 0
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 4
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 0
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_IgnorePlatformSupport: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 8
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 0
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - 3ddbba00d01c14b4ba6da1e2b839a010: -2553860626611713075
+    - 3ddbba00d01c14b4ba6da1e2b839a010: -7099246612251964473
+    - 3ddbba00d01c14b4ba6da1e2b839a010: 1692067631147430246
+    - 3ddbba00d01c14b4ba6da1e2b839a010: 762956521847364285
+    - 3ddbba00d01c14b4ba6da1e2b839a010: -5611671436062067638
+    - 3ddbba00d01c14b4ba6da1e2b839a010: 8184426433481068375
+    - 3ddbba00d01c14b4ba6da1e2b839a010: 6498048537032423258
+    - 3ddbba00d01c14b4ba6da1e2b839a010: 5788842204108660440
+    - 3ddbba00d01c14b4ba6da1e2b839a010: 8969973016113506382
+    - 3ddbba00d01c14b4ba6da1e2b839a010: 5781007722565991228
+    - 3ddbba00d01c14b4ba6da1e2b839a010: 1382955298498393477
+    - 3ddbba00d01c14b4ba6da1e2b839a010: 5904643695623954400
+    - 3ddbba00d01c14b4ba6da1e2b839a010: -7971018914978303284
+    - 3ddbba00d01c14b4ba6da1e2b839a010: 2982930431492894070
+    - 3ddbba00d01c14b4ba6da1e2b839a010: -1033659641698884344
+    - 3ddbba00d01c14b4ba6da1e2b839a010: 1272036609924154749
+    - 3ddbba00d01c14b4ba6da1e2b839a010: -4030209779743315735
+    - 3ddbba00d01c14b4ba6da1e2b839a010: -5413774516964111181
+    - 3ddbba00d01c14b4ba6da1e2b839a010: 4714053645245858206
+    - 3ddbba00d01c14b4ba6da1e2b839a010: -4331717005986066356
+    - 3ddbba00d01c14b4ba6da1e2b839a010: -2870340009335472312
+    - 3ddbba00d01c14b4ba6da1e2b839a010: -7042426272874427325
+    - 3ddbba00d01c14b4ba6da1e2b839a010: 2382610156424218954
+    - 3ddbba00d01c14b4ba6da1e2b839a010: -6978715594077187144
+    - 3ddbba00d01c14b4ba6da1e2b839a010: -6863204168735247751
+    - 3ddbba00d01c14b4ba6da1e2b839a010: 2684139954215093429
+    - 3ddbba00d01c14b4ba6da1e2b839a010: 1818030725231577628
+    - 3ddbba00d01c14b4ba6da1e2b839a010: 3513097084568043312
+    - 3ddbba00d01c14b4ba6da1e2b839a010: 7755311879036417944
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: -2553860626611713075, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: -7099246612251964473, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: 1692067631147430246, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: 762956521847364285, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: -5611671436062067638, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: 8184426433481068375, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: 6498048537032423258, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: 5788842204108660440, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: 8969973016113506382, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: 5781007722565991228, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: 1382955298498393477, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: 5904643695623954400, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: -7971018914978303284, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: 2982930431492894070, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: -1033659641698884344, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: 1272036609924154749, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: -4030209779743315735, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: -5413774516964111181, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: 4714053645245858206, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: -4331717005986066356, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: -2870340009335472312, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: -7042426272874427325, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: 2382610156424218954, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: -6978715594077187144, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: -6863204168735247751, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: 2684139954215093429, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: 1818030725231577628, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: 3513097084568043312, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: 7755311879036417944, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - test tileset_3
+  - test tileset_6
+  - test tileset_7
+  - test tileset_4
+  - test tileset_5
+  - test tileset_8
+  - test tileset_9
+  - test tileset_20
+  - test tileset_21
+  - test tileset_22
+  - test tileset_23
+  - test tileset_24
+  - test tileset_32
+  - test tileset_25
+  - test tileset_31
+  - test tileset_26
+  - test tileset_30
+  - test tileset_27
+  - test tileset_28
+  - test tileset_29
+  - test tileset_19
+  - test tileset_18
+  - test tileset_11
+  - test tileset_10
+  - test tileset_13
+  - test tileset_12
+  - test tileset_17
+  - test tileset_16
+  - test tileset_2
+  m_RenderDataMap: {}
+  m_Tag: Dung Sprite Atlas
+  m_IsVariant: 0

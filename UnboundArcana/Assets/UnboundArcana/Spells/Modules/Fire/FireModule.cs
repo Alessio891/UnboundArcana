@@ -1,6 +1,7 @@
 using UnboundArcana.Core.Combat;
 using UnboundArcana.Core.Events;
 using UnboundArcana.Spells.Runtime;
+using UnityEngine;
 
 namespace UnboundArcana.Spells.Modules.Fire
 {
@@ -16,8 +17,14 @@ namespace UnboundArcana.Spells.Modules.Fire
 		public override void Initialize(SpellInstance spell)
 		{
 			base.Initialize(spell);
-			gameEvents = spell.GameEvents;
+			gameEvents = spell.Runtime.GameEvents;
 			Events.Subscribe<HitEvent>(OnHit);
+			Events.Subscribe<ProjectileSpawnedEvent>(OnProjectileSpawned);
+		}
+
+		private void OnProjectileSpawned(ProjectileSpawnedEvent e) {
+			Debug.Log("Fire Module:: Spawned Projectile");
+			e.Projectile.SetProjectileColor(UnityEngine.Color.red);
 		}
 
 		private void OnHit(HitEvent hitEvent)

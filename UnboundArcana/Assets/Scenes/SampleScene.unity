@@ -186,7 +186,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: -6866571286258344739, guid: af820bcf25c10a84c9f2f4a628c96c3d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -205,10 +205,11 @@ Transform:
   m_GameObject: {fileID: 253577627}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.74, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -2.947, y: 0.763, z: 0}
+  m_LocalScale: {x: 2.8, y: 2.8, z: 2.8}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 519420032}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &253577630
@@ -224,7 +225,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Sandbox.SpellTester
   RuntimeManager: {fileID: 1803501488}
-  spellDefinition: {fileID: 11400000, guid: 67ebb923e85a9ba42b24adb27a86ca36, type: 2}
+  spellDefinition: {fileID: 11400000, guid: 1cc4a4cc5918aff40867af98e0fe1856, type: 2}
 --- !u!1 &446870172
 GameObject:
   m_ObjectHideFlags: 0
@@ -293,9 +294,9 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: -6866571286258344739, guid: af820bcf25c10a84c9f2f4a628c96c3d, type: 3}
   m_Color: {r: 0.8018868, g: 0.24586153, b: 0.24586153, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 0.16, y: 0.16}
@@ -312,8 +313,8 @@ Transform:
   m_GameObject: {fileID: 446870172}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.77, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 1.376, y: 0.474, z: 0}
+  m_LocalScale: {x: 4, y: 4, z: 14}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -352,8 +353,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.08
+  m_Offset: {x: 0, y: 0.15}
+  m_Radius: 0.14
 --- !u!114 &446870176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -452,12 +453,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -3.5714288}
+  m_LocalScale: {x: 0.35714287, y: 0.35714287, z: 0.35714287}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 253577629}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1803501487
 GameObject:
@@ -507,7 +508,6 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 519420032}
   - {fileID: 1803501489}
   - {fileID: 253577629}
   - {fileID: 446870174}

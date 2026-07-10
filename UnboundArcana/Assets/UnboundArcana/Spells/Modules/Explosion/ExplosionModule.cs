@@ -32,7 +32,7 @@ namespace UnboundArcana.Spells.Modules.Explosion
 					definition.duration
 				);
 
-			spell.AddRuntimeObject(explosion);
+			spell.RegisterRuntimeObject(explosion);
 
 			GameObject instance = Object.Instantiate(
 				definition.explosionPrefab,

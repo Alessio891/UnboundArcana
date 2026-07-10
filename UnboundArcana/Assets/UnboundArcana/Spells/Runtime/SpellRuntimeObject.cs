@@ -1,3 +1,4 @@
+using UnboundArcana.Core.Events;
 using UnityEngine;
 
 namespace UnboundArcana.Spells.Runtime.Objects
@@ -27,6 +28,10 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		{
 			IsAlive = false;
 
+			spell.Events.Publish(
+				new RuntimeObjectDestroyedEvent(this)
+			);
+
 			if (view != null)
 			{
 				Object.Destroy(view);
@@ -35,6 +40,9 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		public void SetView(GameObject view)
 		{
 			this.view = view;
+		}
+		public virtual void OnDestroyed()
+		{
 		}
 	}
 }

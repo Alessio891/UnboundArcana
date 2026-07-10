@@ -10,13 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4994aa394b5df0c4db86c3feec95a9ac, type: 3}
-  m_Name: TestProjectileSpell
+  m_Name: AuraSpellTest
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Data.SpellDefinition
-  behavior: {fileID: 11400000, guid: fbf2d3d06e26ae446949109b4a9f08fa, type: 2}
+  behavior: {fileID: 11400000, guid: 18bdfcdc9646b6840b8bc648976a72dc, type: 2}
   modules:
   - {fileID: 11400000, guid: c318f855860865143b2306c92f3941c2, type: 2}
-  - {fileID: 11400000, guid: 52c27441f5fb7bf4f9fb2e03239dfc6b, type: 2}
-  - {fileID: 11400000, guid: 782cea6dc9932c147901ccf1323b368f, type: 2}
+  - {fileID: 11400000, guid: 0c59a3ae1eb049f4ca1afa16946d1e99, type: 2}
   stats:
     damage: 1
     speed: 10

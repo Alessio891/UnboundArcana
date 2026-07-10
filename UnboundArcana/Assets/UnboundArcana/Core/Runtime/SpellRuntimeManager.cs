@@ -6,9 +6,10 @@ using UnboundArcana.Core.Combat;
 
 namespace UnboundArcana.Core.Runtime
 {
-	public class SpellRuntimeManager : MonoBehaviour
+	public class SpellRuntimeManager : MonoBehaviour, ISpellRuntime
 	{
 		private readonly List<SpellInstance> spells = new();
+		private readonly List<SpellInstance> pendingSpells = new();
 		public GameEventBus GameEvents { get; private set; }
 		
 		private DamageSystem damageSystem;
@@ -21,16 +22,22 @@ namespace UnboundArcana.Core.Runtime
 		}
 		public void Register(SpellInstance spell)
 		{
-			spells.Add(spell);
+			pendingSpells.Add(spell);
 		}
 
 		private void Update()
 		{
+			if (pendingSpells.Count > 0)
+			{
+				spells.AddRange(pendingSpells);
+				pendingSpells.Clear();
+			}
+
 			float deltaTime = Time.deltaTime;
 
-			foreach (SpellInstance spell in spells)
+			for (int i = 0; i < spells.Count; i++)
 			{
-				spell.Tick(deltaTime);
+				spells[i].Tick(deltaTime);
 			}
 		}
 	}

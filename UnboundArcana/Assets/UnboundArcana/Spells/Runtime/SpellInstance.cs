@@ -14,13 +14,13 @@ namespace UnboundArcana.Spells.Runtime
 
 		public GameObject Owner { get; private set; }
 		public SpellEventBus Events { get; } = new();
-		public GameEventBus GameEvents { get; }
+		public SpellRuntimeContext Runtime { get; }
 		public ISpellSpawner Spawner { get; private set; }
 		public SpellInstance(
-			GameEventBus gameEvents,
+			SpellRuntimeContext runtime,
 			GameObject owner)
 		{
-			GameEvents = gameEvents;
+			Runtime = runtime;
 			Owner = owner;
 		}
 
@@ -37,7 +37,7 @@ namespace UnboundArcana.Spells.Runtime
 			}
 		}
 
-		public void AddRuntimeObject(SpellRuntimeObject runtimeObject)
+		public void RegisterRuntimeObject(SpellRuntimeObject runtimeObject)
 		{
 			runtimeObject.Initialize(this);
 			runtimeObjects.Add(runtimeObject);
@@ -53,14 +53,6 @@ namespace UnboundArcana.Spells.Runtime
 
 				if (!runtimeObject.IsAlive)
 				{
-					if (runtimeObject is ProjectileRuntimeObject projectile)
-					{
-						//if (projectile.)
-						Events.Publish(
-							new ProjectileDestroyedEvent(projectile)
-						);
-					}
-
 					runtimeObjects.RemoveAt(i);
 				}
 			}

@@ -63,5 +63,18 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			}
 		}
 
+		public void SetProjectileColor(Color color) {
+			if (view) {
+				view.GetComponent<SpriteRenderer>().color = color;
+			}
+		}
+		public override void OnDestroyed()
+		{
+			base.OnDestroyed();
+			spell.Events.Publish(
+				new ProjectileDestroyedEvent(this)
+			);
+		}
+
 	}
 }

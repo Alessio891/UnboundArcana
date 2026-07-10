@@ -23,7 +23,7 @@ namespace UnboundArcana.Sandbox
 
 		private void Start()
 		{
-			spell = SpellFactory.Create(spellDefinition, RuntimeManager.GameEvents, gameObject);
+			spell = SpellFactory.Create(spellDefinition, new SpellRuntimeContext(RuntimeManager,RuntimeManager.GameEvents), gameObject);
 			if (RuntimeManager) RuntimeManager.Register(spell);
 			spell.Events.Subscribe<HitEvent>(OnHit);
 		}

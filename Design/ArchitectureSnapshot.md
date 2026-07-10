@@ -2,7 +2,7 @@
 
 Last Updated:
 
-2026-07-10
+2026-07-11
 
 ---
 
@@ -26,11 +26,11 @@ CastContext
 
 ↓
 
-ProjectileBehavior
+SpellBehavior
 
 ↓
 
-ProjectileRuntimeObject
+SpellRuntimeObjects
 
 ↓
 
@@ -38,22 +38,30 @@ Runtime Events
 
 ↓
 
-FireModule
-ExplosionModule
-ForkModule
-SplitOnDestroyModule
+SpellModules
 
 ↓
 
-DamageEvent
+Game Events
 
 ↓
 
-DamageSystem
+Gameplay Systems
 
-↓
 
-IDamageable
+Validated behaviors:
+
+- ProjectileBehavior
+- AuraBehavior
+
+
+Validated modules:
+
+- FireModule
+- ExplosionModule
+- ForkModule
+- SplitOnDestroyModule
+- CastSpellOnDestroyModule
 
 
 ---
@@ -64,19 +72,24 @@ SpellRuntimeManager
 
 ├── GameEventBus
 
-└── SpellInstances
+├── Active SpellInstances
 
-      ├── SpellBehavior
+└── SpellRuntimeContext
 
-      ├── SpellModules
 
-      ├── SpellRuntimeObjects
+SpellInstance
 
-      ├── SpellEventBus
+├── SpellBehavior
 
-      └── Optional Behavior Capabilities
+├── SpellModules
 
-            └── ISpellSpawner
+├── SpellRuntimeObjects
+
+├── SpellEventBus
+
+├── SpellRuntimeContext
+
+└── Optional Behavior Capabilities
 
 
 ---
@@ -121,12 +134,41 @@ SpellRuntimeObjects
 
 ---
 
+# Runtime Context
+
+Purpose:
+
+Provide runtime services required by spells without coupling spells to Unity systems.
+
+
+Current services:
+
+- GameEventBus
+- Spell registration through ISpellRuntime
+
+
+Flow:
+
+SpellRuntimeManager
+
+↓
+
+SpellRuntimeContext
+
+↓
+
+SpellInstance
+
+
+---
+
 # Runtime Objects
 
 Implemented:
 
 - ProjectileRuntimeObject
 - ExplosionRuntimeObject
+- AuraRuntimeObject
 
 
 Runtime object responsibilities:
@@ -136,15 +178,7 @@ Runtime object responsibilities:
 - Control lifetime
 
 
-Runtime objects store creation information separately through SpawnContext when required.
-
-
-Future:
-
-- Aura
-- Trap
-- Minion
-- Persistent Zone
+Runtime objects may store creation information separately through SpawnContext when required.
 
 
 ---
@@ -153,7 +187,11 @@ Future:
 
 Implemented:
 
-- ProjectileBehavior
+## ProjectileBehavior
+
+Creates:
+
+- ProjectileRuntimeObject
 
 
 Capabilities:
@@ -161,12 +199,23 @@ Capabilities:
 - ISpellSpawner
 
 
+## AuraBehavior
+
+Creates:
+
+- AuraRuntimeObject
+
+
+Purpose:
+
+Validate persistent non-projectile behavior lifecycle.
+
+
 Future:
 
 - Beam
-- Aura
-- Nova
 - Trap
+- Minion
 - Orbit
 - Meteor
 
@@ -177,51 +226,73 @@ Future:
 
 Implemented:
 
-- FireModule
-- ExplosionModule
-- ForkModule
-- SplitOnDestroyModule
-
-
-Current module responsibilities:
-
-FireModule
+## FireModule
 
 - Reacts to HitEvent
 - Creates DamageEvents
 
 
-ExplosionModule
+## ExplosionModule
 
 - Reacts to HitEvent
 - Creates ExplosionRuntimeObjects
 
 
-ForkModule
+## ForkModule
 
 - Reacts to CastEvent
 - Uses ISpellSpawner capability
 - Requests additional projectile creation
 
 
-SplitOnDestroyModule
+## SplitOnDestroyModule
 
 - Reacts to ProjectileDestroyedEvent
 - Requests additional projectile creation
-- Uses SpawnContext rules to prevent recursive splitting
+- Uses SpawnContext rules
 
 
-Future:
+## CastSpellOnDestroyModule
 
-- Poison
-- Ice
-- Burn
-- Pierce
-- Bounce
-- Split
-- Homing
-- Chain
-- Lifesteal
+- Reacts to RuntimeObjectDestroyedEvent
+- Creates another SpellInstance
+- Registers and casts the chained spell
+
+
+---
+
+# Spell Chaining
+
+Validated:
+
+A spell can create another spell composition.
+
+Flow:
+
+SpellInstance A
+
+↓
+
+Module trigger
+
+↓
+
+SpellFactory
+
+↓
+
+SpellInstance B
+
+↓
+
+SpellRuntimeManager
+
+
+Important:
+
+The chained spell is a full spell composition.
+
+It is not a special projectile or effect.
 
 
 ---
@@ -287,7 +358,25 @@ Contains:
 
 Used for:
 
-- Destruction-based modifiers
+- Projectile-specific destruction modifiers
+
+
+## RuntimeObjectDestroyedEvent
+
+Contains:
+
+- SpellRuntimeObject
+
+
+Used for:
+
+- Generic runtime lifecycle reactions
+
+Examples:
+
+- Aura expiration
+- Chained spells
+- Future expiration effects
 
 
 ---
@@ -343,11 +432,18 @@ ExplosionRuntimeObject
 ExplosionView
 
 
+AuraRuntimeObject
+
+↓
+
+AuraView
+
+
 Rules:
 
 Runtime owns gameplay.
 
-View owns Unity components.
+View owns Unity representation.
 
 Views do not create gameplay state.
 
@@ -370,7 +466,7 @@ ISpellSpawner
 
 Purpose:
 
-Allow modules to request creation of runtime objects without knowing runtime implementations.
+Allow modules to request behavior-owned creation.
 
 
 Example:
@@ -390,12 +486,37 @@ ProjectileBehavior
 ProjectileRuntimeObject
 
 
-Modules do not:
+---
 
-- instantiate runtime objects
-- create views
-- access prefabs
-- manage lifecycle
+# Module Creation Rules
+
+Current validated rule:
+
+Modules do not create objects belonging to another behavior.
+
+Modules may create runtime objects for effects they own.
+
+Examples:
+
+Allowed:
+
+ExplosionModule
+
+↓
+
+ExplosionRuntimeObject
+
+
+Not allowed:
+
+SplitModule
+
+↓
+
+ProjectileRuntimeObject
+
+
+because projectile creation belongs to ProjectileBehavior.
 
 
 ---
@@ -420,16 +541,13 @@ Used by:
 - Spawn-based modifiers
 
 
-Runtime objects may retain SpawnContext to determine future behavior.
-
-
 ---
 
 # CastContext
 
 Purpose:
 
-Provide external casting information to the spell pipeline.
+Provide external casting information.
 
 
 Current fields:
@@ -442,12 +560,8 @@ Current fields:
 Used by:
 
 - Player casting
-- Future enemy casting
-- Future turret casting
-- Future targeted spells
-
-
-Runtime objects no longer create their own initial state.
+- Enemy casting
+- Future casting sources
 
 
 ---
@@ -462,13 +576,7 @@ Runtime objects no longer create their own initial state.
 
 ✓ Modules do not communicate directly
 
-✓ Multiple modules react independently
-
-✓ Modules can request creation through behavior capabilities
-
 ✓ Runtime objects own gameplay state
-
-✓ Gameplay systems communicate through GameEventBus
 
 ✓ ScriptableObjects contain configuration only
 
@@ -478,7 +586,11 @@ Runtime objects no longer create their own initial state.
 
 ✓ Runtime lifecycle events allow independent modifiers
 
-✓ Spawn metadata controls child object behavior
+✓ Spawn metadata controls child behavior
+
+✓ Spells can compose other spells
+
+✓ Runtime systems are injected through context
 
 
 ---
@@ -487,41 +599,42 @@ Runtime objects no longer create their own initial state.
 
 Current:
 
-CastEvent is used for cast reactions.
-
-Future consideration:
-
-If cast modification becomes complex, introduce a separate cast modification phase instead of expanding CastEvent responsibilities.
-
-
-SpawnContext currently supports simple modifier inheritance rules.
+- CastContext is minimal.
+- RuntimeObjectDestroyedEvent only exposes the destroyed object.
+- Spell cleanup/removal from SpellRuntimeManager is not implemented yet.
 
 Future:
 
-- Selective module inheritance
-- Modified child compositions
-- More advanced spawn rules
+- More lifecycle events
+- More advanced cast context
+- Spell lifetime management
+- Runtime object pooling
 
 
 ---
 
 # Next Milestone
 
-Behavior Expansion and Architecture Validation
+Gameplay Expansion
 
 Objectives:
 
-- Implement additional behaviors:
-    - Aura
+- Add more behaviors:
     - Beam
     - Trap
+    - Zone
+    - Summon
 
-- Verify that the composition model is behavior-independent.
+- Add more gameplay modules:
+    - Pierce
+    - Bounce
+    - Homing
+    - Status effects
 
-- Evaluate whether new behaviors require:
-    - additional capabilities
-    - additional runtime events
-    - new runtime object patterns
+- Evaluate performance requirements:
+    - Object pooling
+    - Event allocation
+    - Runtime object scaling
 
 
-Avoid redesigning existing architecture unless a concrete limitation appears.
+Avoid redesigning architecture unless a concrete gameplay limitation appears.

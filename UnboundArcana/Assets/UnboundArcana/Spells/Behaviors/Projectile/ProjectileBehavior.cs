@@ -28,13 +28,8 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 				spell.Owner
 			);
 
-			spell.AddRuntimeObject(projectile);
-			spell.Events.Publish(
-				new ProjectileSpawnedEvent(
-					projectile,
-					context.Position
-				)
-			);
+			spell.RegisterRuntimeObject(projectile);
+			
 			GameObject instance = Object.Instantiate(
 				definition.projectilePrefab
 			);
@@ -42,6 +37,12 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 			ProjectileView view = instance.GetComponent<ProjectileView>();
 
 			view.Initialize(projectile);
+			spell.Events.Publish(
+				new ProjectileSpawnedEvent(
+					projectile,
+					context.Position
+				)
+			);
 		}
 
 		public override void Cast(CastContext context)

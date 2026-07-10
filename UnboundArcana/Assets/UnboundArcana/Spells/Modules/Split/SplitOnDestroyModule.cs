@@ -3,6 +3,7 @@ using UnboundArcana.Core.Events;
 using UnboundArcana.Spells.Runtime;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.PackageManager;
+using UnboundArcana.Spells.Runtime.Objects;
 
 namespace UnboundArcana.Spells.Modules.Split
 {
@@ -24,27 +25,35 @@ namespace UnboundArcana.Spells.Modules.Split
 		{
 			base.Initialize(spell);
 
-			Events.Subscribe<ProjectileDestroyedEvent>(
-				OnProjectileDestroyed
+			Events.Subscribe<RuntimeObjectDestroyedEvent>(
+				OnRuntimeObjectDestroyed
 			);
 		}
 
-		private void OnProjectileDestroyed(
-			ProjectileDestroyedEvent eventData)
+		private void OnRuntimeObjectDestroyed(
+	RuntimeObjectDestroyedEvent eventData)
 		{
+			if (eventData.RuntimeObject is not ProjectileRuntimeObject projectile)
+			{
+				return;
+			}
+
 			if (spell.Spawner == null)
 			{
 				return;
 			}
+
 			if (definition.count <= 1)
 			{
 				return;
 			}
-			if (!eventData.Projectile.SpawnContext.PropagateModifiers) {
+
+			if (!projectile.SpawnContext.PropagateModifiers)
+			{
 				return;
 			}
-			Vector3 direction =
-				eventData.Projectile.Direction;
+
+			Vector3 direction = projectile.Direction;
 
 			float step =
 				definition.spreadAngle /
@@ -55,17 +64,17 @@ namespace UnboundArcana.Spells.Modules.Split
 				float angle =
 					-definition.spreadAngle / 2 +
 					step * i;
+
 				Vector3 rotatedDirection =
 					Quaternion.Euler(
 						0,
 						0,
 						angle
-					) *
-					direction;
+					) * direction;
 
 				spell.Spawner.SpawnProjectile(
 					new SpawnContext(
-						eventData.Projectile.Position,
+						projectile.Position,
 						rotatedDirection,
 						false
 					)
@@ -75,8 +84,8 @@ namespace UnboundArcana.Spells.Modules.Split
 
 		public override void Destroy()
 		{
-			Events.Unsubscribe<ProjectileDestroyedEvent>(
-				OnProjectileDestroyed
+			Events.Unsubscribe<RuntimeObjectDestroyedEvent>(
+				OnRuntimeObjectDestroyed
 			);
 		}
 	}

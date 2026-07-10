@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: ProjectileBehavior
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Behaviors.Projectile.ProjectileBehaviorDefinition
   projectilePrefab: {fileID: 5930129938759342534, guid: c9388eb75394ea641b70062f5e891436, type: 3}
+  lifetime: 0.2

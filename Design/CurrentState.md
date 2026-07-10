@@ -2,123 +2,126 @@
 
 Last Updated:
 
-2026-07-10
+2026-07-11
 
 ---
 
 # Current Milestone
 
-Cast Context and Modifier Foundation
+Behavior Expansion and Composition Validation
 
 ---
 
 # Completed
 
-## CastContext
+## Aura Behavior
 
 Implemented.
 
 Purpose:
 
-Move initial spell state from runtime objects into the casting pipeline.
-
-Contains:
-
-- Owner
-- Position
-- Direction
-
-Current flow:
-
-Cast source
-
-↓
-
-CastContext
-
-↓
-
-SpellInstance.Cast(context)
-
-↓
-
-Behavior
-
-↓
-
-Runtime Object
-
----
-
-## Projectile Initialization
-
-Completed.
-
-ProjectileRuntimeObject no longer creates default values:
-
-Before:
-
-- Position = Vector3.zero
-- Direction = Vector3.right
-
-After:
-
-State is provided during casting.
-
----
-
-## CastEvent Context
-
-Completed.
-
-CastEvent now carries:
-
-- SpellInstance
-- CastContext
-
-This allows modules to react to casting information.
-
----
-
-## Behavior Spawn Capability
-
-Completed.
+Validate that the architecture works without projectile assumptions.
 
 Implemented:
 
-ISpellSpawner
+- AuraBehavior
+- AuraRuntimeObject
+- AuraView
 
-Current implementation:
-
-ProjectileBehavior
-
-Purpose:
-
-Allow modules to request object creation without knowing runtime implementations.
-
----
-
-## Fork Modifier
-
-Completed.
-
-Implemented:
-
-ForkModule
-
-ForkModuleDefinition
-
-Behavior:
-
-- Reacts to CastEvent
-- Calculates additional directions
-- Requests projectile creation through ISpellSpawner
 
 Validated:
 
-- Modules can extend spells
-- Behaviors retain creation ownership
-- Runtime objects remain independent
+- Persistent runtime objects
+- Independent lifetime updates
+- Non-projectile spell behavior
+
+
+---
+
+## Runtime Lifecycle Events
+
+Completed.
+
+Added:
+
+RuntimeObjectDestroyedEvent
+
+
+Purpose:
+
+Allow modules to react to runtime object lifecycle without knowing behaviors.
+
+
+Used by:
+
+- Aura expiration
+- Future destruction effects
+
+
+---
+
+## Spell Runtime Context
+
+Completed.
+
+Implemented:
+
+- SpellRuntimeContext
+- ISpellRuntime
+
+
+Purpose:
+
+Provide runtime services to spells without coupling them directly to scene objects.
+
+
+Current services:
+
+- GameEventBus
+- Spell registration
+
+
+---
+
+## Deferred Spell Registration
+
+Completed.
+
+Purpose:
+
+Allow spells to create other spells during updates safely.
+
+
+Flow:
+
+Register request
+
+↓
+
+Pending list
+
+↓
+
+Added after update
+
+
+---
+
+## Spell Chaining
+
+Completed.
+
+Implemented:
+
+CastSpellOnDestroyModule
+
+
+Validated:
+
+- A spell can trigger another spell composition.
+- Chained spells use the normal SpellFactory pipeline.
+- Behaviors remain independent.
+
 
 ---
 
@@ -127,6 +130,7 @@ Validated:
 ## Behaviors
 
 - ProjectileBehavior
+- AuraBehavior
 
 
 ## Modules
@@ -134,12 +138,15 @@ Validated:
 - FireModule
 - ExplosionModule
 - ForkModule
+- SplitOnDestroyModule
+- CastSpellOnDestroyModule
 
 
 ## Runtime Objects
 
 - ProjectileRuntimeObject
 - ExplosionRuntimeObject
+- AuraRuntimeObject
 
 
 ## Events
@@ -148,6 +155,10 @@ SpellEventBus:
 
 - CastEvent
 - HitEvent
+- ProjectileSpawnedEvent
+- ProjectileDestroyedEvent
+- RuntimeObjectDestroyedEvent
+
 
 GameEventBus:
 
@@ -160,16 +171,19 @@ GameEventBus:
 - IDamageable
 - TargetDummy
 
+
 ---
 
 # Current Architecture Status
 
 The composition model is validated by:
 
-- Multiple modules reacting independently
-- Modules extending behavior without inheritance
-- Runtime object creation controlled by behaviors
-- External casting data flowing through CastContext
+- Multiple behavior types
+- Multiple independent modules
+- Runtime object lifecycle
+- Module-created effects
+- Spell-to-spell composition
+
 
 ---
 
@@ -177,30 +191,36 @@ The composition model is validated by:
 
 Possible next steps:
 
-## Projectile Modifiers
+## More Behaviors
+
+Examples:
+
+- Beam
+- Trap
+- Zone
+- Summon
+- Orbit
+
+
+## More Modules
 
 Examples:
 
 - Homing
 - Pierce
 - Bounce
-- Split on hit
+- Status effects
+- Element conversion
 
-## More Behaviors
 
-Examples:
+## Performance Validation
 
-- Beam
-- Aura
-- Trap
-- Orbit
+Evaluate:
 
-## Spawn/Event Refinement
+- Runtime object count
+- Pooling
+- Event allocations
+- Large combat scenarios
 
-Evaluate whether future modifiers require:
 
-- dedicated spawn events
-- cast modification phase
-- richer runtime object creation capabilities
-
-Do not introduce new abstraction layers until required by a concrete feature.
+Do not introduce new abstraction layers until required by concrete gameplay needs.
