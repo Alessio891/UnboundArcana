@@ -44,6 +44,10 @@ namespace UnboundArcana.Spells.Runtime
 		{
 			runtimeObject.Initialize(this);
 			runtimeObjects.Add(runtimeObject);
+
+			Events.Publish(
+				new RuntimeObjectSpawnedEvent(runtimeObject)
+			);
 		}
 
 		public void Tick(float deltaTime)

@@ -32,8 +32,7 @@ namespace UnboundArcana.Spells.Modules.Explosion
 					definition.duration
 				);
 
-			spell.RegisterRuntimeObject(explosion);
-
+			//explosion.SetExplosionScale(definition.radius);
 			GameObject instance = Object.Instantiate(
 				definition.explosionPrefab,
 				hitEvent.Position,
@@ -43,6 +42,7 @@ namespace UnboundArcana.Spells.Modules.Explosion
 			ExplosionView view = instance.GetComponent<ExplosionView>();
 
 			view.Initialize(explosion);
+			spell.RegisterRuntimeObject(explosion);
 		}
 
 		public override void Destroy()

@@ -1,205 +1,219 @@
----
-
-# Decision: Behavior Expansion Validation
+# Decision: Generic Modifier System Direction
 
 Date:
 
 2026-07-11
 
-
 ## Context
 
-Projectile architecture was validated, but there was a risk of designing the entire system around projectile assumptions.
+The existing SpellStats class was only a placeholder and did not represent a real stat system.
 
+Runtime objects currently contain gameplay values directly:
+
+Examples:
+
+* Explosion radius
+* Projectile speed
+* Damage
+* Lifetime
+
+Modules modifying runtime objects directly creates problems:
+
+* stacking rules
+* ownership ambiguity
+* future equipment/buff integration
 
 ## Decision
 
-Implement a non-projectile behavior before expanding the system further.
+Introduce a generic stat and modifier system.
 
+The system will support:
 
-Implemented:
+* Damage
+* Size
+* Speed
+* Duration
 
-AuraBehavior
+Modifiers may originate from:
 
+* Spell modules
+* Equipment
+* Player progression
+* Buffs
+* Debuffs
+* Future systems
 
 ## Consequences
 
 Positive:
 
-- Behavior lifecycle is independent from movement and collision.
-- Runtime object model works for persistent effects.
-- Architecture is not projectile-specific.
+* Runtime objects no longer need direct knowledge of modifier sources.
+* Future progression systems can participate naturally.
+* Modifier calculations become centralized.
+* Debugging becomes possible because modifier sources remain identifiable.
 
+Negative:
+
+* More runtime calculation complexity.
+* UI/debugging tools will eventually be required to explain final values.
 
 ---
 
-# Decision: Runtime Context
+# Decision: Module Identity vs Numeric Modifiers
 
 Date:
 
 2026-07-11
 
-
 ## Context
 
-Spells require access to runtime services such as event buses and spell registration.
-
-
-Direct references to scene managers would couple spells to Unity objects.
-
+Turning every numerical adjustment into a separate module would make spell construction noisy and less understandable.
 
 ## Decision
 
-Introduce SpellRuntimeContext.
+Modules remain meaningful gameplay concepts.
 
-
-Contains:
-
-- GameEventBus
-- Runtime registration capability
-
-
-## Consequences
-
-Positive:
-
-- Spell runtime dependencies are explicit.
-- SpellInstance does not depend directly on MonoBehaviours.
-- Future services can be added without redesigning spell ownership.
-
-
----
-
-# Decision: Spell Chaining Through Spell Composition
-
-Date:
-
-2026-07-11
-
-
-## Context
-
-Some effects require creating another spell rather than another runtime object.
+Modules may provide modifiers internally.
 
 Example:
 
-Aura expiration creating a projectile nova.
+```
+Fire Module Level 3
+```
 
+instead of:
 
-## Decision
-
-Allow modules to trigger new SpellInstances through SpellFactory.
-
-
-The chained spell is a complete spell composition.
-
+```
+Fire Module
++
+Fire Damage Modifier
++
+Burn Duration Modifier
+```
 
 ## Consequences
 
 Positive:
 
-- Behaviors remain independent.
-- Modules do not need knowledge of other behaviors.
-- Complex effects can be built from existing spell definitions.
-
+* Better player readability.
+* Spell creation feels like building magical concepts.
+* Less spreadsheet-like complexity.
 
 Negative:
 
-- Spell lifetime management will need future refinement.
-
+* Module upgrade systems need future design.
+* Some balancing decisions become module-specific.
 
 ---
 
-# Decision: Generic Runtime Destruction Events
+# Decision: Spell Composition Tags
 
 Date:
 
 2026-07-11
 
-
 ## Context
 
-Projectile-specific destruction events are insufficient for future behaviors.
-
-
-Examples:
-
-- Aura expiration
-- Trap expiration
-- Summon death
-
+Modules require a way to communicate compatibility and synergy without forcing rigid restrictions.
 
 ## Decision
 
-Introduce RuntimeObjectDestroyedEvent.
+Tags belong to authored spell components:
 
+* Behaviors
+* Modules
 
-Modules can react to runtime lifecycle without knowing the originating behavior.
+The final SpellInstance calculates its resulting tags.
 
+Example:
+
+```
+Projectile
++
+Explosion
++
+Fire
+```
+
+creates:
+
+```
+Projectile
+Explosion
+Area
+Fire
+```
+
+Tags are descriptive and support:
+
+* compatibility
+* synergy
+* discovery
+
+They are not intended to become a strict class hierarchy.
 
 ## Consequences
 
 Positive:
 
-- Lifecycle modifiers become behavior-independent.
-
+* Supports emergent builds.
+* Allows module interactions.
+* Avoids excessive hard restrictions.
 
 Negative:
 
-- Additional lifecycle events may be needed later.
+* Some future edge cases may require additional compatibility rules.
+
 ---
 
-# Decision: External Spell Lifecycle Control
+# Decision: Chained Spell Modifier Propagation
 
 Date:
 
 2026-07-11
 
-
 ## Context
 
-Some spell types require continuous control after creation.
+A spell can create another spell composition.
 
-Examples:
-
-- Beam aiming
-- Guided projectiles
-- Charging spells
-
-
-A spell cannot always be modeled as a single Cast() call followed by independent execution.
-
+The child spell should have its own identity, but some effects may logically continue.
 
 ## Decision
 
-Introduce external lifecycle commands:
+Chained spells have:
 
-- Cast()
-- UpdateCast()
-- End()
+* their own behavior
+* their own modules
+* their own tags
 
+Modifier inheritance is explicit.
 
-Casting sources are responsible for providing these commands.
+A chaining mechanic decides which modifiers propagate.
 
-The spell runtime does not know whether the source is:
+Example:
 
-- Player input
-- Enemy AI
-- Environment logic
-- Network input
+```
+Cast Spell On Destroy
 
+inherits:
+
+Fire modifiers
+```
+
+rather than:
+
+```
+Copy entire parent spell state
+```
 
 ## Consequences
 
 Positive:
 
-- Channelled spells are supported.
-- Guided behaviors do not require input dependencies.
-- Multiple caster types can control spells through the same interface.
-- RuntimeManager remains focused on simulation only.
-
+* Prevents hidden exponential scaling.
+* Keeps ownership clear.
+* Allows powerful intentional interactions.
 
 Negative:
 
-- Module interaction with active spell control requires future design.
-- Spell state management may need refinement as more lifecycle-dependent behaviors are added.
+* More configuration is required for advanced chaining mechanics.

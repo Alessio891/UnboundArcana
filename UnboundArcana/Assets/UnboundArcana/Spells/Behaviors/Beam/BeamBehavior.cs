@@ -56,6 +56,7 @@ namespace UnboundArcana.Spells.Behaviors.Beam
 		{
 			if (beam != null)
 			{
+				beam.SetPosition(context.Position);
 				beam.SetDirection(context.Direction);
 			}
 		}

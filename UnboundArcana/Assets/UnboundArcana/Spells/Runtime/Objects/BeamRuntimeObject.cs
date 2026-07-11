@@ -19,6 +19,13 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			this.position = position;
 			this.direction = direction.normalized;
 		}
+		public void SetPosition(Vector3 position) {
+			this.position = position;
+			if (view != null)
+			{
+				UpdateView(view.transform);
+			}
+		}
 		public void SetDirection(Vector3 direction)
 		{
 			this.direction = direction.normalized;

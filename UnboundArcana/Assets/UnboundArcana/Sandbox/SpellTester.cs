@@ -16,6 +16,9 @@ namespace UnboundArcana.Sandbox
 		private UnboundArcanaControls controls;
 		private Camera mainCamera;
 		private bool isCasting;
+		private Vector2 moveInput;
+
+		public float MoveSpeed = 10.0f;
 
 		private void Awake()
 		{
@@ -35,6 +38,16 @@ namespace UnboundArcana.Sandbox
 			controls.Gameplay.Enable();
 			controls.Gameplay.Cast.performed += OnCast;
 			controls.Gameplay.Cast.canceled += OnCastEnd;
+
+			controls.Gameplay.Move.performed += ctx =>
+			{
+				moveInput = ctx.ReadValue<Vector2>();
+			};
+
+			controls.Gameplay.Move.canceled += ctx =>
+			{
+				moveInput = Vector2.zero;
+			};
 		}
 
 		private void OnDisable()
@@ -46,6 +59,10 @@ namespace UnboundArcana.Sandbox
 
 		private void Update()
 		{
+			transform.position += new Vector3(moveInput.x, moveInput.y, 0) * MoveSpeed * Time.deltaTime;
+			if (moveInput.x != 0)
+				GetComponent<SpriteRenderer>().flipX = moveInput.x < 0;
+
 			if (!isCasting)
 			{
 				return;
@@ -65,6 +82,12 @@ namespace UnboundArcana.Sandbox
 					direction
 				)
 			);
+
+
+		}
+
+		private void FixedUpdate()
+		{
 		}
 
 		private void OnCast(UnityEngine.InputSystem.InputAction.CallbackContext context)

@@ -1,4 +1,5 @@
 using UnboundArcana.Core.Events;
+using UnboundArcana.Core.Stats;
 using UnityEngine;
 
 namespace UnboundArcana.Spells.Runtime.Objects
@@ -8,7 +9,8 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		protected SpellInstance spell;
 		protected GameObject view;
 
-		
+		public StatCollection Stats { get; } = new();
+
 		public bool IsAlive { get; private set; } = true;
 
 		public virtual void Initialize(SpellInstance spell)
@@ -37,10 +39,12 @@ namespace UnboundArcana.Spells.Runtime.Objects
 				Object.Destroy(view);
 			}
 		}
+
 		public void SetView(GameObject view)
 		{
 			this.view = view;
 		}
+
 		public virtual void OnDestroyed()
 		{
 		}

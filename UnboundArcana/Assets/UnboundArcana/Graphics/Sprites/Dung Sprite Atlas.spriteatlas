@@ -51,6 +51,8 @@ SpriteAtlas:
     cachedData: {fileID: 0}
     packedSpriteRenderDataKeys:
     - 3ddbba00d01c14b4ba6da1e2b839a010: -2553860626611713075
+    - 3ddbba00d01c14b4ba6da1e2b839a010: 7030165911473553323
+    - 3ddbba00d01c14b4ba6da1e2b839a010: -2643130155165284130
     - 3ddbba00d01c14b4ba6da1e2b839a010: -7099246612251964473
     - 3ddbba00d01c14b4ba6da1e2b839a010: 1692067631147430246
     - 3ddbba00d01c14b4ba6da1e2b839a010: 762956521847364285
@@ -76,12 +78,16 @@ SpriteAtlas:
     - 3ddbba00d01c14b4ba6da1e2b839a010: -6978715594077187144
     - 3ddbba00d01c14b4ba6da1e2b839a010: -6863204168735247751
     - 3ddbba00d01c14b4ba6da1e2b839a010: 2684139954215093429
+    - 3ddbba00d01c14b4ba6da1e2b839a010: -3666009281808812715
+    - 3ddbba00d01c14b4ba6da1e2b839a010: 2240705906989290506
     - 3ddbba00d01c14b4ba6da1e2b839a010: 1818030725231577628
     - 3ddbba00d01c14b4ba6da1e2b839a010: 3513097084568043312
     - 3ddbba00d01c14b4ba6da1e2b839a010: 7755311879036417944
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: -2553860626611713075, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: 7030165911473553323, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: -2643130155165284130, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
   - {fileID: -7099246612251964473, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
   - {fileID: 1692067631147430246, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
   - {fileID: 762956521847364285, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
@@ -107,11 +113,15 @@ SpriteAtlas:
   - {fileID: -6978715594077187144, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
   - {fileID: -6863204168735247751, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
   - {fileID: 2684139954215093429, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: -3666009281808812715, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
+  - {fileID: 2240705906989290506, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
   - {fileID: 1818030725231577628, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
   - {fileID: 3513097084568043312, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
   - {fileID: 7755311879036417944, guid: 3ddbba00d01c14b4ba6da1e2b839a010, type: 3}
   m_PackedSpriteNamesToIndex:
   - test tileset_3
+  - test tileset_0
+  - test tileset_1
   - test tileset_6
   - test tileset_7
   - test tileset_4
@@ -137,6 +147,8 @@ SpriteAtlas:
   - test tileset_10
   - test tileset_13
   - test tileset_12
+  - test tileset_15
+  - test tileset_14
   - test tileset_17
   - test tileset_16
   - test tileset_2

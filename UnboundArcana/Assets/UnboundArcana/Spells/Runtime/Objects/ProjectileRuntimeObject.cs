@@ -11,12 +11,14 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		private float speed = 10f;
 		private float lifetime = 2f;
 		private float elapsedTime;
+		private float scale = 1.0f;
 		private GameObject owner;
 		private SpawnContext spawnContext;
 
 		public Vector3 Position => position;
 		public Vector3 Direction => direction;
 		public float Speed => speed;
+		public float Scale => scale;
 		public SpawnContext SpawnContext => spawnContext;
 
 		public override void Initialize(SpellInstance spell)
@@ -43,6 +45,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			if (view != null)
 			{
 				view.transform.position = position;
+				view.transform.localScale = new Vector3(scale, scale, scale);
 			}
 			if (elapsedTime >= lifetime)
 			{
@@ -62,10 +65,12 @@ namespace UnboundArcana.Spells.Runtime.Objects
 				Destroy();
 			}
 		}
-
+		public void SetProjectileScale(float scale) {
+			this.scale = scale;
+		}
 		public void SetProjectileColor(Color color) {
 			if (view) {
-				view.GetComponent<SpriteRenderer>().color = color;
+				view.GetComponentInChildren<SpriteRenderer>().color = color;
 			}
 		}
 		public override void OnDestroyed()

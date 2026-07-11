@@ -1,5 +1,6 @@
 using UnboundArcana.Core.Combat;
 using UnboundArcana.Core.Events;
+using UnboundArcana.Core.Stats;
 using UnityEngine;
 
 namespace UnboundArcana.Spells.Runtime.Objects
@@ -7,13 +8,12 @@ namespace UnboundArcana.Spells.Runtime.Objects
 	public class ExplosionRuntimeObject : SpellRuntimeObject
 	{
 		private Vector3 position;
-		private float radius;
-		private float damage;
+		private bool exploded;
 		private float lifetime;
 
-		private bool exploded;
 		public Vector3 Position => position;
-		public float Radius => radius;
+
+		public float Radius => Stats.Get(StatId.Size);
 
 		public ExplosionRuntimeObject(
 			Vector3 position,
@@ -22,8 +22,22 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			float duration)
 		{
 			this.position = position;
-			this.radius = radius;
-			this.damage = damage;
+
+			Stats.SetBase(
+				StatId.Size,
+				radius
+			);
+
+			Stats.SetBase(
+				StatId.Damage,
+				damage
+			);
+
+			Stats.SetBase(
+				StatId.Duration,
+				duration
+			);
+
 			lifetime = duration;
 		}
 
@@ -37,6 +51,11 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		public override void Tick(float deltaTime)
 		{
 			lifetime -= deltaTime;
+
+			if (view) {
+				float scale = Stats.Get(StatId.Size);
+				view.transform.localScale = new Vector3(scale, scale, scale);
+			}
 
 			if (lifetime <= 0)
 			{
@@ -55,16 +74,18 @@ namespace UnboundArcana.Spells.Runtime.Objects
 
 			Collider2D[] hits = Physics2D.OverlapCircleAll(
 				position,
-				radius
+				Radius
 			);
+
 			Debug.Log($"Explosion hit {hits.Length} targets");
+
 			foreach (Collider2D hit in hits)
 			{
 				spell.Runtime.GameEvents.Publish(
 					new DamageEvent(
 						spell.Owner,
 						hit.gameObject,
-						damage,
+						Stats.Get(StatId.Damage),
 						DamageType.Fire
 					)
 				);
