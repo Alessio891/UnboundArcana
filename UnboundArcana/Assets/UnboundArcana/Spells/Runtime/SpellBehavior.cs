@@ -10,5 +10,12 @@ namespace UnboundArcana.Spells.Runtime
 		}
 
 		public abstract void Cast(CastContext context);
+
+		public virtual void End()
+		{
+		}
+		public virtual void UpdateCast(CastContext context)
+		{
+		}
 	}
 }

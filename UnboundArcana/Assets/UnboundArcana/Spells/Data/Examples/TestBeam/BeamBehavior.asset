@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0340f7790496b8d489fc57a30183fcc9, type: 3}
+  m_Name: BeamBehavior
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Behaviors.Beam.BeamBehaviorDefinition
+  beamPrefab: {fileID: 4251352121846814612, guid: a1c53dde447c00d4186903df5b5726b7, type: 3}

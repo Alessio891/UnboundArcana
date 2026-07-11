@@ -53,6 +53,7 @@ Validated behaviors:
 
 - ProjectileBehavior
 - AuraBehavior
+- BeamBehavior
 
 
 Validated modules:
@@ -130,7 +131,65 @@ SpellBehavior.Cast(context)
 ↓
 
 SpellRuntimeObjects
+---
 
+# Active Spell Control Flow
+
+Some spells require continuous external control after casting.
+
+Current lifecycle:
+
+Casting source
+
+↓
+
+SpellInstance.Cast(context)
+
+↓
+
+SpellBehavior.Cast(context)
+
+
+While active:
+
+Casting source
+
+↓
+
+SpellInstance.UpdateCast(context)
+
+↓
+
+SpellBehavior.UpdateCast(context)
+
+
+When control ends:
+
+Casting source
+
+↓
+
+SpellInstance.End()
+
+↓
+
+SpellBehavior.End()
+
+
+Examples:
+
+Beam:
+
+- Cast creates the beam
+- UpdateCast changes aim direction
+- End destroys the beam
+
+
+Future examples:
+
+- Guided projectiles
+- Charging spells
+- Maintained effects
 
 ---
 
@@ -210,10 +269,27 @@ Purpose:
 
 Validate persistent non-projectile behavior lifecycle.
 
+## BeamBehavior
+
+Creates:
+
+- BeamRuntimeObject
+
+
+Purpose:
+
+Validate active spell lifecycle control.
+
+
+Validated:
+
+- Runtime object creation
+- Persistent runtime object lifecycle
+- External direction updates
+- Explicit spell ending through caster control
 
 Future:
 
-- Beam
 - Trap
 - Minion
 - Orbit
@@ -602,6 +678,7 @@ Current:
 - CastContext is minimal.
 - RuntimeObjectDestroyedEvent only exposes the destroyed object.
 - Spell cleanup/removal from SpellRuntimeManager is not implemented yet.
+- Module lifecycle interaction with active spell control is not defined yet.
 
 Future:
 
@@ -609,6 +686,7 @@ Future:
 - More advanced cast context
 - Spell lifetime management
 - Runtime object pooling
+- Module interaction with active spell control
 
 
 ---

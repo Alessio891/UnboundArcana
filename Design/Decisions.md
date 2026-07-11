@@ -147,3 +147,59 @@ Positive:
 Negative:
 
 - Additional lifecycle events may be needed later.
+---
+
+# Decision: External Spell Lifecycle Control
+
+Date:
+
+2026-07-11
+
+
+## Context
+
+Some spell types require continuous control after creation.
+
+Examples:
+
+- Beam aiming
+- Guided projectiles
+- Charging spells
+
+
+A spell cannot always be modeled as a single Cast() call followed by independent execution.
+
+
+## Decision
+
+Introduce external lifecycle commands:
+
+- Cast()
+- UpdateCast()
+- End()
+
+
+Casting sources are responsible for providing these commands.
+
+The spell runtime does not know whether the source is:
+
+- Player input
+- Enemy AI
+- Environment logic
+- Network input
+
+
+## Consequences
+
+Positive:
+
+- Channelled spells are supported.
+- Guided behaviors do not require input dependencies.
+- Multiple caster types can control spells through the same interface.
+- RuntimeManager remains focused on simulation only.
+
+
+Negative:
+
+- Module interaction with active spell control requires future design.
+- Spell state management may need refinement as more lifecycle-dependent behaviors are added.

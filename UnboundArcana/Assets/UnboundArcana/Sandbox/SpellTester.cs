@@ -15,6 +15,8 @@ namespace UnboundArcana.Sandbox
 		private SpellInstance spell;
 		private UnboundArcanaControls controls;
 		private Camera mainCamera;
+		private bool isCasting;
+
 		private void Awake()
 		{
 			controls = new UnboundArcanaControls();
@@ -32,16 +34,42 @@ namespace UnboundArcana.Sandbox
 		{
 			controls.Gameplay.Enable();
 			controls.Gameplay.Cast.performed += OnCast;
+			controls.Gameplay.Cast.canceled += OnCastEnd;
 		}
 
 		private void OnDisable()
 		{
 			controls.Gameplay.Cast.performed -= OnCast;
+			controls.Gameplay.Cast.canceled -= OnCastEnd;
 			controls.Gameplay.Disable();
+		}
+
+		private void Update()
+		{
+			if (!isCasting)
+			{
+				return;
+			}
+
+			Vector3 mousePosition = mainCamera.ScreenToWorldPoint(
+				Mouse.current.position.ReadValue()
+			);
+
+			Vector3 direction = mousePosition - transform.position;
+			direction.z = 0f;
+
+			spell.UpdateCast(
+				new CastContext(
+					gameObject,
+					transform.position,
+					direction
+				)
+			);
 		}
 
 		private void OnCast(UnityEngine.InputSystem.InputAction.CallbackContext context)
 		{
+			isCasting = true;
 			Vector3 mousePosition = mainCamera.ScreenToWorldPoint(
 				Mouse.current.position.ReadValue()
 			);
@@ -56,6 +84,11 @@ namespace UnboundArcana.Sandbox
 					direction
 				)
 			);
+		}
+		private void OnCastEnd(InputAction.CallbackContext context)
+		{
+			isCasting = false;
+			spell.End();
 		}
 		private void OnHit(HitEvent hitEvent)
 		{
