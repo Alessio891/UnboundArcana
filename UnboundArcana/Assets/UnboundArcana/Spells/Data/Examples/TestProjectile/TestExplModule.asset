@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0deebdd1f8c8c94380897a22259bbc2, type: 3}
   m_Name: TestExplModule
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.Explosion.ExplosionModuleDefinition
-  radius: 4
+  radius: 2
   damage: 5
   duration: 3
   explosionPrefab: {fileID: 499509672386299438, guid: 9963c669d7cc0074ab70eeaf65f83a80, type: 3}

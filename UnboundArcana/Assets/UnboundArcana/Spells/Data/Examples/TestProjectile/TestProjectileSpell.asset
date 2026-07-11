@@ -16,8 +16,6 @@ MonoBehaviour:
   modules:
   - {fileID: 11400000, guid: c318f855860865143b2306c92f3941c2, type: 2}
   - {fileID: 11400000, guid: 8682e9d1c54ad7943b82f7ac8fef366b, type: 2}
-  - {fileID: 11400000, guid: 67f67c0c04456814fb627dde6446a1db, type: 2}
-  - {fileID: 11400000, guid: 68a01f65e9ae66341b500704f7c94fa0, type: 2}
   stats:
     damage: 1
     speed: 10

@@ -2,45 +2,31 @@
 
 ## Purpose
 
-This document defines the steps required to move Unbound Arcana from the current validated spell architecture into the first playable gameplay prototype.
+This roadmap defines the minimum development path from the current validated spell architecture to a first playable prototype.
 
-The goal is not to create a complete game.
+The objective is not to build a complete game.
 
-The goal is to validate the core gameplay loop:
+The objective is to validate two core questions:
 
-```
-Create Spell
+1. Does the spell composition architecture remain robust when integrated into gameplay?
+2. Is creating and modifying spells an engaging gameplay mechanic?
 
-↓
+Each session represents one focused development milestone.
 
-Enter Combat
+At the end of each session:
 
-↓
-
-Fight Enemies
-
-↓
-
-Gain Rewards
-
-↓
-
-Improve Spell
-
-↓
-
-Continue Fighting
-```
-
-The prototype should prove that the spell composition system creates meaningful gameplay.
+- Review completed work.
+- Validate the intended gameplay or architectural goal.
+- Update this document.
+- Move to the next session only when the previous validation goal is satisfied.
 
 ---
 
 # Current State
 
-## Completed Systems
+## Architecture Status
 
-The spell architecture has been validated.
+The spell composition architecture is validated.
 
 Current flow:
 
@@ -76,139 +62,66 @@ SpellModules
 Gameplay Systems
 ```
 
----
-
-## Spell System
-
 Implemented:
 
-### Behaviors
+## Behaviors
 
-* ProjectileBehavior
-* AuraBehavior
-* BeamBehavior
+- ProjectileBehavior
+- AuraBehavior
+- BeamBehavior
 
-Behaviors are responsible for:
+## Runtime Objects
 
-* existence
-* spawning
-* movement
-* lifetime
-* runtime object creation
+- ProjectileRuntimeObject
+- ExplosionRuntimeObject
+- AuraRuntimeObject
+- BeamRuntimeObject
 
-Behaviors do not know modules exist.
+## Modules
 
----
+- FireModule
+- ExplosionModule
+- ForkModule
+- SplitOnDestroyModule
+- CastSpellOnDestroyModule
+- SizeModifierModule
 
-### Runtime Objects
+## Systems
 
-Implemented:
-
-* ProjectileRuntimeObject
-* ExplosionRuntimeObject
-* AuraRuntimeObject
-* BeamRuntimeObject
-
-Runtime objects own:
-
-* gameplay state
-* lifetime
-* updates
-
-Views only represent runtime objects.
+- SpellEventBus
+- GameEventBus
+- Runtime Stat Aggregation
+- Runtime Modifier System
+- Spell Chaining
+- Runtime Context Injection
 
 ---
 
-### Modules
+# Prototype Philosophy
 
-Implemented:
+The prototype should prioritize validation over content.
 
-* FireModule
-* ExplosionModule
-* ForkModule
-* SplitOnDestroyModule
-* CastSpellOnDestroyModule
-* SizeModifierModule
+Do not add systems because they are expected in the final game.
 
-Modules:
+Add systems only when they answer a gameplay question.
 
-* react through events
-* extend behavior
-* create effects
-* contribute modifiers
+Priority order:
 
-Modules do not communicate directly.
+1. Spell ownership and creation
+2. Combat interaction
+3. Spell variety
+4. Progression choices
+5. Extended playtesting
 
 ---
 
-### Events
-
-Implemented:
-
-Spell events:
-
-* CastEvent
-* HitEvent
-* ProjectileSpawnedEvent
-* ProjectileDestroyedEvent
-* RuntimeObjectSpawnedEvent
-* RuntimeObjectDestroyedEvent
-
-Game events:
-
-* DamageEvent
-
----
-
-## Modifier System
-
-Implemented foundation:
-
-Stats:
-
-* Damage
-* Size
-* Speed
-* Duration
-
-Modifiers support:
-
-* Flat
-* Percent
-* Multiplier
-
-Stats are aggregated at runtime.
-
-Ownership:
-
-```
-Behavior
-
-provides existence-related defaults
-
-
-Module
-
-provides gameplay contributions
-```
-
-The spell composition creates the final effective stats.
-
----
-
-# Remaining Prototype Requirements
-
-The next phase is gameplay validation.
-
----
-
-# Phase 1 - Spell Loadout Layer
+# Session 1 - Player Spell Configuration
 
 ## Goal
 
-Create the bridge between authored spell data and player-owned spell builds.
+Create the missing bridge between authored spell data and player-owned spell builds.
 
-Currently:
+Current:
 
 ```
 SpellDefinition
@@ -218,14 +131,18 @@ SpellDefinition
 SpellInstance
 ```
 
-The game requires:
+Target:
 
 ```
 SpellDefinition
 
 ↓
 
-Player Spell Configuration
+PlayerSpellConfiguration
+
+↓
+
+SpellFactory
 
 ↓
 
@@ -234,9 +151,11 @@ SpellInstance
 
 ---
 
-## New Concept
+## New Concepts
 
-A player spell configuration represents the player's current build.
+### PlayerSpellConfiguration
+
+Represents a player's current spell build.
 
 Example:
 
@@ -252,74 +171,80 @@ Fire Module Level 3
 Explosion Module Level 1
 ```
 
-This is not a runtime object.
+It contains:
 
-It is a configuration used to create runtime spells.
+- Selected behavior
+- Selected modules
+- Module progression values
+- Future upgrade information
 
----
+It does not contain:
 
-## Responsibilities
-
-The loadout system should store:
-
-* selected behavior
-* selected modules
-* module progression values
-* future upgrade information
-
-It should not contain:
-
-* runtime objects
-* views
-* active spell state
+- Runtime objects
+- Views
+- Active spell state
+- Gameplay state
 
 ---
 
-# Phase 2 - Player Combat Prototype
+## Validation Question
+
+Can the player own and modify spell compositions independently from runtime spells?
+
+---
+
+## Completion Criteria
+
+The system can:
+
+- Create a player-owned spell build.
+- Modify the build.
+- Generate a SpellInstance through SpellFactory.
+
+---
+
+# Session 2 - Combat Foundation
 
 ## Goal
 
-Validate that spells work in actual combat.
-
-Required systems:
-
-## Player
-
-Minimum:
-
-* movement
-* aiming
-* casting
-* health
-* death
-
-The player should only provide:
-
-```
-CastContext
-
-↓
-
-SpellInstance.Cast()
-```
-
-The spell system should remain unaware of the player implementation.
+Connect the spell system to a playable combat scenario.
 
 ---
 
-## Enemy
+## Required Systems
 
-Minimum:
+### Player
 
-* movement toward player
-* health
-* damage reception
-* death
+- Movement
+- Aiming
+- Casting
 
-Required pipeline:
+### Enemy
+
+- Movement
+- Health
+- Damage reception
+- Death
+
+### World
+
+- Arena
+- Basic enemy spawning
+
+---
+
+## Required Gameplay Flow
 
 ```
-Spell
+Player
+
+↓
+
+Cast Spell
+
+↓
+
+Spell Runtime Objects
 
 ↓
 
@@ -327,15 +252,7 @@ Hit Event
 
 ↓
 
-Module
-
-↓
-
 Damage Event
-
-↓
-
-Damage System
 
 ↓
 
@@ -348,61 +265,232 @@ Death
 
 ---
 
-# Phase 3 - Basic Game Arena
+## Scope Restrictions
 
-## Goal
+Do not add:
 
-Create a repeatable combat scenario.
-
-Required:
-
-* player spawn
-* enemy spawning
-* combat area
-* restart/reset
-
-No need for:
-
-* tower generation
-* procedural rooms
-* progression systems
-
-A single arena is enough.
+- Complex AI
+- Status effects
+- Resistances
+- Procedural generation
+- Bosses
 
 ---
 
-# Phase 4 - Reward System
+## Validation Question
 
-## Goal
-
-Validate the core spell-building fantasy.
-
-After defeating enemies, the player receives choices.
-
-Examples:
-
-```
-Add Fire Module
-
-Add Explosion Module
-
-Increase Size
-```
-
-Rewards modify the player spell configuration.
-
-They should not directly modify active runtime spells.
+Can the existing spell architecture operate inside a real gameplay loop?
 
 ---
 
-Flow:
+## Completion Criteria
+
+A player can:
+
+- Move.
+- Cast a spell.
+- Damage an enemy.
+- Defeat an enemy.
+
+---
+
+# Session 3 - Gameplay Variety
+
+## Goal
+
+Introduce the minimum amount of content required to evaluate spell creativity.
+
+The purpose is not content creation.
+
+The purpose is creating meaningful choices.
+
+---
+
+# Minimum Behaviors
+
+## Projectile
+
+Tests:
+
+- Aiming
+- Collision
+- Hit effects
+
+---
+
+## Aura
+
+Tests:
+
+- Persistent effects
+- Area control
+
+---
+
+## Beam
+
+Tests:
+
+- Continuous casting
+- External control
+
+---
+
+# Minimum Modules
+
+## Effect Modules
+
+### Fire
+
+Purpose:
+
+- Basic damage identity
+
+### Ice
+
+Purpose:
+
+- Slow and control
+
+### Lightning
+
+Purpose:
+
+- Fast impact and chaining potential
+
+### Poison
+
+Purpose:
+
+- Damage over time identity
+
+---
+
+## Behavior Modules
+
+### Split
+
+Creates multiple projectiles.
+
+### Pierce
+
+Allows attacks to continue through targets.
+
+### Bounce
+
+Creates environmental interaction.
+
+### Homing
+
+Improves reliability against mobile targets.
+
+---
+
+## Trigger Modules
+
+### Explosion
+
+Creates secondary effects.
+
+### Chain Spell
+
+Creates additional spell compositions.
+
+### Spawn Aura
+
+Creates persistent effects from interactions.
+
+---
+
+# Minimum Enemy Types
+
+Enemies should create different gameplay problems.
+
+---
+
+## Bruiser
+
+Characteristics:
+
+- High health
+- Slow movement
+- Direct threat
+
+Tests:
+
+- Sustained damage
+
+---
+
+## Swarm
+
+Characteristics:
+
+- Many weak enemies
+
+Tests:
+
+- Area damage
+- Crowd control
+
+---
+
+## Runner
+
+Characteristics:
+
+- Fast movement
+- Difficult to hit
+
+Tests:
+
+- Accuracy
+- Tracking
+
+---
+
+## Turret
+
+Characteristics:
+
+- Stationary
+- Creates positioning pressure
+
+Tests:
+
+- Movement decisions
+- Area control
+
+---
+
+## Validation Question
+
+Do different spell compositions create different combat strategies?
+
+---
+
+## Completion Criteria
+
+Players can recognize situations where changing spell composition provides advantages.
+
+---
+
+# Session 4 - Progression Loop
+
+## Goal
+
+Validate whether improving spells is motivating.
+
+---
+
+## Required Systems
+
+Reward selection.
+
+Rewards modify:
 
 ```
-Reward
-
-↓
-
-Player Spell Configuration
+PlayerSpellConfiguration
 
 ↓
 
@@ -415,16 +503,126 @@ New SpellInstance
 
 ---
 
-# Phase 5 - First Playable Loop
+## Reward Examples
 
-The minimum successful prototype is:
+Add module:
 
 ```
-Start Run
+Fire Module
+```
+
+Upgrade module:
+
+```
+Fire Level 2 → Fire Level 3
+```
+
+Modify stats:
+
+```
+Increase Size
+```
+
+---
+
+## Important Rules
+
+Rewards do not directly modify active runtime objects.
+
+Incorrect:
+
+```
+Reward
 
 ↓
 
-Choose Spell
+Current Projectile
+
+↓
+
+Increase Damage
+```
+
+Correct:
+
+```
+Reward
+
+↓
+
+Player Spell Configuration
+
+↓
+
+Future SpellInstance
+```
+
+---
+
+## Validation Question
+
+Does improving a spell encourage experimentation and build decisions?
+
+---
+
+## Completion Criteria
+
+A player can:
+
+- Defeat enemies.
+- Receive choices.
+- Modify their spell.
+- Continue fighting with the new build.
+
+---
+
+# Session 5 - First Playtest
+
+## Goal
+
+Create a stable repeatable prototype loop.
+
+---
+
+## Add Only Necessary Improvements
+
+Possible additions:
+
+- Multiple enemy waves.
+- Basic balancing.
+- Better visual feedback.
+- Placeholder audio.
+- Minimal UI.
+- Quality-of-life improvements.
+
+---
+
+## Do Not Add
+
+- Inventory
+- Equipment
+- Tower generation
+- Meta progression
+- Large content expansions
+
+---
+
+## Validation Question
+
+Is the core loop enjoyable over repeated encounters?
+
+---
+
+## Completion Criteria
+
+The prototype supports:
+
+```
+Create Spell
+
+↓
+
+Enter Combat
 
 ↓
 
@@ -432,146 +630,92 @@ Fight Enemies
 
 ↓
 
-Defeat Enemies
-
-↓
-
 Receive Upgrade
 
 ↓
 
-Modify Spell
+Improve Spell
 
 ↓
 
-Fight Stronger Enemies
-
-```
-
-At this point the game has validated:
-
-* spell composition
-* combat interaction
-* progression choices
-* player expression through builds
-
----
-
-# Systems Intentionally Deferred
-
-The following should not be implemented before the first playable state.
-
-## Tower System
-
-Deferred:
-
-* rooms
-* floors
-* procedural generation
-* bosses
-
-## Inventory
-
-Deferred:
-
-* equipment
-* item management
-* shops
-
-## Meta Progression
-
-Deferred:
-
-* unlocks
-* hub
-* permanent upgrades
-
-## Advanced Combat
-
-Deferred:
-
-* status effects
-* resistances
-* complex AI
-* elite enemies
-
----
-
-# Important Architectural Constraints
-
-The following rules remain unchanged.
-
-## Spells are compositions
-
-Never introduce:
-
-```
-FireballSpell
-
-IceSpell
-
-ExplosionSpell
-```
-
-Spells are always:
-
-```
-Behavior
-
-+
-
-Modules
-
-+
-
-Stats
-
-+
-
-Events
+Continue Fighting
 ```
 
 ---
 
-## Behaviors own existence
+# Session 6 - Architecture and Gameplay Review
 
-Behaviors control:
+## Goal
 
-* spawning
-* lifetime
-* movement
-
-They do not know effects exist.
+Evaluate the prototype before expanding the game.
 
 ---
 
-## Modules extend through events
+## Review Areas
 
-Modules react to events.
+### Spell Architecture
 
-They do not directly modify other modules or behaviors.
+Questions:
 
----
-
-## Runtime state stays runtime
-
-ScriptableObjects contain configuration only.
-
-Runtime objects contain gameplay state.
+- Are behaviors flexible enough?
+- Are modules independent enough?
+- Are new combinations easy to create?
+- Are abstractions justified?
 
 ---
 
-# Recommended Development Order
+### Gameplay
 
-1. Implement Player Spell Configuration.
-2. Connect player casting to SpellFactory.
-3. Implement player controller.
-4. Implement enemy health and death.
-5. Validate damage pipeline.
-6. Add arena spawning.
-7. Add reward choices.
-8. Playtest the first complete loop.
+Questions:
 
-The priority is not adding more spell content.
+- Are spell choices meaningful?
+- Are enemies creating different decisions?
+- Are some modules always superior?
+- Are some combinations boring?
 
-The priority is proving that the spell composition system creates an enjoyable gameplay loop.
+---
+
+### Future Direction
+
+Decide:
+
+- What systems should be expanded.
+- What systems should be redesigned.
+- What content should be added.
+- What complexity should be avoided.
+
+---
+
+# Final Prototype Success Criteria
+
+The prototype is successful when:
+
+```
+Create Spell
+
+↓
+
+Enter Combat
+
+↓
+
+Encounter Different Challenges
+
+↓
+
+Adapt Spell Build
+
+↓
+
+Feel Ownership Over The Creation
+
+↓
+
+Continue Playing
+```
+
+The goal is not proving that every system works.
+
+The goal is proving that the central fantasy of Unbound Arcana works:
+
+"Create a spell nobody else could have imagined."
