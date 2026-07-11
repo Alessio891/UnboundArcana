@@ -30,7 +30,6 @@ The spell composition architecture is validated.
 
 Current flow:
 
-
 SpellDefinition
 
 ↓
@@ -100,6 +99,10 @@ Implemented:
 - Runtime Context Injection
 - SpellConfiguration
 - Runtime Spell Lifecycle Cleanup
+- Damage Pipeline
+- Enemy Damage Reception
+- Enemy Death
+
 
 ---
 
@@ -119,100 +122,15 @@ Priority order:
 4. Progression choices
 5. Extended playtesting
 
+
 ---
 
 # Session 1 - Player Spell Configuration
-
-## Goal
-
-Create the missing bridge between authored spell data and player-owned spell builds.
 
 ## Status
 
 Completed.
 
----
-
-## Implemented
-
-The system now separates:
-
-Player-owned spell builds
-
-from
-
-Runtime spell execution.
-
-Flow:
-
-
-SpellDefinition
-
-↓
-
-SpellConfiguration
-
-↓
-
-SpellFactory
-
-↓
-
-SpellInstance
-
-
-`SpellConfiguration` represents the player's current spell composition.
-
-It contains:
-
-- Selected behavior
-- Selected modules
-
-It does not contain:
-
-- Runtime objects
-- Active gameplay state
-- Views
-
----
-
-## Runtime Spell Lifecycle
-
-SpellInstances represent individual spell executions.
-
-They are created when casting occurs.
-
-Flow:
-
-
-SpellConfiguration
-
-↓
-
-SpellFactory
-
-↓
-
-SpellInstance
-
-↓
-
-Runtime Objects
-
-↓
-
-Execution
-
-↓
-
-Completion
-
-↓
-
-SpellRuntimeManager Removal
-
-
----
 
 ## Validation Question
 
@@ -222,17 +140,6 @@ Answer:
 
 Yes.
 
----
-
-## Completion Criteria
-
-Completed:
-
-- Create a player-owned spell build.
-- Modify the build.
-- Generate a SpellInstance through SpellFactory.
-- Separate player spell ownership from runtime execution.
-- Ensure runtime spell instances are cleaned up after completion.
 
 ---
 
@@ -240,81 +147,49 @@ Completed:
 
 ## Status
 
-Next session.
+Completed.
 
----
 
 ## Goal
 
 Connect the spell system to a playable combat scenario.
 
+
 ---
 
-## Required Systems
+## Implemented
 
 ### Player
+
+Validated:
 
 - Movement
 - Aiming
 - Casting
 
 
-### Enemy
+### Combat
 
-- Movement
+Implemented:
+
+- DamageEvent
+- DamageSystem
+- DamageInfo
+- IDamageable
+
+
+### Enemy Prototype
+
+Implemented:
+
+TargetDummy
+
+Supports:
+
 - Health
 - Damage reception
 - Death
 
-
-### World
-
-- Arena
-- Basic enemy spawning
-
----
-
-## Required Gameplay Flow
-
-
-Player
-
-↓
-
-Cast Spell
-
-↓
-
-Spell Runtime Objects
-
-↓
-
-Hit Event
-
-↓
-
-Damage Event
-
-↓
-
-Enemy Health
-
-↓
-
-Death
-
-
----
-
-## Scope Restrictions
-
-Do not add:
-
-- Complex AI
-- Status effects
-- Resistances
-- Procedural generation
-- Bosses
 
 ---
 
@@ -322,20 +197,36 @@ Do not add:
 
 Can the existing spell architecture operate inside a real gameplay loop?
 
+Answer:
+
+Yes.
+
+
 ---
 
 ## Completion Criteria
 
-A player can:
+Completed:
 
-- Move.
-- Cast a spell.
-- Damage an enemy.
-- Defeat an enemy.
+- Player can move.
+- Player can cast a spell.
+- Spell runtime objects execute.
+- Spells generate hit events.
+- Modules generate damage events.
+- Enemies receive damage.
+- Enemies can be defeated.
+
 
 ---
 
 # Session 3 - Gameplay Variety
+
+## Status
+
+Next session.
+
+
+---
 
 ## Goal
 
@@ -345,6 +236,7 @@ The purpose is not content creation.
 
 The purpose is creating meaningful choices.
 
+
 ---
 
 # Session 4 - Progression Loop
@@ -353,6 +245,7 @@ The purpose is creating meaningful choices.
 
 Validate whether improving spells is motivating.
 
+
 ---
 
 # Session 5 - First Playtest
@@ -360,6 +253,7 @@ Validate whether improving spells is motivating.
 ## Goal
 
 Create a stable repeatable prototype loop.
+
 
 ---
 

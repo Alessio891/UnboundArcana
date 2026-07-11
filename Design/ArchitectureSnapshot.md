@@ -214,6 +214,7 @@ SpellRuntimeManager Removes Instance
 
 SpellRuntimeManager owns active runtime spell instances.
 
+
 ---
 
 # Runtime Stats
@@ -450,6 +451,76 @@ Views:
 
 ---
 
+# Combat Integration
+
+Validated:
+
+Player
+
+↓
+
+Cast Spell
+
+↓
+
+Spell Runtime Objects
+
+↓
+
+Hit Event
+
+↓
+
+Spell Modules
+
+↓
+
+Damage Event
+
+↓
+
+Damage System
+
+↓
+
+Damage Receiver
+
+↓
+
+Enemy Death
+
+
+Combat systems remain separated from spell execution.
+
+The spell system creates gameplay events.
+
+Gameplay systems consume those events.
+
+
+---
+
+# Prototype Entity Structure
+
+Current prototype uses minimal components.
+
+Implemented:
+
+TargetDummy
+
+Responsibilities:
+
+- Receive damage
+- Track health
+- Handle death
+
+
+The project does not currently contain a generic entity framework.
+
+This remains intentional.
+
+
+---
+
 # Proven Design Principles
 
 ✓ No individual spell classes
@@ -478,6 +549,8 @@ Views:
 
 ✓ Runtime spell instances are disposable
 
+✓ Combat systems consume game events instead of depending on spells
+
 
 ---
 
@@ -486,18 +559,19 @@ Views:
 Current:
 
 - Spell loadout system does not exist.
-- Player character entity system does not exist.
 - Module progression state is not defined.
 - Modifier stacking order is insertion based.
+- Enemy system is only a prototype target implementation.
+- No enemy spawning system exists.
+- No arena/game loop exists.
 
 
 Future:
 
-- Combat prototype
-- Player entity
-- Enemy entities
-- Upgrade system
-- Reward system
+- Spell variety validation
+- Enemy spawning
+- Rewards
+- Progression
 - Advanced modifier inheritance rules
 
 
@@ -505,15 +579,10 @@ Future:
 
 # Next Milestone
 
-First playable prototype.
+Session 3 - Gameplay Variety
 
 Objectives:
 
-- Player controller
-- Enemy combat
-- Damage pipeline
-- Spell loadouts
-- Rewards
-- Basic progression
-
-Avoid adding content before validating the complete gameplay loop.
+- Introduce enough spell combinations to evaluate creativity.
+- Validate meaningful spell construction choices.
+- Avoid content expansion without gameplay purpose.

@@ -8,13 +8,11 @@ Last Updated:
 
 # Current Milestone
 
-Session 1 - Player Spell Configuration
+Session 2 - Combat Foundation
 
 Completed.
 
 Architecture validation complete.
-
-Preparing transition toward combat foundation.
 
 ---
 
@@ -115,11 +113,9 @@ Remove from SpellRuntimeManager
 
 ---
 
-# Runtime Stats System
+## Runtime Stats System
 
 Implemented.
-
-The previous SpellStats placeholder has been removed.
 
 Current stats:
 
@@ -141,6 +137,112 @@ SpellInstance
 ↓
 
 SpellStatCollection
+
+
+---
+
+# Session 2 - Combat Foundation
+
+Completed.
+
+Validation question:
+
+Can the existing spell architecture operate inside a real gameplay loop?
+
+Answer:
+
+Yes.
+
+
+---
+
+# Implemented Combat Flow
+
+Validated:
+
+Player
+
+↓
+
+Cast Spell
+
+↓
+
+Spell Runtime Objects
+
+↓
+
+Hit Event
+
+↓
+
+Spell Modules
+
+↓
+
+Damage Event
+
+↓
+
+Damage System
+
+↓
+
+Damage Receiver
+
+↓
+
+Enemy Death
+
+
+---
+
+# Combat Systems Implemented
+
+## Damage Pipeline
+
+Implemented:
+
+- DamageEvent
+- DamageSystem
+- IDamageable
+- DamageInfo
+
+
+Flow:
+
+DamageEvent
+
+↓
+
+DamageSystem
+
+↓
+
+IDamageable.TakeDamage()
+
+
+---
+
+## Enemy Prototype
+
+Implemented:
+
+TargetDummy
+
+
+Responsibilities:
+
+- Receive damage
+- Track health
+- Handle death
+
+
+The prototype intentionally avoids:
+
+- Enemy hierarchy
+- AI systems
+- State machines
 
 
 ---
@@ -194,7 +296,7 @@ GameEventBus:
 
 # Architecture Status
 
-The spell composition architecture is considered validated.
+The spell composition architecture is validated.
 
 Session 1 validation question:
 
@@ -205,65 +307,37 @@ Answer:
 Yes.
 
 
-The next challenge is not additional spell architecture.
+Session 2 validation question:
 
-The next challenge is integrating the system into a complete gameplay loop.
+Can the spell system operate inside a real gameplay loop?
+
+Answer:
+
+Yes.
+
 
 ---
 
 # Next Objectives
 
-## Session 2 - Combat Foundation
+## Session 3 - Gameplay Variety
 
 Required:
 
-- Player entity
-- Enemy entity
-- Movement
-- Health
-- Damage pipeline
-- Basic arena
-- Enemy spawning
-
-
-Required gameplay flow:
-
-Player
-
-↓
-
-Cast Spell
-
-↓
-
-Spell Runtime Objects
-
-↓
-
-Hit Event
-
-↓
-
-Damage Event
-
-↓
-
-Enemy Health
-
-↓
-
-Death
-
+- Introduce meaningful spell combinations.
+- Validate that spell composition creates interesting gameplay choices.
+- Avoid large content expansion.
 
 ---
 
 # Deferred Systems
 
-Not required for first playable state:
+Not required yet:
 
 - Tower generation
 - Inventory
 - Equipment
 - Meta progression
 - Complex AI
-- Advanced status systems
+- Status effects
+- Procedural generation

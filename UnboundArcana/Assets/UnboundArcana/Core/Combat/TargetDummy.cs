@@ -7,8 +7,15 @@ namespace UnboundArcana.Sandbox
 	{
 		[SerializeField] private float health = 100f;
 
+		private bool isDead;
+
 		public void TakeDamage(DamageInfo damage)
 		{
+			if (isDead)
+			{
+				return;
+			}
+
 			health -= damage.Amount;
 
 			Debug.Log(
@@ -17,8 +24,17 @@ namespace UnboundArcana.Sandbox
 
 			if (health <= 0)
 			{
-				Debug.Log($"{name} died");
+				Die();
 			}
+		}
+
+		private void Die()
+		{
+			isDead = true;
+
+			Debug.Log($"{name} died");
+
+			Destroy(gameObject);
 		}
 	}
 }
