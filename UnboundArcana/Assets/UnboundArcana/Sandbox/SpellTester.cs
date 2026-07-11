@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnboundArcana.Spells.Data;
 using UnboundArcana.Spells.Runtime;
-using UnboundArcana.Core.Runtime;
 using UnboundArcana.Core.Events;
 using UnityEngine.InputSystem;
+using UnboundArcana.Core.Runtime;
+using UnboundArcana.Spells.Modules;
 
 namespace UnboundArcana.Sandbox
 {
@@ -11,8 +12,11 @@ namespace UnboundArcana.Sandbox
 	{
 		public SpellRuntimeManager RuntimeManager;
 		public SpellDefinition spellDefinition;
+		public SpellModuleDefinition testModule;
 
-		private SpellInstance spell;
+		private SpellConfiguration spellConfiguration;
+		private SpellInstance activeSpell;
+
 		private UnboundArcanaControls controls;
 		private Camera mainCamera;
 		private bool isCasting;
@@ -28,14 +32,29 @@ namespace UnboundArcana.Sandbox
 
 		private void Start()
 		{
-			spell = SpellFactory.Create(spellDefinition, new SpellRuntimeContext(RuntimeManager,RuntimeManager.GameEvents), gameObject);
-			if (RuntimeManager) RuntimeManager.Register(spell);
-			spell.Events.Subscribe<HitEvent>(OnHit);
+			spellConfiguration = new SpellConfiguration(spellDefinition);
+
+			if (testModule != null)
+			{
+				spellConfiguration.AddModule(testModule);
+			}
+		}
+
+		private SpellInstance CreateSpellInstance()
+		{
+			return SpellFactory.Create(
+				spellConfiguration,
+				new SpellRuntimeContext(
+					RuntimeManager,
+					RuntimeManager.GameEvents),
+				gameObject
+			);
 		}
 
 		private void OnEnable()
 		{
 			controls.Gameplay.Enable();
+
 			controls.Gameplay.Cast.performed += OnCast;
 			controls.Gameplay.Cast.canceled += OnCastEnd;
 
@@ -54,53 +73,72 @@ namespace UnboundArcana.Sandbox
 		{
 			controls.Gameplay.Cast.performed -= OnCast;
 			controls.Gameplay.Cast.canceled -= OnCastEnd;
+
 			controls.Gameplay.Disable();
 		}
 
 		private void Update()
 		{
-			transform.position += new Vector3(moveInput.x, moveInput.y, 0) * MoveSpeed * Time.deltaTime;
-			if (moveInput.x != 0)
-				GetComponent<SpriteRenderer>().flipX = moveInput.x < 0;
+			transform.position +=
+				new Vector3(moveInput.x, moveInput.y, 0) *
+				MoveSpeed *
+				Time.deltaTime;
 
-			if (!isCasting)
+			if (moveInput.x != 0)
+			{
+				GetComponentInChildren<SpriteRenderer>().flipX =
+					moveInput.x < 0;
+			}
+
+			if (!isCasting || activeSpell == null)
 			{
 				return;
 			}
 
-			Vector3 mousePosition = mainCamera.ScreenToWorldPoint(
-				Mouse.current.position.ReadValue()
-			);
+			Vector3 mousePosition =
+				mainCamera.ScreenToWorldPoint(
+					Mouse.current.position.ReadValue()
+				);
 
-			Vector3 direction = mousePosition - transform.position;
+			Vector3 direction =
+				mousePosition - transform.position;
+
 			direction.z = 0f;
 
-			spell.UpdateCast(
+			activeSpell.UpdateCast(
 				new CastContext(
 					gameObject,
 					transform.position,
 					direction
 				)
 			);
-
-
 		}
 
-		private void FixedUpdate()
-		{
-		}
-
-		private void OnCast(UnityEngine.InputSystem.InputAction.CallbackContext context)
+		private void OnCast(
+			InputAction.CallbackContext context)
 		{
 			isCasting = true;
-			Vector3 mousePosition = mainCamera.ScreenToWorldPoint(
-				Mouse.current.position.ReadValue()
-			);
 
-			Vector3 direction = mousePosition - transform.position;
+			Vector3 mousePosition =
+				mainCamera.ScreenToWorldPoint(
+					Mouse.current.position.ReadValue()
+				);
+
+			Vector3 direction =
+				mousePosition - transform.position;
+
 			direction.z = 0f;
-			
-			spell.Cast(
+
+			activeSpell = CreateSpellInstance();
+
+			if (RuntimeManager)
+			{
+				RuntimeManager.Register(activeSpell);
+			}
+
+			activeSpell.Events.Subscribe<HitEvent>(OnHit);
+
+			activeSpell.Cast(
 				new CastContext(
 					gameObject,
 					transform.position,
@@ -108,11 +146,19 @@ namespace UnboundArcana.Sandbox
 				)
 			);
 		}
-		private void OnCastEnd(InputAction.CallbackContext context)
+
+		private void OnCastEnd(
+			InputAction.CallbackContext context)
 		{
 			isCasting = false;
-			spell.End();
+
+			if (activeSpell != null)
+			{
+				activeSpell.End();
+				activeSpell = null;
+			}
 		}
+
 		private void OnHit(HitEvent hitEvent)
 		{
 			Debug.Log($"Projectile hit: {hitEvent.Target.name}");

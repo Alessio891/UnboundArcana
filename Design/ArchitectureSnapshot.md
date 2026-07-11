@@ -2,7 +2,7 @@
 
 Last Updated:
 
-2026-07-11
+2026-07-12
 
 ---
 
@@ -11,6 +11,10 @@ Last Updated:
 Implemented:
 
 SpellDefinition
+
+↓
+
+SpellConfiguration
 
 ↓
 
@@ -62,6 +66,13 @@ SpellRuntimeManager
 └── SpellRuntimeContext
 
 
+SpellConfiguration
+
+├── SpellBehaviorDefinition
+
+└── SpellModuleDefinition[]
+
+
 SpellInstance
 
 ├── SpellBehavior
@@ -81,11 +92,58 @@ SpellInstance
 
 ---
 
+# Spell Ownership Model
+
+The player does not own active SpellInstances.
+
+The player owns spell configurations.
+
+Flow:
+
+Player Spell Configuration
+
+↓
+
+SpellFactory
+
+↓
+
+SpellInstance
+
+↓
+
+Runtime Objects
+
+
+SpellConfigurations represent editable spell builds.
+
+SpellInstances represent temporary gameplay execution.
+
+
+---
+
 # Spell Casting Flow
 
 Current:
 
 Casting Source
+
+↓
+
+SpellConfiguration
+
+Contains:
+
+- Selected behavior
+- Selected modules
+
+↓
+
+SpellFactory.Create()
+
+↓
+
+SpellInstance
 
 ↓
 
@@ -121,13 +179,50 @@ SpellRuntimeObjects
 
 ---
 
+# Runtime Spell Lifecycle
+
+A SpellInstance exists only during execution.
+
+Lifecycle:
+
+Create
+
+↓
+
+Initialize
+
+↓
+
+Cast
+
+↓
+
+Runtime Objects Active
+
+↓
+
+Runtime Objects Complete
+
+↓
+
+Spell Finished
+
+↓
+
+SpellRuntimeManager Removes Instance
+
+
+SpellRuntimeManager owns active runtime spell instances.
+
+---
+
 # Runtime Stats
 
 The previous SpellStats class was removed.
 
 Stats are now represented by:
 
-StatCollection
+SpellStatCollection
 
 The collection is owned by the SpellInstance runtime.
 
@@ -139,7 +234,7 @@ SpellInstance
 
 ↓
 
-StatCollection
+SpellStatCollection
 
 ↑
 
@@ -162,6 +257,7 @@ Projectile:
 
 - Speed
 - Duration
+
 
 Aura:
 
@@ -326,7 +422,7 @@ Modifiers store:
 - Source
 
 
-The system aggregates modifiers instead of components directly modifying runtime values.
+The system aggregates modifiers instead of components directly modifying runtime object fields.
 
 
 ---
@@ -378,6 +474,10 @@ Views:
 
 ✓ Spells can compose other spells
 
+✓ Player spell configuration is separated from runtime execution
+
+✓ Runtime spell instances are disposable
+
 
 ---
 
@@ -386,18 +486,18 @@ Views:
 Current:
 
 - Spell loadout system does not exist.
-- Player-owned spell composition does not exist.
+- Player character entity system does not exist.
 - Module progression state is not defined.
 - Modifier stacking order is insertion based.
-- Spell cleanup/removal from SpellRuntimeManager is not implemented.
 
 
 Future:
 
-- Player Spell Configuration
+- Combat prototype
+- Player entity
+- Enemy entities
 - Upgrade system
 - Reward system
-- Combat prototype
 - Advanced modifier inheritance rules
 
 
@@ -409,9 +509,9 @@ First playable prototype.
 
 Objectives:
 
-- Player casting
+- Player controller
 - Enemy combat
-- Damage loop
+- Damage pipeline
 - Spell loadouts
 - Rewards
 - Basic progression

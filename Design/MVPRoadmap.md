@@ -30,8 +30,12 @@ The spell composition architecture is validated.
 
 Current flow:
 
-```
+
 SpellDefinition
+
+↓
+
+SpellConfiguration
 
 ↓
 
@@ -60,7 +64,7 @@ SpellModules
 ↓
 
 Gameplay Systems
-```
+
 
 Implemented:
 
@@ -94,6 +98,8 @@ Implemented:
 - Runtime Modifier System
 - Spell Chaining
 - Runtime Context Injection
+- SpellConfiguration
+- Runtime Spell Lifecycle Cleanup
 
 ---
 
@@ -121,24 +127,30 @@ Priority order:
 
 Create the missing bridge between authored spell data and player-owned spell builds.
 
-Current:
+## Status
 
-```
+Completed.
+
+---
+
+## Implemented
+
+The system now separates:
+
+Player-owned spell builds
+
+from
+
+Runtime spell execution.
+
+Flow:
+
+
 SpellDefinition
 
 ↓
 
-SpellInstance
-```
-
-Target:
-
-```
-SpellDefinition
-
-↓
-
-PlayerSpellConfiguration
+SpellConfiguration
 
 ↓
 
@@ -147,43 +159,58 @@ SpellFactory
 ↓
 
 SpellInstance
-```
 
----
 
-## New Concepts
-
-### PlayerSpellConfiguration
-
-Represents a player's current spell build.
-
-Example:
-
-```
-Projectile
-
-+
-
-Fire Module Level 3
-
-+
-
-Explosion Module Level 1
-```
+`SpellConfiguration` represents the player's current spell composition.
 
 It contains:
 
 - Selected behavior
 - Selected modules
-- Module progression values
-- Future upgrade information
 
 It does not contain:
 
 - Runtime objects
+- Active gameplay state
 - Views
-- Active spell state
-- Gameplay state
+
+---
+
+## Runtime Spell Lifecycle
+
+SpellInstances represent individual spell executions.
+
+They are created when casting occurs.
+
+Flow:
+
+
+SpellConfiguration
+
+↓
+
+SpellFactory
+
+↓
+
+SpellInstance
+
+↓
+
+Runtime Objects
+
+↓
+
+Execution
+
+↓
+
+Completion
+
+↓
+
+SpellRuntimeManager Removal
+
 
 ---
 
@@ -191,19 +218,31 @@ It does not contain:
 
 Can the player own and modify spell compositions independently from runtime spells?
 
+Answer:
+
+Yes.
+
 ---
 
 ## Completion Criteria
 
-The system can:
+Completed:
 
 - Create a player-owned spell build.
 - Modify the build.
 - Generate a SpellInstance through SpellFactory.
+- Separate player spell ownership from runtime execution.
+- Ensure runtime spell instances are cleaned up after completion.
 
 ---
 
 # Session 2 - Combat Foundation
+
+## Status
+
+Next session.
+
+---
 
 ## Goal
 
@@ -219,12 +258,14 @@ Connect the spell system to a playable combat scenario.
 - Aiming
 - Casting
 
+
 ### Enemy
 
 - Movement
 - Health
 - Damage reception
 - Death
+
 
 ### World
 
@@ -235,7 +276,7 @@ Connect the spell system to a playable combat scenario.
 
 ## Required Gameplay Flow
 
-```
+
 Player
 
 ↓
@@ -261,7 +302,7 @@ Enemy Health
 ↓
 
 Death
-```
+
 
 ---
 
@@ -306,273 +347,11 @@ The purpose is creating meaningful choices.
 
 ---
 
-# Minimum Behaviors
-
-## Projectile
-
-Tests:
-
-- Aiming
-- Collision
-- Hit effects
-
----
-
-## Aura
-
-Tests:
-
-- Persistent effects
-- Area control
-
----
-
-## Beam
-
-Tests:
-
-- Continuous casting
-- External control
-
----
-
-# Minimum Modules
-
-## Effect Modules
-
-### Fire
-
-Purpose:
-
-- Basic damage identity
-
-### Ice
-
-Purpose:
-
-- Slow and control
-
-### Lightning
-
-Purpose:
-
-- Fast impact and chaining potential
-
-### Poison
-
-Purpose:
-
-- Damage over time identity
-
----
-
-## Behavior Modules
-
-### Split
-
-Creates multiple projectiles.
-
-### Pierce
-
-Allows attacks to continue through targets.
-
-### Bounce
-
-Creates environmental interaction.
-
-### Homing
-
-Improves reliability against mobile targets.
-
----
-
-## Trigger Modules
-
-### Explosion
-
-Creates secondary effects.
-
-### Chain Spell
-
-Creates additional spell compositions.
-
-### Spawn Aura
-
-Creates persistent effects from interactions.
-
----
-
-# Minimum Enemy Types
-
-Enemies should create different gameplay problems.
-
----
-
-## Bruiser
-
-Characteristics:
-
-- High health
-- Slow movement
-- Direct threat
-
-Tests:
-
-- Sustained damage
-
----
-
-## Swarm
-
-Characteristics:
-
-- Many weak enemies
-
-Tests:
-
-- Area damage
-- Crowd control
-
----
-
-## Runner
-
-Characteristics:
-
-- Fast movement
-- Difficult to hit
-
-Tests:
-
-- Accuracy
-- Tracking
-
----
-
-## Turret
-
-Characteristics:
-
-- Stationary
-- Creates positioning pressure
-
-Tests:
-
-- Movement decisions
-- Area control
-
----
-
-## Validation Question
-
-Do different spell compositions create different combat strategies?
-
----
-
-## Completion Criteria
-
-Players can recognize situations where changing spell composition provides advantages.
-
----
-
 # Session 4 - Progression Loop
 
 ## Goal
 
 Validate whether improving spells is motivating.
-
----
-
-## Required Systems
-
-Reward selection.
-
-Rewards modify:
-
-```
-PlayerSpellConfiguration
-
-↓
-
-SpellFactory
-
-↓
-
-New SpellInstance
-```
-
----
-
-## Reward Examples
-
-Add module:
-
-```
-Fire Module
-```
-
-Upgrade module:
-
-```
-Fire Level 2 → Fire Level 3
-```
-
-Modify stats:
-
-```
-Increase Size
-```
-
----
-
-## Important Rules
-
-Rewards do not directly modify active runtime objects.
-
-Incorrect:
-
-```
-Reward
-
-↓
-
-Current Projectile
-
-↓
-
-Increase Damage
-```
-
-Correct:
-
-```
-Reward
-
-↓
-
-Player Spell Configuration
-
-↓
-
-Future SpellInstance
-```
-
----
-
-## Validation Question
-
-Does improving a spell encourage experimentation and build decisions?
-
----
-
-## Completion Criteria
-
-A player can:
-
-- Defeat enemies.
-- Receive choices.
-- Modify their spell.
-- Continue fighting with the new build.
 
 ---
 
@@ -584,138 +363,8 @@ Create a stable repeatable prototype loop.
 
 ---
 
-## Add Only Necessary Improvements
-
-Possible additions:
-
-- Multiple enemy waves.
-- Basic balancing.
-- Better visual feedback.
-- Placeholder audio.
-- Minimal UI.
-- Quality-of-life improvements.
-
----
-
-## Do Not Add
-
-- Inventory
-- Equipment
-- Tower generation
-- Meta progression
-- Large content expansions
-
----
-
-## Validation Question
-
-Is the core loop enjoyable over repeated encounters?
-
----
-
-## Completion Criteria
-
-The prototype supports:
-
-```
-Create Spell
-
-↓
-
-Enter Combat
-
-↓
-
-Fight Enemies
-
-↓
-
-Receive Upgrade
-
-↓
-
-Improve Spell
-
-↓
-
-Continue Fighting
-```
-
----
-
 # Session 6 - Architecture and Gameplay Review
 
 ## Goal
 
 Evaluate the prototype before expanding the game.
-
----
-
-## Review Areas
-
-### Spell Architecture
-
-Questions:
-
-- Are behaviors flexible enough?
-- Are modules independent enough?
-- Are new combinations easy to create?
-- Are abstractions justified?
-
----
-
-### Gameplay
-
-Questions:
-
-- Are spell choices meaningful?
-- Are enemies creating different decisions?
-- Are some modules always superior?
-- Are some combinations boring?
-
----
-
-### Future Direction
-
-Decide:
-
-- What systems should be expanded.
-- What systems should be redesigned.
-- What content should be added.
-- What complexity should be avoided.
-
----
-
-# Final Prototype Success Criteria
-
-The prototype is successful when:
-
-```
-Create Spell
-
-↓
-
-Enter Combat
-
-↓
-
-Encounter Different Challenges
-
-↓
-
-Adapt Spell Build
-
-↓
-
-Feel Ownership Over The Creation
-
-↓
-
-Continue Playing
-```
-
-The goal is not proving that every system works.
-
-The goal is proving that the central fantasy of Unbound Arcana works:
-
-"Create a spell nobody else could have imagined."

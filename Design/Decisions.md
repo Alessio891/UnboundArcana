@@ -1,65 +1,56 @@
-# Decision: Spell Stat Ownership
+# Decision: Spell Runtime Lifecycle Ownership
 
 Date:
 
-2026-07-11
+2026-07-12
 
 ## Context
 
-The original SpellStats class stored stats inside SpellDefinition.
+Originally SpellInstances were treated as reusable runtime versions of a spell.
 
-This created an ownership problem.
+This created a problem:
 
-A spell container does not know which stats are required.
+Player-owned spell configuration and runtime gameplay state were mixed together.
 
-Examples:
+A spell configuration can change over time.
 
-Projectile requires:
-
-- Speed
-
-Aura requires:
-
-- Duration
-
-Explosion requires:
-
-- Size
-
+A runtime spell must represent one execution.
 
 ## Decision
 
-Stats are owned by SpellInstance runtime.
+SpellConfigurations own spell composition.
 
-Behaviors and modules contribute stats.
+SpellInstances represent temporary execution.
 
 Flow:
+
+SpellConfiguration
+
+↓
+
+SpellFactory
+
+↓
 
 SpellInstance
 
 ↓
 
-StatCollection
+Runtime Objects
 
-↑
 
-Behavior
-
-↑
-
-Module
-
+SpellInstances are created per cast.
 
 ## Consequences
 
 Positive:
 
-- Components own their requirements.
-- Different behaviors can use different stats.
-- Modules can introduce new gameplay values.
-- Future systems can contribute modifiers.
+- Runtime state cannot leak between casts.
+- Spell modifications affect future casts only.
+- Multiple independent casts are possible.
+- Player ownership is separated from gameplay execution.
 
 Negative:
 
-- Stat discovery becomes dynamic.
-- Editor tools may eventually be needed to display final values.
+- More runtime allocation occurs.
+- Persistent spell behaviors require explicit lifecycle handling.

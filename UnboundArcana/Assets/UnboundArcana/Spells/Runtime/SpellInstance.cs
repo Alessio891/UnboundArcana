@@ -18,7 +18,8 @@ namespace UnboundArcana.Spells.Runtime
 		public SpellRuntimeContext Runtime { get; }
 		public ISpellSpawner Spawner { get; private set; }
 		public SpellStatCollection Stats { get; } = new();
-
+		public bool HasBeenCast { get; private set; }
+		public bool IsFinished { get; private set; }
 		public SpellInstance(
 			SpellRuntimeContext runtime,
 			GameObject owner)
@@ -76,6 +77,16 @@ namespace UnboundArcana.Spells.Runtime
 					runtimeObjects.RemoveAt(i);
 				}
 			}
+			if (HasBeenCast &&
+				runtimeObjects.Count == 0 &&
+				!IsFinished)
+			{
+				IsFinished = true;
+
+				Events.Publish(
+					new SpellFinishedEvent(this)
+				);
+			}
 		}
 
 		public void UpdateCast(CastContext context)
@@ -85,11 +96,14 @@ namespace UnboundArcana.Spells.Runtime
 
 		public void Cast(CastContext context)
 		{
-			Events.Publish(new CastEvent(this, context));
+			HasBeenCast = true;
+
+			Events.Publish(
+				new CastEvent(this, context)
+			);
 
 			behavior.Cast(context);
 		}
-
 		public void End()
 		{
 			behavior.End();

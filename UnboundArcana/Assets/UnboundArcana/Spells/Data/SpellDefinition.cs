@@ -10,6 +10,5 @@ namespace UnboundArcana.Spells.Data
 	{
 		public SpellBehaviorDefinition behavior;
 		public SpellModuleDefinition[] modules;
-		public SpellStats stats;
 	}
 }

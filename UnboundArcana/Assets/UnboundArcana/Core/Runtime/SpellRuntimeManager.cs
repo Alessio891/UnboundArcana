@@ -22,9 +22,19 @@ namespace UnboundArcana.Core.Runtime
 		}
 		public void Register(SpellInstance spell)
 		{
+			spell.Events.Subscribe<SpellFinishedEvent>(
+				OnSpellFinished
+			);
+
 			pendingSpells.Add(spell);
 		}
+		private void OnSpellFinished(
+			SpellFinishedEvent eventData)
+		{
+			spells.Remove(eventData.Spell);
 
+			eventData.Spell.Destroy();
+		}
 		private void Update()
 		{
 			if (pendingSpells.Count > 0)
@@ -35,7 +45,7 @@ namespace UnboundArcana.Core.Runtime
 
 			float deltaTime = Time.deltaTime;
 
-			for (int i = 0; i < spells.Count; i++)
+			for (int i = spells.Count - 1; i >= 0; i--)
 			{
 				spells[i].Tick(deltaTime);
 			}

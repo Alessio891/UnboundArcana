@@ -40,11 +40,10 @@ namespace UnboundArcana.Spells.Modules.CastSpellOnDestroy
 
 			SpellInstance newSpell =
 				SpellFactory.Create(
-					definition.spellToCast,
+					new SpellConfiguration(definition.spellToCast),
 					spell.Runtime,
 					spell.Owner
 				);
-
 			spell.Runtime.RuntimeManager.Register(newSpell);
 
 			newSpell.Cast(

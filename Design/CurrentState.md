@@ -2,15 +2,19 @@
 
 Last Updated:
 
-2026-07-11
+2026-07-12
 
 ---
 
 # Current Milestone
 
-Architecture Validation Complete
+Session 1 - Player Spell Configuration
 
-Preparing transition toward first playable prototype.
+Completed.
+
+Architecture validation complete.
+
+Preparing transition toward combat foundation.
 
 ---
 
@@ -31,6 +35,86 @@ Validated:
 
 ---
 
+## Player Spell Configuration
+
+Implemented.
+
+The system now separates:
+
+Player-owned spell builds
+
+from
+
+Runtime spell execution.
+
+
+Flow:
+
+SpellDefinition
+
+↓
+
+SpellConfiguration
+
+↓
+
+SpellFactory
+
+↓
+
+SpellInstance
+
+
+SpellConfiguration contains:
+
+- Selected behavior
+- Selected modules
+
+
+SpellConfiguration does not contain:
+
+- Runtime objects
+- Active gameplay state
+- Views
+
+
+---
+
+## Runtime Spell Lifecycle
+
+Implemented.
+
+SpellInstances are created per cast.
+
+They are not persistent player objects.
+
+Flow:
+
+Cast
+
+↓
+
+Create SpellInstance
+
+↓
+
+Create Runtime Objects
+
+↓
+
+Execute
+
+↓
+
+Finish
+
+↓
+
+Remove from SpellRuntimeManager
+
+
+---
+
 # Runtime Stats System
 
 Implemented.
@@ -47,7 +131,7 @@ Current stats:
 
 Stats are stored in:
 
-StatCollection
+SpellStatCollection
 
 
 Runtime ownership:
@@ -56,40 +140,7 @@ SpellInstance
 
 ↓
 
-StatCollection
-
-
----
-
-# Stat Contributions
-
-Behaviors provide default stats required for their existence.
-
-Examples:
-
-Projectile:
-
-- Speed
-- Duration
-
-
-Modules provide gameplay contributions.
-
-Examples:
-
-Fire:
-
-- Damage
-
-
-Explosion:
-
-- Damage
-- Size
-- Duration
-
-
-The final spell stats are the result of composition.
+SpellStatCollection
 
 
 ---
@@ -131,6 +182,7 @@ SpellEventBus:
 - ProjectileDestroyedEvent
 - RuntimeObjectSpawnedEvent
 - RuntimeObjectDestroyedEvent
+- SpellFinishedEvent
 
 
 GameEventBus:
@@ -142,7 +194,16 @@ GameEventBus:
 
 # Architecture Status
 
-The spell system is considered validated.
+The spell composition architecture is considered validated.
+
+Session 1 validation question:
+
+Can the player own and modify spell compositions independently from runtime spells?
+
+Answer:
+
+Yes.
+
 
 The next challenge is not additional spell architecture.
 
@@ -152,18 +213,46 @@ The next challenge is integrating the system into a complete gameplay loop.
 
 # Next Objectives
 
-## First Playable Prototype
+## Session 2 - Combat Foundation
 
 Required:
 
-- Player controller
-- Player spell casting
-- Enemy health
-- Enemy movement
+- Player entity
+- Enemy entity
+- Movement
+- Health
 - Damage pipeline
-- Arena
-- Spell loadout
-- Reward selection
+- Basic arena
+- Enemy spawning
+
+
+Required gameplay flow:
+
+Player
+
+↓
+
+Cast Spell
+
+↓
+
+Spell Runtime Objects
+
+↓
+
+Hit Event
+
+↓
+
+Damage Event
+
+↓
+
+Enemy Health
+
+↓
+
+Death
 
 
 ---
@@ -178,16 +267,3 @@ Not required for first playable state:
 - Meta progression
 - Complex AI
 - Advanced status systems
-
-
----
-
-# Current Focus
-
-Move from:
-
-"Can spells be composed?"
-
-to:
-
-"Is building spells fun inside a game loop?"
