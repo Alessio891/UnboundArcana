@@ -49,22 +49,6 @@ Game Events
 Gameplay Systems
 
 
-Validated behaviors:
-
-- ProjectileBehavior
-- AuraBehavior
-- BeamBehavior
-
-
-Validated modules:
-
-- FireModule
-- ExplosionModule
-- ForkModule
-- SplitOnDestroyModule
-- CastSpellOnDestroyModule
-
-
 ---
 
 # Current Ownership
@@ -90,6 +74,8 @@ SpellInstance
 
 ├── SpellRuntimeContext
 
+├── Runtime Stats
+
 └── Optional Behavior Capabilities
 
 
@@ -99,7 +85,7 @@ SpellInstance
 
 Current:
 
-Input / Gameplay Source
+Casting Source
 
 ↓
 
@@ -131,113 +117,74 @@ SpellBehavior.Cast(context)
 ↓
 
 SpellRuntimeObjects
----
 
-# Active Spell Control Flow
-
-Some spells require continuous external control after casting.
-
-Current lifecycle:
-
-Casting source
-
-↓
-
-SpellInstance.Cast(context)
-
-↓
-
-SpellBehavior.Cast(context)
-
-
-While active:
-
-Casting source
-
-↓
-
-SpellInstance.UpdateCast(context)
-
-↓
-
-SpellBehavior.UpdateCast(context)
-
-
-When control ends:
-
-Casting source
-
-↓
-
-SpellInstance.End()
-
-↓
-
-SpellBehavior.End()
-
-
-Examples:
-
-Beam:
-
-- Cast creates the beam
-- UpdateCast changes aim direction
-- End destroys the beam
-
-
-Future examples:
-
-- Guided projectiles
-- Charging spells
-- Maintained effects
 
 ---
 
-# Runtime Context
+# Runtime Stats
 
-Purpose:
+The previous SpellStats class was removed.
 
-Provide runtime services required by spells without coupling spells to Unity systems.
+Stats are now represented by:
 
+StatCollection
 
-Current services:
+The collection is owned by the SpellInstance runtime.
 
-- GameEventBus
-- Spell registration through ISpellRuntime
-
+Stats are composed from spell components.
 
 Flow:
 
-SpellRuntimeManager
-
-↓
-
-SpellRuntimeContext
-
-↓
-
 SpellInstance
+
+↓
+
+StatCollection
+
+↑
+
+Behavior
+
+↑
+
+Modules
 
 
 ---
 
-# Runtime Objects
+# Stat Ownership
 
-Implemented:
+Behaviors provide default stats required for their existence.
 
-- ProjectileRuntimeObject
-- ExplosionRuntimeObject
-- AuraRuntimeObject
+Examples:
+
+Projectile:
+
+- Speed
+- Duration
+
+Aura:
+
+- Duration
 
 
-Runtime object responsibilities:
+Modules provide gameplay contributions.
 
-- Maintain gameplay state
-- Execute runtime updates
-- Control lifetime
+Examples:
+
+FireModule:
+
+- Damage
 
 
-Runtime objects may store creation information separately through SpawnContext when required.
+ExplosionModule:
+
+- Damage
+- Size
+- Duration
+
+
+The spell composition determines the final effective stats.
 
 
 ---
@@ -258,6 +205,14 @@ Capabilities:
 - ISpellSpawner
 
 
+Provides base stats:
+
+- Speed
+- Duration
+
+
+---
+
 ## AuraBehavior
 
 Creates:
@@ -268,6 +223,14 @@ Creates:
 Purpose:
 
 Validate persistent non-projectile behavior lifecycle.
+
+
+Provides base stats:
+
+- Duration
+
+
+---
 
 ## BeamBehavior
 
@@ -281,21 +244,6 @@ Purpose:
 Validate active spell lifecycle control.
 
 
-Validated:
-
-- Runtime object creation
-- Persistent runtime object lifecycle
-- External direction updates
-- Explicit spell ending through caster control
-
-Future:
-
-- Trap
-- Minion
-- Orbit
-- Meteor
-
-
 ---
 
 # Modules
@@ -306,179 +254,79 @@ Implemented:
 
 - Reacts to HitEvent
 - Creates DamageEvents
+- Provides damage modifiers
 
+
+---
 
 ## ExplosionModule
 
 - Reacts to HitEvent
 - Creates ExplosionRuntimeObjects
+- Provides explosion-related stats
 
+
+---
 
 ## ForkModule
 
 - Reacts to CastEvent
 - Uses ISpellSpawner capability
-- Requests additional projectile creation
 
+
+---
 
 ## SplitOnDestroyModule
 
 - Reacts to ProjectileDestroyedEvent
-- Requests additional projectile creation
 - Uses SpawnContext rules
 
+
+---
 
 ## CastSpellOnDestroyModule
 
 - Reacts to RuntimeObjectDestroyedEvent
 - Creates another SpellInstance
-- Registers and casts the chained spell
 
 
 ---
 
-# Spell Chaining
+## SizeModifierModule
 
-Validated:
-
-A spell can create another spell composition.
-
-Flow:
-
-SpellInstance A
-
-↓
-
-Module trigger
-
-↓
-
-SpellFactory
-
-↓
-
-SpellInstance B
-
-↓
-
-SpellRuntimeManager
-
-
-Important:
-
-The chained spell is a full spell composition.
-
-It is not a special projectile or effect.
+- Demonstrates runtime stat modifiers
 
 
 ---
 
-# Event Architecture
+# Modifier System
 
-## SpellEventBus
+Implemented:
 
-Owned by:
+Stats:
 
-SpellInstance
-
-
-Current events:
-
-## CastEvent
-
-Contains:
-
-- SpellInstance
-- CastContext
+- Damage
+- Size
+- Speed
+- Duration
 
 
-Used for:
+Modifier operations:
 
-- Cast reactions
-- Cast-time modifiers
-
-
-## HitEvent
-
-Contains:
-
-- Runtime object source
-- Hit position
-- Target
-- Owner
+- Flat
+- Percent
+- Multiplier
 
 
-Used for:
+Modifiers store:
 
-- On-hit effects
-
-
-## ProjectileSpawnedEvent
-
-Contains:
-
-- ProjectileRuntimeObject
+- Stat
+- Value
+- Operation
+- Source
 
 
-Used for:
-
-- Projectile lifecycle reactions
-
-
-## ProjectileDestroyedEvent
-
-Contains:
-
-- ProjectileRuntimeObject
-
-
-Used for:
-
-- Projectile-specific destruction modifiers
-
-
-## RuntimeObjectDestroyedEvent
-
-Contains:
-
-- SpellRuntimeObject
-
-
-Used for:
-
-- Generic runtime lifecycle reactions
-
-Examples:
-
-- Aura expiration
-- Chained spells
-- Future expiration effects
-
-
----
-
-# GameEventBus
-
-Owned by:
-
-SpellRuntimeManager
-
-
-Current events:
-
-## DamageEvent
-
-Used by:
-
-- FireModule
-- ExplosionModule
-
-
-Future:
-
-- HealEvent
-- StatusAppliedEvent
-- DeathEvent
+The system aggregates modifiers instead of components directly modifying runtime values.
 
 
 ---
@@ -492,152 +340,16 @@ Runtime Object
 View
 
 
-Examples:
+Runtime objects:
 
-ProjectileRuntimeObject
+- Maintain gameplay state
+- Query effective stats
+- Control lifetime
 
-↓
 
-ProjectileView
+Views:
 
-
-ExplosionRuntimeObject
-
-↓
-
-ExplosionView
-
-
-AuraRuntimeObject
-
-↓
-
-AuraView
-
-
-Rules:
-
-Runtime owns gameplay.
-
-View owns Unity representation.
-
-Views do not create gameplay state.
-
-
----
-
-# Spawn Capability Pattern
-
-Behaviors may expose optional capabilities.
-
-
-Current:
-
-ProjectileBehavior
-
-implements:
-
-ISpellSpawner
-
-
-Purpose:
-
-Allow modules to request behavior-owned creation.
-
-
-Example:
-
-ForkModule
-
-↓
-
-ISpellSpawner
-
-↓
-
-ProjectileBehavior
-
-↓
-
-ProjectileRuntimeObject
-
-
----
-
-# Module Creation Rules
-
-Current validated rule:
-
-Modules do not create objects belonging to another behavior.
-
-Modules may create runtime objects for effects they own.
-
-Examples:
-
-Allowed:
-
-ExplosionModule
-
-↓
-
-ExplosionRuntimeObject
-
-
-Not allowed:
-
-SplitModule
-
-↓
-
-ProjectileRuntimeObject
-
-
-because projectile creation belongs to ProjectileBehavior.
-
-
----
-
-# SpawnContext
-
-Purpose:
-
-Provide creation metadata when runtime objects are spawned.
-
-
-Current fields:
-
-- Position
-- Direction
-- Modifier propagation rules
-
-
-Used by:
-
-- ProjectileBehavior
-- Spawn-based modifiers
-
-
----
-
-# CastContext
-
-Purpose:
-
-Provide external casting information.
-
-
-Current fields:
-
-- Owner
-- Position
-- Direction
-
-
-Used by:
-
-- Player casting
-- Enemy casting
-- Future casting sources
+- Represent Unity objects only
 
 
 ---
@@ -658,15 +370,13 @@ Used by:
 
 ✓ Views only represent runtime objects
 
-✓ Casting sources provide initial spell state
+✓ Stats are composed from behavior and module contributions
 
-✓ Runtime lifecycle events allow independent modifiers
+✓ Modifier sources remain identifiable
 
 ✓ Spawn metadata controls child behavior
 
 ✓ Spells can compose other spells
-
-✓ Runtime systems are injected through context
 
 
 ---
@@ -675,44 +385,35 @@ Used by:
 
 Current:
 
-- CastContext is minimal.
-- RuntimeObjectDestroyedEvent only exposes the destroyed object.
-- Spell cleanup/removal from SpellRuntimeManager is not implemented yet.
-- Module lifecycle interaction with active spell control is not defined yet.
+- Spell loadout system does not exist.
+- Player-owned spell composition does not exist.
+- Module progression state is not defined.
+- Modifier stacking order is insertion based.
+- Spell cleanup/removal from SpellRuntimeManager is not implemented.
+
 
 Future:
 
-- More lifecycle events
-- More advanced cast context
-- Spell lifetime management
-- Runtime object pooling
-- Module interaction with active spell control
+- Player Spell Configuration
+- Upgrade system
+- Reward system
+- Combat prototype
+- Advanced modifier inheritance rules
 
 
 ---
 
 # Next Milestone
 
-Gameplay Expansion
+First playable prototype.
 
 Objectives:
 
-- Add more behaviors:
-    - Beam
-    - Trap
-    - Zone
-    - Summon
+- Player casting
+- Enemy combat
+- Damage loop
+- Spell loadouts
+- Rewards
+- Basic progression
 
-- Add more gameplay modules:
-    - Pierce
-    - Bounce
-    - Homing
-    - Status effects
-
-- Evaluate performance requirements:
-    - Object pooling
-    - Event allocation
-    - Runtime object scaling
-
-
-Avoid redesigning architecture unless a concrete gameplay limitation appears.
+Avoid adding content before validating the complete gameplay loop.

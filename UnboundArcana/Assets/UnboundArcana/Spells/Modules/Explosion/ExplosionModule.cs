@@ -1,4 +1,5 @@
 using UnboundArcana.Core.Events;
+using UnboundArcana.Core.Stats;
 using UnboundArcana.Spells.Runtime;
 using UnboundArcana.Spells.Runtime.Objects;
 using UnboundArcana.Spells.Runtime.Views;
@@ -48,6 +49,27 @@ namespace UnboundArcana.Spells.Modules.Explosion
 		public override void Destroy()
 		{
 			Events.Unsubscribe<HitEvent>(OnHit);
+		}
+		public override void ApplyStats(
+			StatCollection stats)
+		{
+			stats.AddBase(
+				StatId.Size,
+				definition.radius,
+				this
+			);
+
+			stats.AddBase(
+				StatId.Damage,
+				definition.damage,
+				this
+			);
+
+			stats.AddBase(
+				StatId.Duration,
+				definition.duration,
+				this
+			);
 		}
 	}
 }

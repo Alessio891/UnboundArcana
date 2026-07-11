@@ -1,4 +1,5 @@
 using UnboundArcana.Core.Events;
+using UnboundArcana.Core.Stats;
 
 namespace UnboundArcana.Spells.Runtime
 {
@@ -10,6 +11,11 @@ namespace UnboundArcana.Spells.Runtime
 		public virtual void Initialize(SpellInstance spell)
 		{
 			this.spell = spell;
+		}
+
+		public virtual void ApplyStats(
+			StatCollection stats)
+		{
 		}
 
 		public virtual void Destroy()

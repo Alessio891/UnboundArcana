@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnboundArcana.Spells.Runtime;
+using UnboundArcana.Core.Stats;
 
 namespace UnboundArcana.Spells.Behaviors.Aura
 {
@@ -8,6 +9,7 @@ namespace UnboundArcana.Spells.Behaviors.Aura
 	{
 		public GameObject auraPrefab;
 		public float duration = 5f;
+		public float size = 1f;
 
 		public override SpellBehavior CreateRuntime()
 		{
@@ -15,6 +17,22 @@ namespace UnboundArcana.Spells.Behaviors.Aura
 			behavior.InitializeDefinition(this);
 
 			return behavior;
+		}
+
+		public override void ApplyStats(
+			StatCollection stats)
+		{
+			stats.AddBase(
+				StatId.Duration,
+				duration,
+				this
+			);
+
+			stats.AddBase(
+				StatId.Size,
+				size,
+				this
+			);
 		}
 	}
 }

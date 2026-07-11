@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnboundArcana.Core.Events;
+using UnboundArcana.Core.Stats;
 using UnboundArcana.Spells.Runtime.Objects;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ namespace UnboundArcana.Spells.Runtime
 		public SpellEventBus Events { get; } = new();
 		public SpellRuntimeContext Runtime { get; }
 		public ISpellSpawner Spawner { get; private set; }
+		public SpellStatCollection Stats { get; } = new();
 
 		public SpellInstance(
 			SpellRuntimeContext runtime,
@@ -34,9 +36,20 @@ namespace UnboundArcana.Spells.Runtime
 				Spawner = spawner;
 			}
 
+			//Stats.AddBase(StatId.Size, 1, this);
+			//Stats.AddBase(StatId.Damage, 1);
+
 			foreach (SpellModule module in modules)
 			{
 				module.Initialize(this);
+
+				if (module is ISpellModifierProvider provider)
+				{
+					foreach (StatModifier modifier in provider.GetModifiers())
+					{
+						Stats.AddModifier(modifier);
+					}
+				}
 			}
 		}
 

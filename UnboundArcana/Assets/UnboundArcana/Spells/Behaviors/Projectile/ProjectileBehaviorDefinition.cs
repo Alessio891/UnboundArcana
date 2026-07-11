@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnboundArcana.Spells.Runtime;
+using UnboundArcana.Core.Stats;
 
 namespace UnboundArcana.Spells.Behaviors.Projectile
 {
@@ -8,6 +9,7 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 	{
 		public GameObject projectilePrefab;
 		public float lifetime = 1.0f;
+		public float speed = 1.0f;
 
 		public override SpellBehavior CreateRuntime()
 		{
@@ -17,5 +19,23 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 
 			return behavior;
 		}
+
+
+		public override void ApplyStats(
+			StatCollection stats)
+		{
+			stats.AddBase(
+				StatId.Speed,
+				speed,
+				this
+			);
+
+			stats.AddBase(
+				StatId.Duration,
+				lifetime,
+				this
+			);
+		}
 	}
+
 }

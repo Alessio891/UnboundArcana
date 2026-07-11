@@ -18,6 +18,10 @@ namespace UnboundArcana.Spells.Runtime
 
 			instance.behavior = definition.behavior.CreateRuntime();
 
+			definition.behavior.ApplyStats(
+				instance.Stats
+			);
+
 			if (definition.modules != null)
 			{
 				foreach (SpellModuleDefinition moduleDefinition in definition.modules)
@@ -27,6 +31,14 @@ namespace UnboundArcana.Spells.Runtime
 					);
 				}
 			}
+
+			definition.behavior.ApplyStats(instance.Stats);
+
+			foreach (SpellModule module in instance.modules)
+			{
+				module.ApplyStats(instance.Stats);
+			}
+
 
 			instance.Initialize();
 

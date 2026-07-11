@@ -8,119 +8,88 @@ Last Updated:
 
 # Current Milestone
 
-Behavior Expansion and Composition Validation
+Architecture Validation Complete
+
+Preparing transition toward first playable prototype.
 
 ---
 
 # Completed
 
-## Aura Behavior
+## Spell Composition Architecture
+
+Validated:
+
+- Multiple behavior types
+- Independent modules
+- Runtime lifecycle events
+- Spell chaining
+- Runtime context injection
+- Runtime object creation
+- Modifier aggregation
+
+
+---
+
+# Runtime Stats System
 
 Implemented.
 
-Purpose:
+The previous SpellStats placeholder has been removed.
 
-Validate that the architecture works without projectile assumptions.
+Current stats:
 
-Implemented:
-
-- AuraBehavior
-- AuraRuntimeObject
-- AuraView
-
-
-Validated:
-
-- Persistent runtime objects
-- Independent lifetime updates
-- Non-projectile spell behavior
+- Damage
+- Size
+- Speed
+- Duration
 
 
----
+Stats are stored in:
 
-## Runtime Lifecycle Events
-
-Completed.
-
-Added:
-
-RuntimeObjectDestroyedEvent
+StatCollection
 
 
-Purpose:
+Runtime ownership:
 
-Allow modules to react to runtime object lifecycle without knowing behaviors.
-
-
-Used by:
-
-- Aura expiration
-- Future destruction effects
-
-
----
-
-## Spell Runtime Context
-
-Completed.
-
-Implemented:
-
-- SpellRuntimeContext
-- ISpellRuntime
-
-
-Purpose:
-
-Provide runtime services to spells without coupling them directly to scene objects.
-
-
-Current services:
-
-- GameEventBus
-- Spell registration
-
-
----
-
-## Deferred Spell Registration
-
-Completed.
-
-Purpose:
-
-Allow spells to create other spells during updates safely.
-
-
-Flow:
-
-Register request
+SpellInstance
 
 ↓
 
-Pending list
-
-↓
-
-Added after update
+StatCollection
 
 
 ---
 
-## Spell Chaining
+# Stat Contributions
 
-Completed.
+Behaviors provide default stats required for their existence.
 
-Implemented:
+Examples:
 
-CastSpellOnDestroyModule
+Projectile:
+
+- Speed
+- Duration
 
 
-Validated:
+Modules provide gameplay contributions.
 
-- A spell can trigger another spell composition.
-- Chained spells use the normal SpellFactory pipeline.
-- Behaviors remain independent.
+Examples:
+
+Fire:
+
+- Damage
+
+
+Explosion:
+
+- Damage
+- Size
+- Duration
+
+
+The final spell stats are the result of composition.
 
 
 ---
@@ -131,6 +100,7 @@ Validated:
 
 - ProjectileBehavior
 - AuraBehavior
+- BeamBehavior
 
 
 ## Modules
@@ -140,6 +110,7 @@ Validated:
 - ForkModule
 - SplitOnDestroyModule
 - CastSpellOnDestroyModule
+- SizeModifierModule
 
 
 ## Runtime Objects
@@ -147,6 +118,7 @@ Validated:
 - ProjectileRuntimeObject
 - ExplosionRuntimeObject
 - AuraRuntimeObject
+- BeamRuntimeObject
 
 
 ## Events
@@ -157,6 +129,7 @@ SpellEventBus:
 - HitEvent
 - ProjectileSpawnedEvent
 - ProjectileDestroyedEvent
+- RuntimeObjectSpawnedEvent
 - RuntimeObjectDestroyedEvent
 
 
@@ -165,62 +138,56 @@ GameEventBus:
 - DamageEvent
 
 
-## Gameplay
-
-- DamageSystem
-- IDamageable
-- TargetDummy
-
-
 ---
 
-# Current Architecture Status
+# Architecture Status
 
-The composition model is validated by:
+The spell system is considered validated.
 
-- Multiple behavior types
-- Multiple independent modules
-- Runtime object lifecycle
-- Module-created effects
-- Spell-to-spell composition
+The next challenge is not additional spell architecture.
 
+The next challenge is integrating the system into a complete gameplay loop.
 
 ---
 
 # Next Objectives
 
-Possible next steps:
+## First Playable Prototype
 
-## More Behaviors
+Required:
 
-Examples:
-
-- Beam
-- Trap
-- Zone
-- Summon
-- Orbit
-
-
-## More Modules
-
-Examples:
-
-- Homing
-- Pierce
-- Bounce
-- Status effects
-- Element conversion
+- Player controller
+- Player spell casting
+- Enemy health
+- Enemy movement
+- Damage pipeline
+- Arena
+- Spell loadout
+- Reward selection
 
 
-## Performance Validation
+---
 
-Evaluate:
+# Deferred Systems
 
-- Runtime object count
-- Pooling
-- Event allocations
-- Large combat scenarios
+Not required for first playable state:
+
+- Tower generation
+- Inventory
+- Equipment
+- Meta progression
+- Complex AI
+- Advanced status systems
 
 
-Do not introduce new abstraction layers until required by concrete gameplay needs.
+---
+
+# Current Focus
+
+Move from:
+
+"Can spells be composed?"
+
+to:
+
+"Is building spells fun inside a game loop?"

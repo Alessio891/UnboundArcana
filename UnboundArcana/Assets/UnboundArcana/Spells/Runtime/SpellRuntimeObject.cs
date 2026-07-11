@@ -1,5 +1,4 @@
 using UnboundArcana.Core.Events;
-using UnboundArcana.Core.Stats;
 using UnityEngine;
 
 namespace UnboundArcana.Spells.Runtime.Objects
@@ -9,7 +8,6 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		protected SpellInstance spell;
 		protected GameObject view;
 
-		public StatCollection Stats { get; } = new();
 
 		public bool IsAlive { get; private set; } = true;
 

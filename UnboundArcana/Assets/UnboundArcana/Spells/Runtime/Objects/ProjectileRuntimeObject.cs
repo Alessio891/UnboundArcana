@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnboundArcana.Core.Events;
 using UnboundArcana.Core.Combat;
+using UnboundArcana.Core.Stats;
 
 namespace UnboundArcana.Spells.Runtime.Objects
 {
@@ -39,7 +40,8 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		public override void Tick(float deltaTime)
 		{
 			elapsedTime += deltaTime;
-
+			
+			this.speed = spell.Stats.Get(StatId.Speed);
 			position += direction * speed * deltaTime;
 
 			if (view != null)

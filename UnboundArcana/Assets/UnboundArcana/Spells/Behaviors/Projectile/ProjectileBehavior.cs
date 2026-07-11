@@ -4,6 +4,7 @@ using UnboundArcana.Spells.Runtime.Objects;
 using UnboundArcana.Spells.Runtime.Views;
 using System.Collections;
 using UnboundArcana.Core.Events;
+using UnboundArcana.Core.Stats;
 
 namespace UnboundArcana.Spells.Behaviors.Projectile
 {
@@ -54,5 +55,6 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 				)
 			);
 		}
+
 	}
 }
