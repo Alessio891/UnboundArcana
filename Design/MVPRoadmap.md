@@ -64,6 +64,10 @@ SpellModules
 
 Gameplay Systems
 
+↓
+
+Run Progression
+
 ---
 
 # Session Status
@@ -73,11 +77,11 @@ Completed:
 - Session 1 - Player Spell Configuration
 - Session 2 - Combat Foundation
 - Session 3 - Gameplay Variety
-
+- Session 4 - Progression Loop
 
 Next:
 
-- Session 4 - Progression Loop
+- Session 5 - First Playtest
 
 ---
 
@@ -119,86 +123,9 @@ Yes.
 
 Completed.
 
----
-
-## Goal
-
-Introduce the minimum amount of content required to evaluate spell creativity.
-
-The purpose was not content creation.
-
-The purpose was creating meaningful choices.
-
----
-
-## Implemented
-
-### Spell Testing
-
-Added:
-
-- SpellTester composition switching
-- Runtime SpellConfiguration creation
-
-
-Test compositions:
-
-Projectile + Fire
-
-Projectile + Explosion
-
-Projectile + Fire + Explosion
-
-Projectile + Fire + Explosion + Size Modifier
-
-
----
-
-### Combat Testing
-
-Added:
-
-- EnemyWaveSpawner
-- Moving TargetDummy prototype
-
-
-Purpose:
-
-Create repeatable combat scenarios.
-
----
-
-## Validation Results
-
-### Projectile + Fire
-
-Result:
-
-- Strong single target damage
-- Weak against groups
-
-
-### Projectile + Explosion
-
-Result:
-
-- Strong area damage
-- Weak against isolated enemies
-
-
-### Projectile + Fire + Explosion
-
-Result:
-
-- Powerful hybrid composition
-- Demonstrates emergent spell construction
-
-
----
-
 ## Validation Question
 
-Does spell composition create meaningful gameplay choices?
+Do spell composition choices create meaningful gameplay differences?
 
 Answer:
 
@@ -210,28 +137,59 @@ Yes.
 
 ## Status
 
-Next.
+Completed.
 
 ## Goal
 
-Validate whether improving spells is motivating.
+Validate whether improving spells during gameplay creates meaningful decisions.
 
-Possible validation areas:
+## Implemented
 
-- Choosing new modules
-- Improving existing modules
-- Creating stronger spell variations
-- Temporary run-based upgrades
+- Enemy wave encounters
+- Reward phase between waves
+- RewardController
+- Random module reward offers
+- SpellConfiguration modification during a run
 
-Avoid adding progression systems without a gameplay validation purpose.
+## Validation Results
+
+Validated:
+
+- Spell improvements naturally affect future casts.
+- Progression integrates without changing runtime spell execution.
+- Different reward choices lead to different spell identities.
+- The ownership model remains valid.
+
+## Validation Question
+
+Does acquiring and modifying spell components during gameplay create meaningful decisions?
+
+Answer:
+
+Yes.
 
 ---
 
 # Session 5 - First Playtest
 
+## Status
+
+Next.
+
 ## Goal
 
-Create a stable repeatable prototype loop.
+Evaluate the complete combat and progression loop as a playable prototype.
+
+Focus areas:
+
+- Combat pacing
+- Enemy variety
+- Reward cadence
+- Module balance
+- Player decision quality
+- Combat feedback
+
+Avoid introducing large new systems until the existing loop has been thoroughly evaluated.
 
 ---
 
@@ -239,4 +197,12 @@ Create a stable repeatable prototype loop.
 
 ## Goal
 
-Evaluate the prototype before expanding the game.
+Review all prototype findings before expanding the project.
+
+Potential discussion topics:
+
+- Duplicate module handling
+- Reward weighting
+- Progression depth
+- Long-term spell growth
+- Architecture adjustments informed by playtesting

@@ -44,9 +44,9 @@ namespace UnboundArcana.Sandbox
 
 			health -= damage.Amount;
 
-			Debug.Log(
-				$"{name} took {damage.Amount} {damage.Type} damage from {damage.Source.name}. HP: {health}"
-			);
+			//Debug.Log(
+			//	$"{name} took {damage.Amount} {damage.Type} damage from {damage.Source.name}. HP: {health}"
+			//);
 
 			if (health <= 0)
 			{

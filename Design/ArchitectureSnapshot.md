@@ -52,6 +52,10 @@ Game Events
 
 Gameplay Systems
 
+↓
+
+Run Progression
+
 ---
 
 # Current Ownership
@@ -87,6 +91,13 @@ SpellInstance
 ├── Runtime Stats
 
 └── Optional Behavior Capabilities
+
+
+RewardController
+
+├── Temporary Reward Offer
+
+└── Modifies Player SpellConfiguration
 
 ---
 
@@ -207,7 +218,6 @@ Spell Finished
 
 SpellRuntimeManager Removes Instance
 
-
 SpellRuntimeManager owns active runtime spell instances.
 
 ---
@@ -240,91 +250,13 @@ Modules
 
 ---
 
-# Stat Ownership
-
-Behaviors provide default stats required for their existence.
-
-Examples:
-
-Projectile:
-
-- Speed
-- Duration
-
-
-Aura:
-
-- Duration
-
-
-Modules provide gameplay contributions.
-
-Examples:
-
-FireModule:
-
-- Damage
-
-
-ExplosionModule:
-
-- Damage
-- Size
-- Duration
-
-
-The spell composition determines the final effective stats.
-
----
-
 # Behaviors
 
 Implemented:
 
-## ProjectileBehavior
-
-Creates:
-
-- ProjectileRuntimeObject
-
-Capabilities:
-
-- ISpellSpawner
-
-Provides base stats:
-
-- Speed
-- Duration
-
-
----
-
-## AuraBehavior
-
-Creates:
-
-- AuraRuntimeObject
-
-Purpose:
-
-Validate persistent non-projectile behavior lifecycle.
-
-Provides base stats:
-
-- Duration
-
-
----
-
-## BeamBehavior
-
-Creates:
-
-- BeamRuntimeObject
-
-Purpose:
-
-Validate active spell lifecycle control.
+- ProjectileBehavior
+- AuraBehavior
+- BeamBehavior
 
 ---
 
@@ -332,82 +264,12 @@ Validate active spell lifecycle control.
 
 Implemented:
 
-## FireModule
-
-- Reacts to HitEvent
-- Creates DamageEvents
-- Provides damage modifiers through runtime stats
-
-
----
-
-## ExplosionModule
-
-- Reacts to HitEvent
-- Creates ExplosionRuntimeObjects
-- Provides explosion-related stats
-
-
----
-
-## ForkModule
-
-- Reacts to CastEvent
-- Uses ISpellSpawner capability
-
-
----
-
-## SplitOnDestroyModule
-
-- Reacts to ProjectileDestroyedEvent
-- Uses SpawnContext rules
-
-
----
-
-## CastSpellOnDestroyModule
-
-- Reacts to RuntimeObjectDestroyedEvent
-- Creates another SpellInstance
-
-
----
-
-## SizeModifierModule
-
-- Demonstrates runtime stat modifiers
-
----
-
-# Modifier System
-
-Implemented:
-
-Stats:
-
-- Damage
-- Size
-- Speed
-- Duration
-
-
-Modifier operations:
-
-- Flat
-- Percent
-- Multiplier
-
-
-Modifiers store:
-
-- Stat
-- Value
-- Operation
-- Source
-
-
-The system aggregates modifiers instead of components directly modifying runtime object fields.
+- FireModule
+- ExplosionModule
+- ForkModule
+- SplitOnDestroyModule
+- CastSpellOnDestroyModule
+- SizeModifierModule
 
 ---
 
@@ -419,13 +281,11 @@ Runtime Object
 
 View
 
-
 Runtime objects:
 
 - Maintain gameplay state
 - Query effective stats
 - Control lifetime
-
 
 Views:
 
@@ -471,7 +331,6 @@ Damage Receiver
 
 Enemy Death
 
-
 Combat systems remain separated from spell execution.
 
 The spell system creates gameplay events.
@@ -480,98 +339,68 @@ Gameplay systems consume those events.
 
 ---
 
-# Prototype Entity Structure
-
-Current prototype uses minimal components.
+# Session 4 Progression Prototype
 
 Implemented:
 
-TargetDummy
+## Enemy Waves
+
+EnemyWaveSpawner now manages encounter progression.
 
 Responsibilities:
 
-- Receive damage
-- Track health
-- Handle death
-- Move toward player for combat testing
-
-
-The project does not currently contain a generic entity framework.
-
-This remains intentional.
+- Spawn wave enemies
+- Detect encounter completion
+- Publish EncounterCompletedEvent
+- Wait for reward selection
+- Begin the next wave
 
 ---
 
-# Session 3 Validation Tools
+## Reward Controller
 
-Implemented:
-
-## SpellTester
-
-Purpose:
-
-Create temporary SpellConfigurations for composition testing.
-
-Current test compositions:
-
-- Projectile + Fire
-- Projectile + Explosion
-- Projectile + Fire + Explosion + Size Modifier
-
-
-The tester validates spell composition without introducing a loadout system.
-
----
-
-## EnemyWaveSpawner
-
-Purpose:
-
-Provide repeatable combat pressure.
+RewardController manages temporary run progression.
 
 Responsibilities:
 
-- Spawn TargetDummy enemies
-- Control spawn interval
-- Control maximum active enemies
-- Position enemies around the player
+- Listen for EncounterCompletedEvent
+- Generate a temporary reward offer
+- Apply the selected module to the player's SpellConfiguration
+- Publish RewardSelectedEvent
 
-
-The spawner does not know about spells or combat logic.
+RewardController does not interact with SpellInstances directly.
 
 ---
 
-# Session 3 Validation Result
+## Reward Flow
 
 Validated:
 
-Different spell compositions create different gameplay identities.
+Wave Complete
 
-Tested:
+↓
 
-## Projectile + Fire
+EncounterCompletedEvent
 
-Result:
+↓
 
-- Strong single target damage
-- Less effective against groups
+RewardController
 
+↓
 
-## Projectile + Explosion
+Player chooses module
 
-Result:
+↓
 
-- Strong area damage
-- Less effective against isolated targets
+SpellConfiguration updated
 
+↓
 
-## Projectile + Fire + Explosion
+RewardSelectedEvent
 
-Result:
+↓
 
-- Powerful hybrid composition
-- Demonstrates emergent spell combinations
-
+Next Wave
 
 ---
 
@@ -593,19 +422,15 @@ Result:
 
 ✓ Stats are composed from behavior and module contributions
 
-✓ Modifier sources remain identifiable
-
-✓ Spawn metadata controls child behavior
-
-✓ Spells can compose other spells
-
 ✓ Player spell configuration is separated from runtime execution
 
 ✓ Runtime spell instances are disposable
 
 ✓ Combat systems consume game events instead of depending on spells
 
-✓ Spell compositions create distinct gameplay outcomes
+✓ Spell progression modifies SpellConfiguration rather than active runtime spells
+
+✓ Reward progression integrates without modifying the spell runtime architecture
 
 ---
 
@@ -613,28 +438,15 @@ Result:
 
 Current:
 
-- Spell loadout system does not exist
-- Module progression state is not defined
-- Modifier stacking order is insertion based
-- Enemy system is only a prototype target implementation
-- No arena/game loop exists
-- No progression or reward systems exist
-
+- Duplicate module behavior is not yet defined
+- Reward generation is random only
+- Reward rarity does not exist
+- Enemy system is still a prototype
+- No run UI exists
 
 Future:
 
-- Progression validation
-- Spell improvement choices
-- Advanced modifier inheritance rules
-- More composition experiments
-
----
-
-# Next Milestone
-
-Session 4 - Progression Loop
-
-Objectives:
-
-- Validate whether improving spells is motivating.
-- Introduce progression choices only if they support spell creativity.
+- Explicit duplicate module rules
+- Reward weighting
+- Reward categories
+- Advanced progression experiments

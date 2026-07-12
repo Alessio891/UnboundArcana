@@ -19910,6 +19910,62 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &978168811
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 978168813}
+  - component: {fileID: 978168812}
+  m_Layer: 0
+  m_Name: RewardController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &978168812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 978168811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ed329c96fe6fa34c8556d320a019fd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Sandbox.RewardController
+  SpellTester: {fileID: 253577630}
+  fireModule: {fileID: 11400000, guid: c318f855860865143b2306c92f3941c2, type: 2}
+  explosionModule: {fileID: 11400000, guid: 8682e9d1c54ad7943b82f7ac8fef366b, type: 2}
+  sizeModule: {fileID: 11400000, guid: 67f67c0c04456814fb627dde6446a1db, type: 2}
+  availableRewards:
+  - {fileID: 11400000, guid: 67f67c0c04456814fb627dde6446a1db, type: 2}
+  - {fileID: 11400000, guid: 782cea6dc9932c147901ccf1323b368f, type: 2}
+  - {fileID: 11400000, guid: 52c27441f5fb7bf4f9fb2e03239dfc6b, type: 2}
+  - {fileID: 11400000, guid: 0c59a3ae1eb049f4ca1afa16946d1e99, type: 2}
+  - {fileID: 11400000, guid: e015a2bfb43752146b434eaa28ebc653, type: 2}
+  - {fileID: 11400000, guid: c318f855860865143b2306c92f3941c2, type: 2}
+  - {fileID: 11400000, guid: 8682e9d1c54ad7943b82f7ac8fef366b, type: 2}
+--- !u!4 &978168813
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 978168811}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.32274, y: 0.78622, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1408398886
 GameObject:
   m_ObjectHideFlags: 0
@@ -20230,9 +20286,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Sandbox.EnemyWaveSpawner
   enemyPrefab: {fileID: 7388116696759325063, guid: b80e5f97870fedb4b845e7dc53a0de84, type: 3}
   player: {fileID: 253577629}
-  maxEnemies: 20
-  spawnInterval: 2
-  spawnRadius: 8
+  enemiesPerWave: 5
+  waveDelay: 5
+  spawnInterval: 1
+  spawnRadius: 4
+  Runtime: {fileID: 1803501488}
 --- !u!4 &1696994702
 Transform:
   m_ObjectHideFlags: 0
@@ -20300,3 +20358,4 @@ SceneRoots:
   - {fileID: 253577629}
   - {fileID: 1408398888}
   - {fileID: 1696994702}
+  - {fileID: 978168813}

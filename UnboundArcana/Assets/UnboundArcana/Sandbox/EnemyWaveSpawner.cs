@@ -1,5 +1,6 @@
+using UnboundArcana.Core.Events;
+using UnboundArcana.Core.Runtime;
 using UnityEngine;
-using UnboundArcana.Core.Combat;
 
 namespace UnboundArcana.Sandbox
 {
@@ -8,26 +9,65 @@ namespace UnboundArcana.Sandbox
 		[SerializeField] private GameObject enemyPrefab;
 		[SerializeField] private Transform player;
 
-		[SerializeField] private int maxEnemies = 20;
-		[SerializeField] private float spawnInterval = 2f;
+		[SerializeField] private int enemiesPerWave = 10;
+		[SerializeField] private float waveDelay = 5f;
+		[SerializeField] private float spawnInterval = 0.5f;
 		[SerializeField] private float spawnRadius = 8f;
 
-		private float timer;
-		private int activeEnemies;
+		private float spawnTimer;
+		private float waveTimer;
+
+		private int enemiesRemaining;
+		private int enemiesToSpawn;
+
+		private bool spawningWave;
+		private bool waitingForNextWave;
+
+		public SpellRuntimeManager Runtime;
+		public GameEventBus GameEvents => Runtime?.GameEvents;
+
+		private void Start()
+		{
+			StartWave();
+			Runtime.GameEvents.Subscribe<RewardSelectedEvent>(
+				OnRewardSelected
+			);
+		}
 
 		private void Update()
 		{
-			timer += Time.deltaTime;
-
-			if (timer >= spawnInterval)
+			if (waitingForNextWave)
 			{
-				timer = 0f;
+				return;
+			}
 
-				if (activeEnemies < maxEnemies)
+			if (!spawningWave)
+			{
+				return;
+			}
+
+			spawnTimer -= Time.deltaTime;
+
+			if (spawnTimer <= 0f && enemiesToSpawn > 0)
+			{
+				spawnTimer = spawnInterval;
+				SpawnEnemy();
+
+				enemiesToSpawn--;
+
+				if (enemiesToSpawn == 0)
 				{
-					SpawnEnemy();
+					spawningWave = false;
 				}
 			}
+		}
+
+		private void StartWave()
+		{
+			Debug.Log("Starting wave");
+			enemiesToSpawn = enemiesPerWave;
+			spawningWave = true;
+			waitingForNextWave = false;
 		}
 
 		private void SpawnEnemy()
@@ -51,16 +91,47 @@ namespace UnboundArcana.Sandbox
 
 			TargetDummy dummy =
 				instance.GetComponent<TargetDummy>();
-			dummy.OnDeath += () =>
-			{
-				activeEnemies--;
-			};
+
 			if (dummy != null)
 			{
 				dummy.Initialize(player);
+
+				dummy.OnDeath += OnEnemyDeath;
 			}
 
-			activeEnemies++;
+			enemiesRemaining++;
+		}
+		private void OnRewardSelected(
+			RewardSelectedEvent eventData)
+		{
+			if (!waitingForNextWave)
+			{
+				return;
+			}
+
+			waitingForNextWave = false;
+
+			StartWave();
+		}
+		private void OnEnemyDeath()
+		{
+			enemiesRemaining--;
+
+			if (enemiesRemaining <= 0 && !spawningWave)
+			{
+				CompleteWave();
+			}
+		}
+
+		private void CompleteWave()
+		{
+			waitingForNextWave = true;
+
+			GameEvents?.Publish(
+				new EncounterCompletedEvent()
+			);
+
+			Debug.Log("Wave completed");
 		}
 	}
 }

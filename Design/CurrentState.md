@@ -8,7 +8,7 @@ Last Updated:
 
 # Current Milestone
 
-Session 3 - Gameplay Variety
+Session 4 - Progression Loop
 
 Completed.
 
@@ -122,87 +122,60 @@ Yes.
 
 ---
 
-# Implemented Session 3 Systems
+# Session 4 - Progression Loop
 
-## Spell Composition Tester
+Completed.
 
-Implemented.
+Validation question:
 
-Purpose:
+Does improving spells during a run create meaningful gameplay decisions?
 
-Create temporary spell configurations for testing.
+Answer:
 
-Tested compositions:
-
-- Projectile + Fire
-- Projectile + Explosion
-- Projectile + Fire + Explosion
-- Projectile + Fire + Explosion + Size Modifier
-
+Yes.
 
 ---
 
-## Enemy Wave Testing
+# Implemented Session 4 Systems
+
+## Enemy Wave Progression
 
 Implemented.
 
 Added:
 
-- EnemyWaveSpawner
-- Moving TargetDummy prototype
-
-
-Purpose:
-
-Provide combat pressure for evaluating spell differences.
+- Fixed-size encounter waves
+- Encounter completion detection
+- Reward phase between waves
+- Event-driven wave progression
 
 ---
 
-# Session 3 Results
+## Reward Prototype
 
-## Projectile + Fire
+Implemented.
 
-Validated:
+Added:
 
-- Strong single target damage
-- Weakness against multiple enemies
+- RewardController
+- Random reward offers
+- Module acquisition
+- SpellConfiguration modification during a run
 
+Rewards affect future casts only.
 
-Gameplay identity:
-
-Focused damage spell.
-
-
----
-
-## Projectile + Explosion
-
-Validated:
-
-- Strong area damage
-- Efficient against groups
-- Less efficient against isolated targets
-
-
-Gameplay identity:
-
-Area control spell.
-
+Existing SpellInstances remain unchanged.
 
 ---
 
-## Projectile + Fire + Explosion
+# Session 4 Results
 
 Validated:
 
-- Powerful hybrid composition
-- Multiple modules create emergent results
-
-
-Gameplay identity:
-
-High investment combined spell.
-
+- Spell improvement changes future combat behavior
+- Reward choices influence build direction
+- Runtime spell architecture required no modification
+- Progression naturally integrates with SpellConfiguration ownership
 
 ---
 
@@ -246,6 +219,10 @@ SpellModules
 
 Gameplay Systems
 
+↓
+
+Run Progression
+
 ---
 
 # Current Implemented Systems
@@ -256,7 +233,6 @@ Gameplay Systems
 - AuraBehavior
 - BeamBehavior
 
-
 ## Modules
 
 - FireModule
@@ -266,14 +242,12 @@ Gameplay Systems
 - CastSpellOnDestroyModule
 - SizeModifierModule
 
-
 ## Runtime Objects
 
 - ProjectileRuntimeObject
 - ExplosionRuntimeObject
 - AuraRuntimeObject
 - BeamRuntimeObject
-
 
 ## Systems
 
@@ -288,8 +262,8 @@ Gameplay Systems
 - Damage Pipeline
 - Enemy Damage Reception
 - Enemy Death
-- SpellTester
 - EnemyWaveSpawner
+- RewardController
 
 ---
 
@@ -297,10 +271,9 @@ Gameplay Systems
 
 Not required yet:
 
-- Tower generation
 - Inventory
-- Equipment
 - Meta progression
-- Complex AI
+- Shops
+- Save system
 - Status effects
 - Procedural generation
