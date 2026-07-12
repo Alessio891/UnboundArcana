@@ -1,42 +1,90 @@
+# High Level Architecture
+
+## Complete System Overview
+
 ```mermaid
 flowchart TD
 
-    SD["SpellDefinition<br/>(ScriptableObject)"]
+    subgraph Editor["Editor Configuration Layer"]
 
-    SB["SpellBehaviorDefinition"]
-    SM["SpellModuleDefinition[]"]
+        SD["SpellDefinition<br/>ScriptableObject"]
 
-    SF["SpellFactory"]
+        SC["SpellConfiguration<br/>Player Owned"]
 
-    SI["SpellInstance"]
+        SBD["SpellBehaviorDefinition"]
 
-    B["SpellBehavior"]
-    M["SpellModules"]
+        SMD["SpellModuleDefinition[]"]
 
-    RO["RuntimeObjects"]
+    end
 
-    SE["SpellEventBus"]
-    GE["GameEventBus"]
 
-    GS["Gameplay Systems"]
+    subgraph Runtime["Spell Runtime Layer"]
 
-    SD --> SB
-    SD --> SM
+        SF["SpellFactory"]
 
-    SD --> SF
+        SI["SpellInstance"]
+
+        B["SpellBehavior"]
+
+        M["SpellModules"]
+
+        RO["SpellRuntimeObjects"]
+
+        SEC["SpellEventBus"]
+
+        SRC["SpellRuntimeContext"]
+
+        STATS["SpellStatCollection"]
+
+    end
+
+
+    subgraph Events["Event Layer"]
+
+        GE["GameEventBus"]
+
+    end
+
+
+    subgraph Gameplay["Gameplay Systems"]
+
+        DMG["Damage System"]
+
+        ENEMY["Enemy System"]
+
+        REWARD["RewardController"]
+
+        WAVE["EnemyWaveSpawner"]
+
+    end
+
+
+    SD --> SBD
+    SD --> SMD
+
+    SC --> SF
 
     SF --> SI
 
     SI --> B
     SI --> M
     SI --> RO
-    SI --> SE
+    SI --> SEC
+    SI --> SRC
+    SI --> STATS
 
-    M --> SE
+
     B --> RO
-    RO --> SE
 
-    M --> GE
+    M --> SEC
+    RO --> SEC
 
-    GE --> GS
-```
+    SEC --> GE
+
+    GE --> DMG
+    GE --> ENEMY
+    GE --> REWARD
+    GE --> WAVE
+
+
+    REWARD --> SC

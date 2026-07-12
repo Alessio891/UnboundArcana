@@ -8,7 +8,7 @@ Last Updated:
 
 # Current Milestone
 
-Session 4 - Progression Loop
+Session 5 - First Playtest
 
 Completed.
 
@@ -136,7 +136,7 @@ Yes.
 
 ---
 
-# Implemented Session 4 Systems
+# Session 4 Implemented Systems
 
 ## Enemy Wave Progression
 
@@ -168,18 +168,149 @@ Existing SpellInstances remain unchanged.
 
 ---
 
-# Session 4 Results
+# Session 5 First Playtest
 
-Validated:
+Completed.
 
-- Spell improvement changes future combat behavior
-- Reward choices influence build direction
-- Runtime spell architecture required no modification
-- Progression naturally integrates with SpellConfiguration ownership
+Goal:
+
+Evaluate the complete combat and progression loop as a playable prototype.
 
 ---
 
-# Architecture Status
+# Implemented Playtest Systems
+
+## Combat Interaction
+
+Added:
+
+- Player health
+- Enemy contact damage
+- Enemy health
+- Enemy defeat handling
+- Damage event integration
+
+The damage pipeline remains:
+
+DamageEvent
+
+↓
+
+DamageSystem
+
+↓
+
+IDamageable
+
+---
+
+## Player Casting
+
+Added:
+
+- Basic cast cooldown
+
+Current cooldown exists at the casting source level.
+
+Future iterations may move this into spell stats.
+
+---
+
+## Enemy Variety
+
+Added prototype enemy types:
+
+- Chaser
+- Tank
+- Swarm
+
+Enemies currently share the same basic damage pipeline while testing encounter pacing.
+
+---
+
+## Projectile Improvements
+
+Added:
+
+- Projectile hit history
+
+Purpose:
+
+Prevent projectile derivatives from immediately repeating invalid hits.
+
+Example:
+
+A split projectile should create new targeting opportunities instead of multiplying damage against the same target.
+
+---
+
+# Session 5 Playtest Results
+
+## Combat Pacing
+
+Validated:
+
+- Basic combat loop works.
+- Spell evolution is noticeable.
+- Combat becomes easier too quickly as modules accumulate.
+
+Main issue:
+
+Enemy scaling does not currently match spell power growth.
+
+---
+
+## Spell Evolution
+
+Validated:
+
+- Adding modules changes spell identity.
+- Players can perceive progression.
+- Module acquisition creates some build direction.
+
+Current limitation:
+
+Available modules are too few, causing builds to converge.
+
+---
+
+## Module Balance
+
+Identified problems:
+
+- Direct damage modules are too universally valuable.
+- Some combinations scale too aggressively.
+- Some modules change numbers more than playstyle.
+
+---
+
+## Combat Loop
+
+Current:
+
+Encounter
+
+↓
+
+Fight enemies
+
+↓
+
+Complete encounter
+
+↓
+
+Choose module
+
+↓
+
+Continue
+
+This is functional for testing but not yet considered the final gameplay loop.
+
+---
+
+# Current Architecture Status
 
 The spell composition architecture remains validated.
 
@@ -233,6 +364,8 @@ Run Progression
 - AuraBehavior
 - BeamBehavior
 
+---
+
 ## Modules
 
 - FireModule
@@ -242,6 +375,8 @@ Run Progression
 - CastSpellOnDestroyModule
 - SizeModifierModule
 
+---
+
 ## Runtime Objects
 
 - ProjectileRuntimeObject
@@ -249,7 +384,11 @@ Run Progression
 - AuraRuntimeObject
 - BeamRuntimeObject
 
-## Systems
+---
+
+## Core Systems
+
+Implemented:
 
 - SpellEventBus
 - GameEventBus
@@ -264,12 +403,13 @@ Run Progression
 - Enemy Death
 - EnemyWaveSpawner
 - RewardController
+- Player Damage Reception
 
 ---
 
 # Deferred Systems
 
-Not required yet:
+Not required for current MVP validation:
 
 - Inventory
 - Meta progression
@@ -277,3 +417,24 @@ Not required yet:
 - Save system
 - Status effects
 - Procedural generation
+- Dungeon structure
+- Floor progression
+
+These systems should only be considered after the spell progression loop has been improved and validated.
+
+---
+
+# Next Milestone
+
+## Session 6 - Architecture and Gameplay Review
+
+Focus:
+
+- Evaluate module diversity
+- Improve reward quality
+- Review build identity
+- Define duplicate module rules
+- Improve encounter decisions
+- Decide which progression systems are necessary for the MVP
+
+The goal is improving decision quality before expanding game scope.

@@ -5,10 +5,11 @@ using UnboundArcana.Core.Events;
 using UnityEngine.InputSystem;
 using UnboundArcana.Core.Runtime;
 using UnboundArcana.Spells.Modules;
+using UnboundArcana.Core.Combat;
 
 namespace UnboundArcana.Sandbox
 {
-	public class SpellTester : MonoBehaviour
+	public class SpellTester : MonoBehaviour, IDamageable
 	{
 		public SpellRuntimeManager RuntimeManager;
 		public SpellDefinition projectileSpell;
@@ -16,6 +17,8 @@ namespace UnboundArcana.Sandbox
 		public SpellModuleDefinition fireModule;
 		public SpellModuleDefinition explosionModule;
 		public SpellModuleDefinition sizeModule;
+
+		[SerializeField] private float health = 100f;
 
 		private SpellConfiguration spellConfiguration;
 		private SpellInstance activeSpell;
@@ -27,6 +30,9 @@ namespace UnboundArcana.Sandbox
 
 		public float MoveSpeed = 10.0f;
 		public SpellConfiguration Configuration => spellConfiguration;
+		[SerializeField] private float castCooldown = 0.25f;
+
+		private float castTimer;
 		private void Awake()
 		{
 			controls = new UnboundArcanaControls();
@@ -36,7 +42,6 @@ namespace UnboundArcana.Sandbox
 		private void Start()
 		{
 			spellConfiguration = new SpellConfiguration(projectileSpell);
-
 		}
 
 		private SpellInstance CreateSpellInstance()
@@ -78,12 +83,11 @@ namespace UnboundArcana.Sandbox
 
 		private void Update()
 		{
-
 			transform.position +=
 				new Vector3(moveInput.x, moveInput.y, 0) *
 				MoveSpeed *
 				Time.deltaTime;
-
+			castTimer -= Time.deltaTime;
 			if (moveInput.x != 0)
 			{
 				GetComponentInChildren<SpriteRenderer>().flipX =
@@ -117,6 +121,13 @@ namespace UnboundArcana.Sandbox
 		private void OnCast(
 			InputAction.CallbackContext context)
 		{
+			if (castTimer > 0f)
+			{
+				return;
+			}
+
+			castTimer = castCooldown;
+
 			isCasting = true;
 
 			Vector3 mousePosition =
@@ -161,6 +172,19 @@ namespace UnboundArcana.Sandbox
 
 		private void OnHit(HitEvent hitEvent)
 		{
+		}
+
+		public void TakeDamage(DamageInfo damage)
+		{
+			health -= damage.Amount;
+
+			Debug.Log($"Player damaged. HP: {health}");
+
+			if (health <= 0)
+			{
+				Debug.Log("Player defeated");
+				Time.timeScale = 0.0f;
+			}
 		}
 	}
 }

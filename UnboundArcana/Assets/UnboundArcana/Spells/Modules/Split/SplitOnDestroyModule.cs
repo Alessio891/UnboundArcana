@@ -76,7 +76,8 @@ namespace UnboundArcana.Spells.Modules.Split
 					new SpawnContext(
 						projectile.Position,
 						rotatedDirection,
-						false
+						false,
+						projectile.HitHistory
 					)
 				);
 			}

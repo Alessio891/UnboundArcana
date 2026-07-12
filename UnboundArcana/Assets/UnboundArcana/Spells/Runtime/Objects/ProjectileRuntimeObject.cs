@@ -21,7 +21,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		public float Speed => speed;
 		public float Scale => scale;
 		public SpawnContext SpawnContext => spawnContext;
-
+		public ProjectileHitHistory HitHistory => spawnContext.HitHistory;
 		public override void Initialize(SpellInstance spell)
 		{
 			base.Initialize(spell);
@@ -58,14 +58,28 @@ namespace UnboundArcana.Spells.Runtime.Objects
 
 		public void Hit(GameObject target)
 		{
-			if (target != owner && target.GetComponent<IDamageable>() != null)
+			if (target == owner)
 			{
-				spell.Events.Publish(
-					new HitEvent(this, position, target, owner)
-				);
-
-				Destroy();
+				return;
 			}
+
+			if (target.GetComponent<IDamageable>() == null)
+			{
+				return;
+			}
+
+			if (spawnContext.HitHistory.HasHit(target))
+			{
+				return;
+			}
+
+			spawnContext.HitHistory.Add(target);
+
+			spell.Events.Publish(
+				new HitEvent(this, position, target, owner)
+			);
+
+			Destroy();
 		}
 		public void SetProjectileScale(float scale) {
 			this.scale = scale;

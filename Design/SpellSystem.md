@@ -1,431 +1,518 @@
-# Spell System Design
+# Architecture Snapshot
 
-## Core Concept
+Last Updated:
 
-A spell is not a class.
-
-A spell is a composition of:
-
-```
-Behavior
-+
-Stats
-+
-Modules
-+
-Events
-```
-
-Example:
-
-```
-Projectile
-
-Fire Module
-
-Explosion Module
-```
-
-Creates:
-
-```
-Explosive fire projectile
-```
-
-No custom spell class is required.
+2026-07-12
 
 ---
 
-# Spell Components
+# Current Vertical Slice
 
-## Behavior
+Implemented:
 
-Defines how the spell exists.
+SpellDefinition
 
-Examples:
+↓
 
-- Projectile
-- Beam
-- Aura
-- Trap
-- Minion
-- Meteor
-- Nova
-- Wall
-- Orbit
+SpellConfiguration
+
+↓
+
+SpellFactory
+
+↓
+
+SpellInstance
+
+↓
+
+CastContext
+
+↓
+
+SpellBehavior
+
+↓
+
+SpellRuntimeObjects
+
+↓
+
+Runtime Events
+
+↓
+
+SpellModules
+
+↓
+
+Game Events
+
+↓
+
+Gameplay Systems
+
+↓
+
+Run Progression
+
+---
+
+# Current Ownership
+
+SpellRuntimeManager
+
+├── GameEventBus
+
+├── Active SpellInstances
+
+└── SpellRuntimeContext
 
 
-A behavior controls:
+SpellConfiguration
 
-- spawning
-- movement
-- lifetime
-- runtime object creation
-- interpretation of spell lifecycle commands
+├── SpellBehaviorDefinition
+
+└── SpellModuleDefinition[]
 
 
-Behaviors also provide default stats required for their existence.
+SpellInstance
 
-Examples:
+├── SpellBehavior
 
-Projectile:
+├── SpellModules
 
-```
-Speed
-Duration
-```
+├── SpellRuntimeObjects
 
-Aura:
+├── SpellEventBus
 
-```
-Duration
-```
+├── SpellRuntimeContext
+
+├── Runtime Stats
+
+└── Optional Behavior Capabilities
 
 
-A behavior should not know about effects.
+RewardController
 
-Example:
+├── Temporary Reward Offer
 
-Projectile:
+└── Modifies Player SpellConfiguration
 
-Knows:
+---
 
-- movement
-- collision
-- lifetime
+# Spell Ownership Model
 
-Does not know:
+The player does not own active SpellInstances.
 
-- Fire exists
-- Explosion exists
-- Damage exists
+The player owns spell configurations.
 
+Flow:
+
+Player Spell Configuration
+
+↓
+
+SpellFactory
+
+↓
+
+SpellInstance
+
+↓
+
+Runtime Objects
+
+
+SpellConfigurations represent editable spell builds.
+
+SpellInstances represent temporary gameplay execution.
+
+---
+
+# Spell Casting Flow
+
+Current:
+
+Casting Source
+
+↓
+
+SpellConfiguration
+
+Contains:
+
+- Selected behavior
+- Selected modules
+
+↓
+
+SpellFactory.Create()
+
+↓
+
+SpellInstance
+
+↓
+
+CastContext
+
+Contains:
+
+- Owner
+- Position
+- Direction
+
+↓
+
+SpellInstance.Cast(context)
+
+↓
+
+CastEvent
+
+Contains:
+
+- SpellInstance
+- CastContext
+
+↓
+
+SpellBehavior.Cast(context)
+
+↓
+
+SpellRuntimeObjects
+
+---
+
+# Runtime Spell Lifecycle
+
+A SpellInstance exists only during execution.
+
+Lifecycle:
+
+Create
+
+↓
+
+Initialize
+
+↓
+
+Cast
+
+↓
+
+Runtime Objects Active
+
+↓
+
+Runtime Objects Complete
+
+↓
+
+Spell Finished
+
+↓
+
+SpellRuntimeManager Removes Instance
+
+SpellRuntimeManager owns active runtime spell instances.
+
+---
+
+# Runtime Stats
+
+Stats are represented by:
+
+SpellStatCollection
+
+The collection is owned by the SpellInstance runtime.
+
+Stats are composed from spell components.
+
+Flow:
+
+SpellInstance
+
+↓
+
+SpellStatCollection
+
+↑
+
+Behavior
+
+↑
+
+Modules
+
+---
+
+# Behaviors
+
+Implemented:
+
+- ProjectileBehavior
+- AuraBehavior
+- BeamBehavior
 
 ---
 
 # Modules
 
-Modules modify or extend spell behavior.
+Implemented:
 
-Modules communicate through events.
-
-Modules can:
-
-- react to spell lifecycle events
-- create effects
-- contribute stats
-- extend gameplay behavior
-
-
-Categories:
+- FireModule
+- ExplosionModule
+- ForkModule
+- SplitOnDestroyModule
+- CastSpellOnDestroyModule
+- SizeModifierModule
 
 ---
 
-## Behavior Modules
+# Runtime Object Pattern
 
-Modify movement or existence.
+Runtime Object
 
-Examples:
+↓
 
-- Bounce
-- Split
-- Pierce
-- Homing
-- Orbit
-- Accelerate
-- Return
+View
 
+Runtime objects:
 
----
+- Maintain gameplay state
+- Query effective stats
+- Control lifetime
+- Handle world interaction
 
-## Effect Modules
+Views:
 
-Modify spell results.
-
-Examples:
-
-- Fire
-- Ice
-- Poison
-- Lightning
-- Burn
-- Freeze
-- Knockback
-- Lifesteal
-
+- Represent Unity objects only
 
 ---
 
-## Trigger Modules
+# Projectile Runtime Handling
 
-Create additional events or effects.
+Projectile runtime objects currently support:
 
-Examples:
+- Movement
+- Lifetime
+- Collision handling
+- Runtime stat queries
+- Hit event generation
+- Hit history tracking
 
-- Explosion
-- Spawn Minion
-- Spawn Aura
-- Chain Lightning
-- Repeat Cast
-
-
----
-
-# Stats
-
-Stats are owned by the runtime spell composition.
-
-The current implementation uses:
-
-```
-SpellInstance
-
-    |
-    v
-
-StatCollection
-```
-
-
-Stats are created from multiple sources:
-
-- Behavior definitions
-- Module definitions
-- Future player progression
-- Future equipment
-- Future buffs/debuffs
-
-
-Current stats:
-
-- Damage
-- Size
-- Speed
-- Duration
-
-
-The meaning of a stat depends on the component using it.
-
-Examples:
-
-Projectile:
-
-```
-Speed = movement speed
-Duration = lifetime
-Size = projectile size
-```
-
-Aura:
-
-```
-Duration = active time
-Size = radius
-```
-
-Explosion:
-
-```
-Size = explosion radius
-Damage = damage dealt
-Duration = active lifetime
-```
-
-
-Runtime objects query effective values.
-
-They do not know which component created the modifiers.
-
-
----
-
-# Modifier System
-
-Modifiers represent changes to stats.
-
-Supported operations:
-
-- Flat
-- Percent
-- Multiplier
-
-
-A modifier contains:
-
-- Stat identifier
-- Value
-- Operation
-- Source
-
+Hit history was added to prevent spawned projectiles from immediately repeating invalid interactions.
 
 Example:
 
-```
-Fire Module Level 3
-
-adds:
-
-Damage +30%
-```
-
-The runtime aggregates modifiers instead of modules directly changing runtime object fields.
-
+A split projectile should create additional gameplay opportunities rather than repeatedly damaging the same target through recursive collisions.
 
 ---
 
-# Runtime Objects
+# Combat Integration
 
-Runtime objects represent gameplay entities created by behaviors or modules.
+Validated:
 
-Examples:
+Player
 
-- Projectile
-- Explosion
-- Aura
-- Beam
-- Trap
-- Minion
+↓
 
+Cast Spell
 
-Runtime objects own:
+↓
 
-- gameplay state
-- lifetime
-- updates
-- interaction with the world
+Spell Runtime Objects
 
+↓
 
-Runtime objects can query effective spell values.
+Hit Event
 
-Example:
+↓
 
-```
-ExplosionRuntimeObject
+Spell Modules
 
-asks:
+↓
 
-SpellInstance Stats
+Damage Event
 
-for:
+↓
 
-Size
-Damage
-Duration
-```
+Damage System
 
+↓
 
-Runtime objects do not know:
+Damage Receiver
 
-- which module created a modifier
-- which behavior exists
-- how the spell was configured
+↓
 
+Enemy Death
 
----
+↓
 
-# Spell Chaining
+Enemy Killed Event
 
-A chained spell is a new spell composition.
+Combat systems remain separated from spell execution.
 
-Example:
+The spell system creates gameplay events.
 
-Parent:
-
-```
-Projectile
-
-+
-
-Ice Module
-
-+
-
-Explosion
-```
-
-creates:
-
-Child:
-
-```
-Projectile
-
-+
-
-Fire Module
-```
-
-
-The child has:
-
-- its own behavior
-- its own modules
-- its own stats
-- its own tags
-- its own runtime objects
-
-
-Modifier inheritance is explicit.
-
-A chaining mechanic decides what is transferred.
-
-Example:
-
-```
-CastSpellOnDestroyModule
-
-inherits:
-
-Fire modifiers
-
-does not inherit:
-
-unrelated modifiers
-```
-
+Gameplay systems consume those events.
 
 ---
 
-# Tags
+# Session 4 Progression Prototype
 
-Tags describe spell composition.
+Implemented:
 
-Tags originate from:
+## Enemy Waves
 
-- Behavior definitions
-- Module definitions
+EnemyWaveSpawner manages encounter progression.
 
+Responsibilities:
 
-The final SpellInstance calculates its resulting tags.
-
-
-Tags support:
-
-- compatibility
-- synergy
-- discovery
-- rewards
-- UI
-
-
-Tags are descriptive.
-
-They are not intended to become a strict class system.
-
+- Spawn wave enemies
+- Detect encounter completion
+- Publish EncounterCompletedEvent
+- Wait for reward selection
+- Begin the next wave
 
 ---
 
-# Important Rules
+## Reward Controller
 
-1. No Fireball class.
-2. No IceProjectile class.
-3. Spells are compositions.
-4. Modules must remain independent.
-5. Behaviors must not know modules exist.
-6. Modules do not communicate directly.
-7. Runtime objects own gameplay state.
-8. ScriptableObjects contain configuration only.
-9. Views only represent runtime objects.
-10. Stats are created by spell composition.
-11. Modifier ownership remains identifiable.
-12. New combinations should emerge naturally.
+RewardController manages temporary run progression.
+
+Responsibilities:
+
+- Listen for EncounterCompletedEvent
+- Generate temporary reward offers
+- Apply selected modules to the player's SpellConfiguration
+- Publish RewardSelectedEvent
+
+RewardController does not interact with SpellInstances directly.
+
+---
+
+## Reward Flow
+
+Validated:
+
+Wave Complete
+
+↓
+
+EncounterCompletedEvent
+
+↓
+
+RewardController
+
+↓
+
+Player chooses module
+
+↓
+
+SpellConfiguration updated
+
+↓
+
+RewardSelectedEvent
+
+↓
+
+Next Wave
+
+---
+
+# Combat Prototype Extensions
+
+Added after playtest:
+
+## Player Combat
+
+Implemented:
+
+- Player health
+- Damage reception
+- Defeat state
+
+
+## Enemy Combat
+
+Implemented:
+
+- Enemy health
+- Contact damage
+- Enemy movement pressure
+- Enemy scaling
+
+
+## Enemy Archetypes
+
+Prototype enemies:
+
+- Chaser
+- Tank
+- Swarm
+
+Enemy variety is currently intended for testing combat pacing and spell effectiveness.
+
+---
+
+# Proven Design Principles
+
+✓ No individual spell classes
+
+✓ Behaviors own existence
+
+✓ Modules react through events
+
+✓ Modules do not communicate directly
+
+✓ Runtime objects own gameplay state
+
+✓ ScriptableObjects contain configuration only
+
+✓ Views only represent runtime objects
+
+✓ Stats are composed from behavior and module contributions
+
+✓ Player spell configuration is separated from runtime execution
+
+✓ Runtime spell instances are disposable
+
+✓ Combat systems consume game events instead of depending on spells
+
+✓ Spell progression modifies SpellConfiguration rather than active runtime spells
+
+✓ Reward progression integrates without modifying the spell runtime architecture
+
+✓ Runtime object spawning can preserve explicit composition rules
+
+---
+
+# Current Limitations
+
+Current:
+
+- Duplicate module behavior is not yet defined
+- Reward generation is random only
+- Reward rarity does not exist
+- Module synergies are limited
+- Enemy system is still a prototype
+- Combat objectives are limited
+- Enemy scaling does not currently match spell scaling
+- Spell builds often converge toward direct damage stacking
+
+Future:
+
+- Explicit duplicate module rules
+- Reward weighting
+- Reward categories
+- Advanced module interactions
+- Better enemy encounter design
+- More meaningful build decisions

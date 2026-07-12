@@ -66,6 +66,8 @@ namespace UnboundArcana.Spells.Runtime.Objects
 
 			foreach (Collider2D hit in hits)
 			{
+				if (hit.gameObject == spell.Owner) continue;
+
 				spell.Runtime.GameEvents.Publish(
 					new DamageEvent(
 						spell.Owner,

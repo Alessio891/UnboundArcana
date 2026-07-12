@@ -53,6 +53,18 @@ namespace UnboundArcana.Sandbox
 		{
 			GenerateRewards();
 
+			if (currentRewards.Count == 0)
+			{
+				SpellTester.RuntimeManager.GameEvents.Publish(
+					new RewardSelectedEvent(null)
+				);
+
+				return;
+			}
+
+			SpellTester.RuntimeManager.GameEvents.Publish(
+				new RewardOfferedEvent(currentRewards.ToArray())
+			);
 			waitingForChoice = true;
 
 			Debug.Log("Choose reward:");
@@ -101,7 +113,7 @@ namespace UnboundArcana.Sandbox
 			SpellTester.Configuration.AddModule(module);
 
 			SpellTester.RuntimeManager.GameEvents.Publish(
-				new RewardSelectedEvent()
+				new RewardSelectedEvent(module)
 			);
 
 			waitingForChoice = false;

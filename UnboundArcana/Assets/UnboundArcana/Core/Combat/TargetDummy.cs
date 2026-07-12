@@ -1,4 +1,5 @@
 using UnboundArcana.Core.Combat;
+using UnboundArcana.Core.Events;
 using UnityEngine;
 
 namespace UnboundArcana.Sandbox
@@ -8,12 +9,30 @@ namespace UnboundArcana.Sandbox
 		[SerializeField] private float health = 100f;
 		[SerializeField] private float moveSpeed = 2f;
 
+		[SerializeField] private float contactRange = 0.8f;
+		[SerializeField] private float contactDamage = 10f;
+		[SerializeField] private float damageCooldown = 1f;
+
+		private float damageTimer;
+
 		private bool isDead;
 		[SerializeField] private Transform target;
+
 		public System.Action OnDeath;
-		public void Initialize(Transform target)
+
+		private GameEventBus gameEvents;
+
+		public void Initialize(
+	Transform target,
+	GameEventBus gameEvents,
+	float healthMultiplier,
+	float speedMultiplier)
 		{
 			this.target = target;
+			this.gameEvents = gameEvents;
+
+			health *= healthMultiplier;
+			moveSpeed *= speedMultiplier;
 		}
 
 		private void Update()
@@ -23,16 +42,41 @@ namespace UnboundArcana.Sandbox
 				return;
 			}
 
+			damageTimer -= Time.deltaTime;
+
 			Vector3 direction = target.position - transform.position;
 			direction.z = 0f;
 
-			if (direction.sqrMagnitude > 0.01f)
+			if (direction.sqrMagnitude > contactRange * contactRange)
 			{
 				transform.position +=
 					direction.normalized *
 					moveSpeed *
 					Time.deltaTime;
 			}
+			else
+			{
+				TryDamagePlayer();
+			}
+		}
+
+		private void TryDamagePlayer()
+		{
+			if (damageTimer > 0f)
+			{
+				return;
+			}
+
+			damageTimer = damageCooldown;
+
+			gameEvents?.Publish(
+				new DamageEvent(
+					gameObject,
+					target.gameObject,
+					contactDamage,
+					DamageType.Physical
+				)
+			);
 		}
 
 		public void TakeDamage(DamageInfo damage)
@@ -43,10 +87,6 @@ namespace UnboundArcana.Sandbox
 			}
 
 			health -= damage.Amount;
-
-			//Debug.Log(
-			//	$"{name} took {damage.Amount} {damage.Type} damage from {damage.Source.name}. HP: {health}"
-			//);
 
 			if (health <= 0)
 			{
@@ -59,6 +99,10 @@ namespace UnboundArcana.Sandbox
 			isDead = true;
 
 			OnDeath?.Invoke();
+
+			gameEvents?.Publish(
+				new EnemyKilledEvent(gameObject)
+			);
 
 			Destroy(gameObject);
 		}

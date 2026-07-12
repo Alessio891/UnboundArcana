@@ -6,7 +6,7 @@ namespace UnboundArcana.Sandbox
 {
 	public class EnemyWaveSpawner : MonoBehaviour
 	{
-		[SerializeField] private GameObject enemyPrefab;
+		[SerializeField] private GameObject[] enemyPrefabs;
 		[SerializeField] private Transform player;
 
 		[SerializeField] private int enemiesPerWave = 10;
@@ -14,8 +14,11 @@ namespace UnboundArcana.Sandbox
 		[SerializeField] private float spawnInterval = 0.5f;
 		[SerializeField] private float spawnRadius = 8f;
 
+		[SerializeField] private float healthScaling = 0.15f;
+		[SerializeField] private float speedScaling = 0.05f;
+
 		private float spawnTimer;
-		private float waveTimer;
+		private int waveIndex = 0;
 
 		private int enemiesRemaining;
 		private int enemiesToSpawn;
@@ -29,6 +32,7 @@ namespace UnboundArcana.Sandbox
 		private void Start()
 		{
 			StartWave();
+
 			Runtime.GameEvents.Subscribe<RewardSelectedEvent>(
 				OnRewardSelected
 			);
@@ -51,6 +55,7 @@ namespace UnboundArcana.Sandbox
 			if (spawnTimer <= 0f && enemiesToSpawn > 0)
 			{
 				spawnTimer = spawnInterval;
+
 				SpawnEnemy();
 
 				enemiesToSpawn--;
@@ -64,10 +69,18 @@ namespace UnboundArcana.Sandbox
 
 		private void StartWave()
 		{
-			Debug.Log("Starting wave");
+			waveIndex++;
+
 			enemiesToSpawn = enemiesPerWave;
+
 			spawningWave = true;
 			waitingForNextWave = false;
+
+			GameEvents?.Publish(
+				new WaveStartedEvent(waveIndex)
+			);
+
+			Debug.Log($"Starting wave {waveIndex}");
 		}
 
 		private void SpawnEnemy()
@@ -83,8 +96,13 @@ namespace UnboundArcana.Sandbox
 				) *
 				spawnRadius;
 
+			GameObject prefab =
+				enemyPrefabs[
+					Random.Range(0, enemyPrefabs.Length)
+				];
+
 			GameObject instance = Instantiate(
-				enemyPrefab,
+				prefab,
 				position,
 				Quaternion.identity
 			);
@@ -94,13 +112,49 @@ namespace UnboundArcana.Sandbox
 
 			if (dummy != null)
 			{
-				dummy.Initialize(player);
+				(float healthMultiplier, float speedMultiplier) =
+					GetEnemyModifiers();
+
+				dummy.Initialize(
+					player,
+					GameEvents,
+					healthMultiplier,
+					speedMultiplier
+				);
 
 				dummy.OnDeath += OnEnemyDeath;
 			}
 
 			enemiesRemaining++;
 		}
+
+		private (float health, float speed) GetEnemyModifiers()
+		{
+			float healthMultiplier =
+				1f + (waveIndex - 1) * healthScaling;
+
+			float speedMultiplier =
+				1f + (waveIndex - 1) * speedScaling;
+
+			float roll = Random.value;
+
+			if (roll < 0.15f)
+			{
+				healthMultiplier *= 0.5f;
+				speedMultiplier *= 1.8f;
+			}
+			else if (roll > 0.85f)
+			{
+				healthMultiplier *= 2f;
+				speedMultiplier *= 0.7f;
+			}
+
+			return (
+				healthMultiplier,
+				speedMultiplier
+			);
+		}
+
 		private void OnRewardSelected(
 			RewardSelectedEvent eventData)
 		{
@@ -113,6 +167,7 @@ namespace UnboundArcana.Sandbox
 
 			StartWave();
 		}
+
 		private void OnEnemyDeath()
 		{
 			enemiesRemaining--;
@@ -128,7 +183,7 @@ namespace UnboundArcana.Sandbox
 			waitingForNextWave = true;
 
 			GameEvents?.Publish(
-				new EncounterCompletedEvent()
+				new EncounterCompletedEvent(waveIndex)
 			);
 
 			Debug.Log("Wave completed");

@@ -115,7 +115,7 @@ public partial class @UnboundArcanaControls: IInputActionCollection2, IDisposabl
                 {
                     ""name"": """",
                     ""id"": ""66e4bd9f-c712-484f-ad03-f67b3822b5c8"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
