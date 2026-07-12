@@ -1,5 +1,6 @@
 using UnboundArcana.Core.Combat;
 using UnboundArcana.Core.Events;
+using UnboundArcana.Core.Stats;
 using UnboundArcana.Spells.Runtime;
 using UnityEngine;
 
@@ -23,7 +24,6 @@ namespace UnboundArcana.Spells.Modules.Fire
 		}
 
 		private void OnProjectileSpawned(ProjectileSpawnedEvent e) {
-			Debug.Log("Fire Module:: Spawned Projectile");
 			e.Projectile.SetProjectileColor(UnityEngine.Color.red);
 		}
 
@@ -33,12 +33,20 @@ namespace UnboundArcana.Spells.Modules.Fire
 				new DamageEvent(
 					spell.Owner,
 					hitEvent.Target,
-					definition.damage,
+					spell.Stats.Get(StatId.Damage),
 					DamageType.Fire
 				)
 			);
 		}
-
+		public override void ApplyStats(
+			StatCollection stats)
+		{
+			stats.AddBase(
+				StatId.Damage,
+				definition.damage,
+				this
+			);
+		}
 		public override void Destroy()
 		{
 			Events.Unsubscribe<HitEvent>(OnHit);

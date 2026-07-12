@@ -52,7 +52,6 @@ Game Events
 
 Gameplay Systems
 
-
 ---
 
 # Current Ownership
@@ -89,7 +88,6 @@ SpellInstance
 
 └── Optional Behavior Capabilities
 
-
 ---
 
 # Spell Ownership Model
@@ -118,7 +116,6 @@ Runtime Objects
 SpellConfigurations represent editable spell builds.
 
 SpellInstances represent temporary gameplay execution.
-
 
 ---
 
@@ -176,7 +173,6 @@ SpellBehavior.Cast(context)
 
 SpellRuntimeObjects
 
-
 ---
 
 # Runtime Spell Lifecycle
@@ -214,14 +210,11 @@ SpellRuntimeManager Removes Instance
 
 SpellRuntimeManager owns active runtime spell instances.
 
-
 ---
 
 # Runtime Stats
 
-The previous SpellStats class was removed.
-
-Stats are now represented by:
+Stats are represented by:
 
 SpellStatCollection
 
@@ -244,7 +237,6 @@ Behavior
 ↑
 
 Modules
-
 
 ---
 
@@ -283,7 +275,6 @@ ExplosionModule:
 
 The spell composition determines the final effective stats.
 
-
 ---
 
 # Behaviors
@@ -296,11 +287,9 @@ Creates:
 
 - ProjectileRuntimeObject
 
-
 Capabilities:
 
 - ISpellSpawner
-
 
 Provides base stats:
 
@@ -316,11 +305,9 @@ Creates:
 
 - AuraRuntimeObject
 
-
 Purpose:
 
 Validate persistent non-projectile behavior lifecycle.
-
 
 Provides base stats:
 
@@ -335,11 +322,9 @@ Creates:
 
 - BeamRuntimeObject
 
-
 Purpose:
 
 Validate active spell lifecycle control.
-
 
 ---
 
@@ -351,7 +336,7 @@ Implemented:
 
 - Reacts to HitEvent
 - Creates DamageEvents
-- Provides damage modifiers
+- Provides damage modifiers through runtime stats
 
 
 ---
@@ -393,7 +378,6 @@ Implemented:
 
 - Demonstrates runtime stat modifiers
 
-
 ---
 
 # Modifier System
@@ -425,7 +409,6 @@ Modifiers store:
 
 The system aggregates modifiers instead of components directly modifying runtime object fields.
 
-
 ---
 
 # Runtime Object Pattern
@@ -447,7 +430,6 @@ Runtime objects:
 Views:
 
 - Represent Unity objects only
-
 
 ---
 
@@ -496,7 +478,6 @@ The spell system creates gameplay events.
 
 Gameplay systems consume those events.
 
-
 ---
 
 # Prototype Entity Structure
@@ -512,11 +493,84 @@ Responsibilities:
 - Receive damage
 - Track health
 - Handle death
+- Move toward player for combat testing
 
 
 The project does not currently contain a generic entity framework.
 
 This remains intentional.
+
+---
+
+# Session 3 Validation Tools
+
+Implemented:
+
+## SpellTester
+
+Purpose:
+
+Create temporary SpellConfigurations for composition testing.
+
+Current test compositions:
+
+- Projectile + Fire
+- Projectile + Explosion
+- Projectile + Fire + Explosion + Size Modifier
+
+
+The tester validates spell composition without introducing a loadout system.
+
+---
+
+## EnemyWaveSpawner
+
+Purpose:
+
+Provide repeatable combat pressure.
+
+Responsibilities:
+
+- Spawn TargetDummy enemies
+- Control spawn interval
+- Control maximum active enemies
+- Position enemies around the player
+
+
+The spawner does not know about spells or combat logic.
+
+---
+
+# Session 3 Validation Result
+
+Validated:
+
+Different spell compositions create different gameplay identities.
+
+Tested:
+
+## Projectile + Fire
+
+Result:
+
+- Strong single target damage
+- Less effective against groups
+
+
+## Projectile + Explosion
+
+Result:
+
+- Strong area damage
+- Less effective against isolated targets
+
+
+## Projectile + Fire + Explosion
+
+Result:
+
+- Powerful hybrid composition
+- Demonstrates emergent spell combinations
 
 
 ---
@@ -551,6 +605,7 @@ This remains intentional.
 
 ✓ Combat systems consume game events instead of depending on spells
 
+✓ Spell compositions create distinct gameplay outcomes
 
 ---
 
@@ -558,31 +613,28 @@ This remains intentional.
 
 Current:
 
-- Spell loadout system does not exist.
-- Module progression state is not defined.
-- Modifier stacking order is insertion based.
-- Enemy system is only a prototype target implementation.
-- No enemy spawning system exists.
-- No arena/game loop exists.
+- Spell loadout system does not exist
+- Module progression state is not defined
+- Modifier stacking order is insertion based
+- Enemy system is only a prototype target implementation
+- No arena/game loop exists
+- No progression or reward systems exist
 
 
 Future:
 
-- Spell variety validation
-- Enemy spawning
-- Rewards
-- Progression
+- Progression validation
+- Spell improvement choices
 - Advanced modifier inheritance rules
-
+- More composition experiments
 
 ---
 
 # Next Milestone
 
-Session 3 - Gameplay Variety
+Session 4 - Progression Loop
 
 Objectives:
 
-- Introduce enough spell combinations to evaluate creativity.
-- Validate meaningful spell construction choices.
-- Avoid content expansion without gameplay purpose.
+- Validate whether improving spells is motivating.
+- Introduce progression choices only if they support spell creativity.

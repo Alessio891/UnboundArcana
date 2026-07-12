@@ -11,8 +11,11 @@ namespace UnboundArcana.Sandbox
 	public class SpellTester : MonoBehaviour
 	{
 		public SpellRuntimeManager RuntimeManager;
-		public SpellDefinition spellDefinition;
-		public SpellModuleDefinition testModule;
+		public SpellDefinition projectileSpell;
+
+		public SpellModuleDefinition fireModule;
+		public SpellModuleDefinition explosionModule;
+		public SpellModuleDefinition sizeModule;
 
 		private SpellConfiguration spellConfiguration;
 		private SpellInstance activeSpell;
@@ -29,15 +32,32 @@ namespace UnboundArcana.Sandbox
 			controls = new UnboundArcanaControls();
 			mainCamera = Camera.main;
 		}
+		private void SelectSpell(int index)
+		{
+			spellConfiguration = new SpellConfiguration(projectileSpell);
+
+			switch (index)
+			{
+				case 1:
+					spellConfiguration.AddModule(fireModule);
+					break;
+
+				case 2:
+					spellConfiguration.AddModule(explosionModule);
+					break;
+
+				case 3:
+					spellConfiguration.AddModule(fireModule);
+					spellConfiguration.AddModule(explosionModule);
+					spellConfiguration.AddModule(sizeModule);
+					break;
+			}
+			Debug.Log($"Selected test spell: {index}");
+		}
 
 		private void Start()
 		{
-			spellConfiguration = new SpellConfiguration(spellDefinition);
-
-			if (testModule != null)
-			{
-				spellConfiguration.AddModule(testModule);
-			}
+			SelectSpell(1);
 		}
 
 		private SpellInstance CreateSpellInstance()
@@ -79,6 +99,21 @@ namespace UnboundArcana.Sandbox
 
 		private void Update()
 		{
+			if (Keyboard.current.digit1Key.wasPressedThisFrame)
+			{
+				SelectSpell(1);
+			}
+
+			if (Keyboard.current.digit2Key.wasPressedThisFrame)
+			{
+				SelectSpell(2);
+			}
+
+			if (Keyboard.current.digit3Key.wasPressedThisFrame)
+			{
+				SelectSpell(3);
+			}
+
 			transform.position +=
 				new Vector3(moveInput.x, moveInput.y, 0) *
 				MoveSpeed *
@@ -161,7 +196,6 @@ namespace UnboundArcana.Sandbox
 
 		private void OnHit(HitEvent hitEvent)
 		{
-			Debug.Log($"Projectile hit: {hitEvent.Target.name}");
 		}
 	}
 }
