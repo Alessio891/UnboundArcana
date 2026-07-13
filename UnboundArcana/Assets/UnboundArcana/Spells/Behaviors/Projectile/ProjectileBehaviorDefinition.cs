@@ -35,6 +35,8 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 				lifetime,
 				this
 			);
+
+			stats.AddBase(StatId.Size, 1.0f, this);
 		}
 	}
 

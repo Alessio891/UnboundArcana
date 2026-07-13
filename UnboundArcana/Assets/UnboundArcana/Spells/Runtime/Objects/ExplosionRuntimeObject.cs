@@ -10,8 +10,9 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		private Vector3 position;
 		private bool exploded;
 		private float lifetime;
-
+		private float duration;
 		public Vector3 Position => position;
+		public float Duration => duration;
 
 		public float Radius => spell.Stats.Get(StatId.Size);
 
@@ -22,7 +23,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			float duration)
 		{
 			this.position = position;
-
+			this.duration = duration;
 			
 			lifetime = duration;
 		}
@@ -40,6 +41,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 
 			if (view) {
 				float scale = spell.Stats.Get(StatId.Size);
+				view.transform.position = position;
 				view.transform.localScale = new Vector3(scale, scale, scale);
 			}
 
@@ -48,25 +50,19 @@ namespace UnboundArcana.Spells.Runtime.Objects
 				Destroy();
 			}
 		}
-
-		private void Explode()
+		public void DealDamage()
 		{
-			if (exploded)
-			{
-				return;
-			}
-
-			exploded = true;
-
 			Collider2D[] hits = Physics2D.OverlapCircleAll(
 				position,
 				Radius
 			);
 
-
 			foreach (Collider2D hit in hits)
 			{
-				if (hit.gameObject == spell.Owner) continue;
+				if (hit.gameObject == spell.Owner)
+				{
+					continue;
+				}
 
 				spell.Runtime.GameEvents.Publish(
 					new DamageEvent(
@@ -77,6 +73,17 @@ namespace UnboundArcana.Spells.Runtime.Objects
 					)
 				);
 			}
+		}
+		private void Explode()
+		{
+			if (exploded)
+			{
+				return;
+			}
+
+			exploded = true;
+
+			DealDamage();
 		}
 	}
 }

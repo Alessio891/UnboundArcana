@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d9b526320fd624eaf4678395d1a3b1, type: 3}
   m_Name: Split
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.Split.SplitOnDestroyModuleDefinition
+  category: 4
   count: 2
   spreadAngle: 45

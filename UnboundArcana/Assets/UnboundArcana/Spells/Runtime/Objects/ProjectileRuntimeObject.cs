@@ -2,6 +2,8 @@ using UnityEngine;
 using UnboundArcana.Core.Events;
 using UnboundArcana.Core.Combat;
 using UnboundArcana.Core.Stats;
+using static UnityEngine.RuleTile.TilingRuleOutput;
+using System;
 
 namespace UnboundArcana.Spells.Runtime.Objects
 {
@@ -13,6 +15,9 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		private float lifetime = 2f;
 		private float elapsedTime;
 		private float scale = 1.0f;
+		private int remainingHits = 1;
+		private bool preventDestroy;
+
 		private GameObject owner;
 		private SpawnContext spawnContext;
 
@@ -37,17 +42,31 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			this.direction = context.Direction;
 			this.owner = owner;
 		}
+		public void PreventDestroy()
+		{
+			preventDestroy = true;
+		}
+		public void SetRemainingHits(int hits)
+		{
+			remainingHits = Mathf.Max(1, hits);
+		}
 		public override void Tick(float deltaTime)
 		{
 			elapsedTime += deltaTime;
 			
 			this.speed = spell.Stats.Get(StatId.Speed);
-			position += direction * speed * deltaTime;
+			TickModifiers(deltaTime);
+			if (!modifiers.Exists(x => x.ControlsMovement))
+			{
+				position += direction * speed * deltaTime;
+			}
 
 			if (view != null)
 			{
 				view.transform.position = position;
 				view.transform.localScale = new Vector3(scale, scale, scale);
+				float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+				view.transform.rotation = Quaternion.Euler(0, 0, angle);
 			}
 			if (elapsedTime >= lifetime)
 			{
@@ -55,7 +74,10 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			}
 		}
 
-
+		private void TickModifiers(float deltaTime)
+		{
+			base.Tick(deltaTime);
+		}
 		public void Hit(GameObject target)
 		{
 			if (target == owner)
@@ -74,12 +96,31 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			}
 
 			spawnContext.HitHistory.Add(target);
+			Debug.Log($"TRIGGER HIT EVENT {position}");
+			HitEvent hitEvent =
+				new HitEvent(
+					this,
+					view.transform.position,
+					target,
+					owner
+				);
 
-			spell.Events.Publish(
-				new HitEvent(this, position, target, owner)
-			);
+			NotifyHit(hitEvent);
 
-			Destroy();
+			spell.Events.Publish(hitEvent);
+
+			remainingHits--;
+
+			if (remainingHits <= 0 && !preventDestroy)
+			{
+				Destroy();
+			}
+
+			preventDestroy = false;
+		}
+		public void SetProjectileDirection(Vector3 direction)
+		{
+			this.direction = direction.normalized;
 		}
 		public void SetProjectileScale(float scale) {
 			this.scale = scale;
@@ -97,5 +138,13 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			);
 		}
 
+		public void SetProjectilePosition(Vector3 vector3)
+		{
+			this.position = vector3;
+		}
+		public void ModifySpeed(float value)
+		{
+			speed = value;
+		}
 	}
 }

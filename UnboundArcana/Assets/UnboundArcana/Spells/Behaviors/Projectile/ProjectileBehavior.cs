@@ -44,6 +44,10 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 					context.Position
 				)
 			);
+
+			float scale = spell.Stats.Get(StatId.Size);
+			if (scale <= 0) scale = 1.0f;
+			view.transform.localScale = new Vector3(scale, scale, scale);
 		}
 
 		public override void Cast(CastContext context)

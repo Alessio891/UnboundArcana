@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Behaviors.Aura.AuraBehaviorDefinition
   auraPrefab: {fileID: 5858550927639837238, guid: 7a8780ca85a66a143acac8985bd8bdc2, type: 3}
   duration: 2
+  size: 3
+  followOwner: 1

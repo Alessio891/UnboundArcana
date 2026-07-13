@@ -2,7 +2,7 @@
 
 Last Updated:
 
-2026-07-12
+2026-07-13
 
 ---
 
@@ -260,16 +260,85 @@ Implemented:
 
 ---
 
+# Behavior Responsibility
+
+Behaviors define the fundamental identity of a spell.
+
+Examples:
+
+ProjectileBehavior:
+
+Creates moving projectile runtime objects.
+
+AuraBehavior:
+
+Creates persistent area-based runtime objects.
+
+BeamBehavior:
+
+Creates directional sustained runtime objects.
+
+Modules enhance these behaviors.
+
+They do not replace them.
+
+---
+
 # Modules
 
 Implemented:
 
+## Damage / Effects
+
 - FireModule
 - ExplosionModule
+- CastSpellOnDestroyModule
+
+---
+
+## Projectile Modification
+
 - ForkModule
 - SplitOnDestroyModule
-- CastSpellOnDestroyModule
+- HomingModule
+- ChainModule
+- Projectile movement modifiers
+
+---
+
+## Stat Modification
+
 - SizeModifierModule
+- Other stat modifier modules
+
+---
+
+# Module Architecture Evolution
+
+Originally modules were mainly event listeners.
+
+The system has expanded to support runtime object modification.
+
+Current principle:
+
+A module should modify capabilities exposed by runtime objects.
+
+Examples:
+
+Movement capability:
+
+- Speed changes
+- Acceleration
+- Homing movement
+
+Targeting capability:
+
+- Homing
+- Chain targeting
+
+Lifetime capability:
+
+- Duration changes
 
 ---
 
@@ -287,10 +356,46 @@ Runtime objects:
 - Query effective stats
 - Control lifetime
 - Handle world interaction
+- Expose modification points
 
 Views:
 
 - Represent Unity objects only
+
+---
+
+# Runtime Object Modification
+
+Validated approach:
+
+Modules can modify runtime objects when the capability exists.
+
+The architecture intentionally avoids projectile-only assumptions.
+
+Examples:
+
+Projectile:
+
+- Movement modification
+- Targeting modification
+- Split behavior
+- Chain behavior
+
+Aura:
+
+Future possible modifications:
+
+- Radius
+- Duration
+- Interactions
+
+Beam:
+
+Future possible modifications:
+
+- Width
+- Duration
+- Targeting
 
 ---
 
@@ -304,12 +409,13 @@ Projectile runtime objects currently support:
 - Runtime stat queries
 - Hit event generation
 - Hit history tracking
+- Runtime modifiers
 
-Hit history was added to prevent spawned projectiles from immediately repeating invalid interactions.
+Hit history prevents spawned projectiles from immediately repeating invalid interactions.
 
 Example:
 
-A split projectile should create additional gameplay opportunities rather than repeatedly damaging the same target through recursive collisions.
+A split projectile should create additional gameplay opportunities rather than repeatedly damaging the same target.
 
 ---
 
@@ -363,7 +469,7 @@ Gameplay systems consume those events.
 
 ---
 
-# Session 4 Progression Prototype
+# Progression Prototype
 
 Implemented:
 
@@ -377,7 +483,7 @@ Responsibilities:
 - Detect encounter completion
 - Publish EncounterCompletedEvent
 - Wait for reward selection
-- Begin the next wave
+- Begin next wave
 
 ---
 
@@ -388,15 +494,16 @@ RewardController manages temporary run progression.
 Responsibilities:
 
 - Listen for EncounterCompletedEvent
-- Generate temporary reward offers
-- Apply selected modules to the player's SpellConfiguration
+- Generate reward offers
+- Filter available modules
+- Apply selected modules to SpellConfiguration
 - Publish RewardSelectedEvent
 
 RewardController does not interact with SpellInstances directly.
 
 ---
 
-## Reward Flow
+# Reward Flow
 
 Validated:
 
@@ -424,13 +531,13 @@ RewardSelectedEvent
 
 ↓
 
-Next Wave
+Next Encounter
 
 ---
 
 # Combat Prototype Extensions
 
-Added after playtest:
+Added:
 
 ## Player Combat
 
@@ -440,6 +547,7 @@ Implemented:
 - Damage reception
 - Defeat state
 
+---
 
 ## Enemy Combat
 
@@ -450,6 +558,7 @@ Implemented:
 - Enemy movement pressure
 - Enemy scaling
 
+---
 
 ## Enemy Archetypes
 
@@ -459,7 +568,7 @@ Prototype enemies:
 - Tank
 - Swarm
 
-Enemy variety is currently intended for testing combat pacing and spell effectiveness.
+Enemy variety currently exists to evaluate combat pacing.
 
 ---
 
@@ -467,9 +576,9 @@ Enemy variety is currently intended for testing combat pacing and spell effectiv
 
 ✓ No individual spell classes
 
-✓ Behaviors own existence
+✓ Behaviors own spell existence
 
-✓ Modules react through events
+✓ Modules extend behaviors
 
 ✓ Modules do not communicate directly
 
@@ -477,7 +586,7 @@ Enemy variety is currently intended for testing combat pacing and spell effectiv
 
 ✓ ScriptableObjects contain configuration only
 
-✓ Views only represent runtime objects
+✓ Views represent runtime objects only
 
 ✓ Stats are composed from behavior and module contributions
 
@@ -487,11 +596,13 @@ Enemy variety is currently intended for testing combat pacing and spell effectiv
 
 ✓ Combat systems consume game events instead of depending on spells
 
-✓ Spell progression modifies SpellConfiguration rather than active runtime spells
+✓ Spell progression modifies SpellConfiguration instead of active runtime spells
 
-✓ Reward progression integrates without modifying the spell runtime architecture
+✓ Reward progression integrates without modifying spell execution
 
-✓ Runtime object spawning can preserve explicit composition rules
+✓ Runtime objects can preserve explicit composition rules
+
+✓ Runtime object modification is capability-oriented
 
 ---
 
@@ -499,20 +610,60 @@ Enemy variety is currently intended for testing combat pacing and spell effectiv
 
 Current:
 
-- Duplicate module behavior is not yet defined
-- Reward generation is random only
+- Duplicate module behavior is undefined
 - Reward rarity does not exist
-- Module synergies are limited
-- Enemy system is still a prototype
+- Module compatibility rules do not exist
+- Tags system does not exist
+- Build restrictions do not exist
+- Enemy system is still prototype
 - Combat objectives are limited
-- Enemy scaling does not currently match spell scaling
-- Spell builds often converge toward direct damage stacking
+- Enemy scaling does not match spell scaling
+- Some builds converge toward direct damage optimization
 
-Future:
+---
 
-- Explicit duplicate module rules
-- Reward weighting
-- Reward categories
-- Advanced module interactions
-- Better enemy encounter design
-- More meaningful build decisions
+# Deferred Systems
+
+Not part of MVP validation:
+
+- Inventory
+- Meta progression
+- Shops
+- Save system
+- Status effects
+- Procedural generation
+- Dungeon structure
+- Floor progression
+
+---
+
+# MVP Status
+
+The spell architecture and progression prototype milestone is complete.
+
+Validated:
+
+- Spell composition works.
+- Runtime architecture scales with additional modules.
+- Player-driven spell evolution creates emergent behavior.
+- Combat integration does not compromise spell ownership.
+- Reward progression modifies builds correctly.
+
+---
+
+# Next Phase
+
+The next phase moves from architecture validation into game definition.
+
+Focus:
+
+- Define final gameplay loop
+- Design progression systems
+- Establish build rules
+- Introduce tags when justified
+- Expand enemy design
+- Define world and presentation
+- Create story hooks
+- Improve player-facing clarity
+
+The architecture is now considered a foundation for building the actual game.

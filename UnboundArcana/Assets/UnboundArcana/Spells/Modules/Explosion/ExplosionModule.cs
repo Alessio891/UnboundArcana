@@ -4,6 +4,7 @@ using UnboundArcana.Spells.Runtime;
 using UnboundArcana.Spells.Runtime.Objects;
 using UnboundArcana.Spells.Runtime.Views;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace UnboundArcana.Spells.Modules.Explosion
 {
@@ -25,6 +26,7 @@ namespace UnboundArcana.Spells.Modules.Explosion
 
 		private void OnHit(HitEvent hitEvent)
 		{
+			Debug.Log($"EXPLOSION CREATED AT {hitEvent.Position}");
 			ExplosionRuntimeObject explosion =
 				new(
 					hitEvent.Position,

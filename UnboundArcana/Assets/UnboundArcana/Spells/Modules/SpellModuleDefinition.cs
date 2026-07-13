@@ -1,12 +1,15 @@
-using UnboundArcana.Spells.Runtime;
-using UnboundArcana.Core.Stats;
 using UnityEngine;
+using UnboundArcana.Spells.Runtime;
 
 namespace UnboundArcana.Spells.Modules
 {
 	public abstract class SpellModuleDefinition : ScriptableObject
 	{
-		public abstract SpellModule CreateRuntime();
+		[SerializeField]
+		private ModuleCategory category = ModuleCategory.Other;
 
+		public ModuleCategory Category => category;
+
+		public abstract SpellModule CreateRuntime();
 	}
 }

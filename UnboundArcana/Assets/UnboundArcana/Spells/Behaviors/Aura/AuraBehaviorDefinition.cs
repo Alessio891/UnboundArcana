@@ -10,7 +10,7 @@ namespace UnboundArcana.Spells.Behaviors.Aura
 		public GameObject auraPrefab;
 		public float duration = 5f;
 		public float size = 1f;
-
+		public bool followOwner = true;
 		public override SpellBehavior CreateRuntime()
 		{
 			AuraBehavior behavior = new();

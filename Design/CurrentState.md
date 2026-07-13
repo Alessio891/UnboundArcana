@@ -2,15 +2,30 @@
 
 Last Updated:
 
-2026-07-12
+2026-07-13
 
 ---
 
 # Current Milestone
 
-Session 5 - First Playtest
+MVP Spell Composition Prototype
 
 Completed.
+
+---
+
+# Milestone Overview
+
+The first playable prototype milestone has been completed.
+
+The purpose of this milestone was to validate:
+
+1. Does the spell composition architecture remain robust when integrated into gameplay?
+2. Is creating and modifying spells an engaging gameplay mechanic?
+
+Both questions have been positively validated.
+
+The prototype is now moving from architecture validation into deeper game design and production planning.
 
 ---
 
@@ -18,7 +33,9 @@ Completed.
 
 ## Spell Composition Architecture
 
-Validated:
+Validated.
+
+The system supports:
 
 - Multiple behavior types
 - Independent modules
@@ -27,10 +44,52 @@ Validated:
 - Runtime context injection
 - Runtime object creation
 - Modifier aggregation
+- Runtime object modification
+- Player-driven spell composition
+
+Current architecture:
+
+SpellDefinition
+
+↓
+
+SpellConfiguration
+
+↓
+
+SpellFactory
+
+↓
+
+SpellInstance
+
+↓
+
+SpellBehavior
+
+↓
+
+SpellRuntimeObjects
+
+↓
+
+Runtime Events
+
+↓
+
+SpellModules
+
+↓
+
+Gameplay Systems
+
+↓
+
+Run Progression
 
 ---
 
-## Player Spell Configuration
+# Player Spell Configuration
 
 Implemented.
 
@@ -60,7 +119,17 @@ SpellInstance
 
 ---
 
-## Runtime Spell Lifecycle
+SpellConfigurations represent editable spell builds.
+
+SpellInstances represent temporary spell executions.
+
+Changing a configuration affects future casts only.
+
+Existing runtime spells remain independent.
+
+---
+
+# Runtime Spell Lifecycle
 
 Implemented.
 
@@ -78,6 +147,10 @@ Create SpellInstance
 
 ↓
 
+Initialize Behavior and Modules
+
+↓
+
 Create Runtime Objects
 
 ↓
@@ -90,113 +163,79 @@ Finish
 
 ↓
 
-Remove from SpellRuntimeManager
+Remove Runtime Instance
 
 ---
 
-# Session 2 - Combat Foundation
+# Progression Loop Prototype
 
 Completed.
 
-Validation question:
+Validated gameplay loop:
 
-Can the existing spell architecture operate inside a real gameplay loop?
+Encounter
 
-Answer:
+↓
 
-Yes.
+Combat
 
----
+↓
 
-# Session 3 - Gameplay Variety
+Encounter Completion
 
-Completed.
+↓
 
-Validation question:
+Reward Selection
 
-Do spell compositions create meaningful gameplay choices?
+↓
 
-Answer:
+Modify Spell Configuration
 
-Yes.
+↓
 
----
-
-# Session 4 - Progression Loop
-
-Completed.
-
-Validation question:
-
-Does improving spells during a run create meaningful gameplay decisions?
-
-Answer:
-
-Yes.
+Continue Run
 
 ---
 
-# Session 4 Implemented Systems
+# Reward System
 
-## Enemy Wave Progression
-
-Implemented.
-
-Added:
-
-- Fixed-size encounter waves
-- Encounter completion detection
-- Reward phase between waves
-- Event-driven wave progression
-
----
-
-## Reward Prototype
-
-Implemented.
+Implemented and improved.
 
 Added:
 
 - RewardController
-- Random reward offers
+- Random module offers
 - Module acquisition
-- SpellConfiguration modification during a run
+- Reward filtering
+- Module category support
 
-Rewards affect future casts only.
+Rewards modify the player spell configuration.
 
-Existing SpellInstances remain unchanged.
-
----
-
-# Session 5 First Playtest
-
-Completed.
-
-Goal:
-
-Evaluate the complete combat and progression loop as a playable prototype.
+They do not directly modify active spells.
 
 ---
 
-# Implemented Playtest Systems
+# Combat Prototype
+
+Implemented.
 
 ## Combat Interaction
 
 Added:
 
 - Player health
-- Enemy contact damage
 - Enemy health
+- Enemy contact damage
 - Enemy defeat handling
-- Damage event integration
+- Damage event pipeline
 
-The damage pipeline remains:
+Damage flow:
 
 DamageEvent
 
 ↓
 
-DamageSystem
+Damage System
 
 ↓
 
@@ -206,107 +245,206 @@ IDamageable
 
 ## Player Casting
 
-Added:
+Implemented:
 
-- Basic cast cooldown
+- Basic casting
+- Cooldown handling
 
 Current cooldown exists at the casting source level.
 
-Future iterations may move this into spell stats.
+Future iterations may move casting rules into spell composition.
 
 ---
 
-## Enemy Variety
-
-Added prototype enemy types:
-
-- Chaser
-- Tank
-- Swarm
-
-Enemies currently share the same basic damage pipeline while testing encounter pacing.
-
----
-
-## Projectile Improvements
+# Enemy Prototype
 
 Added:
 
-- Projectile hit history
+- Chaser enemy
+- Tank enemy
+- Swarm enemy
 
-Purpose:
+Enemy variety was introduced to evaluate spell effectiveness and combat pacing.
 
-Prevent projectile derivatives from immediately repeating invalid hits.
+The enemy system is still considered prototype quality.
+
+---
+
+# Runtime Object System
+
+Validated.
+
+Runtime objects:
+
+- Maintain gameplay state
+- Own runtime lifetime
+- Interact with the world
+- Expose modification points
+
+Current runtime objects:
+
+- ProjectileRuntimeObject
+- ExplosionRuntimeObject
+- AuraRuntimeObject
+- BeamRuntimeObject
+
+---
+
+# Module System Evolution
+
+The module architecture has been expanded.
+
+Modules are no longer considered only as event listeners.
+
+Modules can now also modify runtime objects when appropriate.
+
+General principle:
+
+Modules modify existing behavior capabilities.
+
+They do not replace behaviors.
+
+---
+
+Examples:
+
+ProjectileBehavior
+
++
+
+Homing Module
+
+=
+
+Homing projectile
+
+---
+
+ProjectileBehavior
+
++
+
+Chain Module
+
+=
+
+Projectile with chained targeting
+
+---
+
+ProjectileBehavior
+
++
+
+Speed Modifier
+
+=
+
+Projectile with modified movement behavior
+
+---
+
+The same concept should remain applicable to other runtime objects where meaningful.
+
+---
+
+# Behavior Responsibility
+
+Behaviors define the fundamental identity of a spell.
+
+Current behaviors:
+
+- ProjectileBehavior
+- AuraBehavior
+- BeamBehavior
+
+Examples:
+
+Projectile:
+
+Creates moving runtime objects.
+
+Aura:
+
+Creates persistent area-based runtime objects.
+
+Beam:
+
+Creates directional sustained runtime objects.
+
+---
+
+Modules enhance behaviors.
+
+They should not become replacements for behaviors.
+
+---
+
+# Module Categories
+
+Implemented.
+
+Modules currently have categorization support to improve reward quality and future build rules.
+
+Current purpose:
+
+- Improve reward generation
+- Avoid meaningless choices
+- Prepare future compatibility rules
+
+Future systems may introduce:
+
+- Tags
+- Compatibility restrictions
+- Exclusive module categories
+
+---
+
+# Runtime Object Modification
+
+Validated.
+
+A generic runtime object modification approach has been introduced.
+
+The goal:
+
+Avoid creating systems tied only to projectiles.
+
+Instead:
+
+Modules should modify runtime capabilities when those capabilities exist.
 
 Example:
 
-A split projectile should create new targeting opportunities instead of multiplying damage against the same target.
+A movement modifier affects runtime objects with movement.
+
+A targeting modifier affects runtime objects capable of targeting.
 
 ---
 
-# Session 5 Playtest Results
+# Current Implemented Modules
 
-## Combat Pacing
+## Damage / Effects
 
-Validated:
-
-- Basic combat loop works.
-- Spell evolution is noticeable.
-- Combat becomes easier too quickly as modules accumulate.
-
-Main issue:
-
-Enemy scaling does not currently match spell power growth.
+- FireModule
+- ExplosionModule
+- CastSpellOnDestroyModule
 
 ---
 
-## Spell Evolution
+## Projectile Behavior Modifiers
 
-Validated:
-
-- Adding modules changes spell identity.
-- Players can perceive progression.
-- Module acquisition creates some build direction.
-
-Current limitation:
-
-Available modules are too few, causing builds to converge.
+- ForkModule
+- SplitOnDestroyModule
+- HomingModule
+- ChainModule
+- Projectile speed modification modules
 
 ---
 
-## Module Balance
+## Stat Modifiers
 
-Identified problems:
-
-- Direct damage modules are too universally valuable.
-- Some combinations scale too aggressively.
-- Some modules change numbers more than playstyle.
-
----
-
-## Combat Loop
-
-Current:
-
-Encounter
-
-↓
-
-Fight enemies
-
-↓
-
-Complete encounter
-
-↓
-
-Choose module
-
-↓
-
-Continue
-
-This is functional for testing but not yet considered the final gameplay loop.
+- SizeModifierModule
 
 ---
 
@@ -356,60 +494,53 @@ Run Progression
 
 ---
 
-# Current Implemented Systems
+# Validated Design Principles
 
-## Behaviors
+✓ Behaviors define spell existence
 
-- ProjectileBehavior
-- AuraBehavior
-- BeamBehavior
+✓ Modules extend behaviors
 
----
+✓ Runtime objects contain gameplay state
 
-## Modules
+✓ Runtime objects can be modified generically
 
-- FireModule
-- ExplosionModule
-- ForkModule
-- SplitOnDestroyModule
-- CastSpellOnDestroyModule
-- SizeModifierModule
+✓ ScriptableObjects contain configuration only
 
----
+✓ Views represent runtime objects only
 
-## Runtime Objects
+✓ Stats are composed from behaviors and modules
 
-- ProjectileRuntimeObject
-- ExplosionRuntimeObject
-- AuraRuntimeObject
-- BeamRuntimeObject
+✓ Player configurations are separated from runtime execution
+
+✓ Runtime spell instances are disposable
+
+✓ Combat consumes spell-generated events
+
+✓ Rewards modify configurations, not active spells
+
+✓ Module combinations can create emergent gameplay
 
 ---
 
-## Core Systems
+# Current Limitations
 
-Implemented:
+Current:
 
-- SpellEventBus
-- GameEventBus
-- Runtime Stat Aggregation
-- Runtime Modifier System
-- Spell Chaining
-- Runtime Context Injection
-- SpellConfiguration
-- Runtime Spell Lifecycle Cleanup
-- Damage Pipeline
-- Enemy Damage Reception
-- Enemy Death
-- EnemyWaveSpawner
-- RewardController
-- Player Damage Reception
+- Duplicate module rules are undefined
+- Reward rarity does not exist
+- Module compatibility rules do not exist
+- Tags system does not exist
+- Build restrictions do not exist
+- Enemy system remains prototype
+- Combat objectives are limited
+- Enemy scaling does not match spell scaling
+- Some builds still converge toward direct damage optimization
 
 ---
 
 # Deferred Systems
 
-Not required for current MVP validation:
+Not part of the MVP validation milestone:
 
 - Inventory
 - Meta progression
@@ -419,22 +550,30 @@ Not required for current MVP validation:
 - Procedural generation
 - Dungeon structure
 - Floor progression
+- Full progression tree
 
-These systems should only be considered after the spell progression loop has been improved and validated.
+These systems should be designed after the core spell identity and gameplay loop are expanded.
 
 ---
 
-# Next Milestone
+# Next Phase
 
-## Session 6 - Architecture and Gameplay Review
+## Post-MVP Game Development Planning
 
-Focus:
+The next milestone will focus on transforming the validated prototype into a complete game direction.
 
-- Evaluate module diversity
-- Improve reward quality
-- Review build identity
-- Define duplicate module rules
-- Improve encounter decisions
-- Decide which progression systems are necessary for the MVP
+Main topics:
 
-The goal is improving decision quality before expanding game scope.
+- Core gameplay loop definition
+- Player progression structure
+- Build rules
+- Module identity
+- Tags and compatibility systems
+- Enemy design
+- Boss encounters
+- Presentation and visual identity
+- Story hooks and world building
+
+The objective is no longer validating the architecture.
+
+The objective is defining the actual game built on top of it.

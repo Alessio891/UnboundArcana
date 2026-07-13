@@ -6,12 +6,18 @@ namespace UnboundArcana.Spells.Runtime.Views
 	public class ExplosionView : MonoBehaviour
 	{
 		private ExplosionRuntimeObject runtimeObject;
+		public AnimationClip explosionClip;
 
 		public void Initialize(ExplosionRuntimeObject runtimeObject)
 		{
 			this.runtimeObject = runtimeObject;
 
 			runtimeObject.SetView(gameObject);
+			Animator animator = GetComponentInChildren<Animator>();
+
+			AnimationClip clip = animator.runtimeAnimatorController.animationClips[0];
+
+			animator.speed = clip.length / runtimeObject.Duration;
 		}
 		private void OnDrawGizmos()
 		{

@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cb9d2cb3d9425849ba7690f658d4285, type: 3}
   m_Name: Size1
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.SizeModifier.SizeModifierModuleDefinition
+  category: 2
   percentage: 0.2

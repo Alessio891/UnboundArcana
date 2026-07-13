@@ -91,7 +91,34 @@ namespace UnboundArcana.Sandbox
 
 			int rewardCount = Mathf.Min(3, candidates.Count);
 
-			for (int i = 0; i < rewardCount; i++)
+			while (candidates.Count > 0 &&
+				currentRewards.Count < rewardCount)
+			{
+				int randomIndex = Random.Range(0, candidates.Count);
+
+				SpellModuleDefinition candidate = candidates[randomIndex];
+
+				bool categoryAlreadyPresent = false;
+
+				foreach (SpellModuleDefinition reward in currentRewards)
+				{
+					if (reward.Category == candidate.Category)
+					{
+						categoryAlreadyPresent = true;
+						break;
+					}
+				}
+
+				if (!categoryAlreadyPresent)
+				{
+					currentRewards.Add(candidate);
+				}
+
+				candidates.RemoveAt(randomIndex);
+			}
+
+			while (candidates.Count > 0 &&
+				currentRewards.Count < rewardCount)
 			{
 				int randomIndex = Random.Range(0, candidates.Count);
 

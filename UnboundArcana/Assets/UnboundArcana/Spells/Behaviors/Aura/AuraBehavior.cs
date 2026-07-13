@@ -20,7 +20,10 @@ namespace UnboundArcana.Spells.Behaviors.Aura
 
 			aura.SetInitialState(
 				context.Position,
-				definition.duration
+				definition.duration,
+				definition.followOwner
+					? spell.Owner.transform
+					: null
 			);
 
 			spell.RegisterRuntimeObject(aura);
