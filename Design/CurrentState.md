@@ -577,3 +577,18 @@ Main topics:
 The objective is no longer validating the architecture.
 
 The objective is defining the actual game built on top of it.
+
+# Post MVP Transition
+
+The spell architecture is validated.
+
+The next milestone introduces:
+- run lifecycle
+- room progression
+- research choices
+- spell editing experiments
+- minimal knowledge persistence
+
+Existing spell ownership remains unchanged:
+SpellConfiguration is player-owned.
+SpellInstance remains temporary.

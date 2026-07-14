@@ -1,166 +1,387 @@
-# ForbiddenKnowledgePrototype.md
-
-# Unbound Arcana - ForbiddenKnowledgePrototype
-
-## Purpose
-
-This milestone defines the transition from a validated spell composition prototype into the actual game structure.
-
-The technical foundation is considered validated.
-
-The current goal is not proving the spell system works.
-
-The goal is defining a realistic and engaging game around it.
-
----
-
-# Validation Completed
-
-The MVP validated:
-
-## Spell Composition
-
-The player can create spells through combinations of:
-
-* Behaviors
-* Modules / Principles
-* Runtime interactions
-
----
-
-## Gameplay Integration
-
-Validated systems:
-
-* Combat
-* Enemy interaction
-* Runtime execution
-* Rewards
-* Progression
-
----
-
-## Emergent Behavior
-
-Validated:
-
-* Spell evolution
-* Interesting combinations
-* Player experimentation
-
----
-
-# Current Milestone Goals
-
-Define:
-
-* Research expedition structure
-* Combat philosophy
-* Spell evolution rules
-* Progression model
-* Tower structure
-* Instability system
-
----
-
-# Current Design Hypotheses
-
-## Spell Management
-
-Baseline:
-
-* 2 active spells
-* 1 passive spell
-
-Spells represent magical experiments.
-
-The player maintains a small number of complex creations rather than many simple ones.
-
----
-
-## Spell Modification
-
-Preferred loop:
-
-```
-Initial Configuration
-        |
+Create Spell
+|
 Combat Trial
-        |
+|
 Discovery
-        |
+|
 Experimentation
-        |
+|
 Advanced Trial
-```
+|
+Guardian
+|
+Knowledge Gained
+|
+New Expedition
 
-Major spell changes happen during research moments.
-
----
-
-## Spell Replacement
-
-A spell can evolve.
-
-Changing behavior may remove incompatible principles.
-
-The player rewrites experiments instead of simply replacing equipment.
 
 ---
 
-## Deterministic Results
+# Run Structure
 
-The player should understand magic.
+The game should introduce the concept of a research expedition.
+
+A run contains:
+
+- Temporary spell evolution
+- Room progression
+- Research decisions
+- Combat encounters
+- Final challenge
+
+The first implementation should not include procedural generation.
+
+A fixed authored sequence is preferred.
+
+Example:
+
+
+Start Run
+
+↓
+
+Combat Room
+
+↓
+
+Research Room
+
+↓
+
+Combat Room
+
+↓
+
+Guardian Room
+
+↓
+
+Run Complete
+
+
+---
+
+# Room Types
+
+## Combat Room
+
+Purpose:
+
+Test the player's current spell experiments.
+
+Possible encounters:
+
+- Enemy waves
+- Elite enemies
+- Combat challenges
+
+Combat should evaluate spell creation choices.
+
+---
+
+## Research Room
+
+Purpose:
+
+Allow the player to modify existing experiments.
+
+Research actions:
+
+- Add module
+- Remove module
+- Replace module
+- Transform module
+
+Research modifies SpellConfiguration.
+
+Research does not modify active SpellInstances.
+
+---
+
+## Anomaly Room
+
+Future expansion.
+
+Purpose:
+
+Introduce risk and experimentation.
+
+Possible concepts:
+
+- Increase instability
+- Gain unusual effects
+- Accept unpredictable consequences
+
+This system should not be implemented until the core research loop is validated.
+
+---
+
+## Guardian Room
+
+Purpose:
+
+Final test of the current experiment.
+
+The guardian should challenge the player's created spell system rather than simply require higher damage.
+
+---
+
+# Spell Management
+
+Baseline player loadout:
+
+- 2 active spells
+- 1 passive spell
+
+The player maintains a small number of complex experiments instead of collecting many independent abilities.
+
+---
+
+# Spell Evolution
+
+Preferred model:
+
+The player edits existing spells.
+
+A spell is not replaced by another item.
+
+A spell is rewritten through experimentation.
+
+Example:
+
+
+Projectile
+
+Fire
+
+Explosion
+
+
+can evolve into:
+
+
+Projectile
+
+Fire
+
+Chain
+
+Explosion
+
+
+The identity comes from the composition.
+
+---
+
+# Research System Direction
+
+Research choices should represent discoveries.
+
+A reward is not simply:
+
+"Gain stronger ability."
+
+A reward represents:
+
+"Understand a new magical principle."
 
 Examples:
 
-Projectile + Explosion always produces explosive projectile behavior.
+- Discover Fire interaction
+- Discover Chain behavior
+- Transform an existing principle
+- Remove a limitation
 
-Complexity comes from combinations, not hidden randomness.
+The system should create new possibilities rather than only increase numerical power.
+
+---
+
+# Reward System Transition
+
+Current prototype:
+
+
+Encounter Complete
+
+↓
+
+Reward Offer
+
+↓
+
+Add Module
+
+
+Future direction:
+
+
+Encounter Complete
+
+↓
+
+Research Opportunity
+
+↓
+
+Experiment Choice
+
+↓
+
+Spell Modification
+
+↓
+
+Updated SpellConfiguration
+
+
+The existing RewardController pattern remains valid.
+
+The system should expand rewards into broader research actions instead of replacing the architecture.
+
+---
+
+# Knowledge Progression
+
+Knowledge represents permanent understanding of magic.
+
+It should unlock:
+
+- New behaviors
+- New modules
+- New interactions
+
+It should not provide:
+
+- Permanent damage bonuses
+- Character statistics
+- RPG progression systems
+
+The player improves through understanding magic, not through numerical growth.
+
+---
+
+# Complexity and Instability
+
+These systems represent future pillars of spell experimentation.
+
+They are intentionally deferred.
+
+---
+
+## Complexity
+
+Potential purpose:
+
+Define how much a spell can contain.
+
+Possible future uses:
+
+- Build limits
+- Research requirements
+- Spell identity rules
 
 ---
 
 ## Instability
 
-Instability is a risk/reward system.
+Purpose:
 
-It represents pushing magic beyond safe limits.
+Represent dangerous experimentation.
 
-Potential direction:
+Instability should create decisions, not simple punishment.
 
-* Complexity increases instability.
-* Instability produces weighted events.
-* Events create opportunities and risks.
+Possible future direction:
 
-Avoid making instability a simple failure chance.
+Higher instability creates:
 
----
+- Greater opportunities
+- Strange interactions
+- Dangerous consequences
 
-# Implementation Awareness
+Avoid implementing instability as only:
 
-The following ideas are intentionally constrained:
-
-## Procedural Research
-
-Prefer authored research domains with procedural combinations.
-
-Avoid generating completely new research systems dynamically.
+"Chance for spell failure."
 
 ---
 
-## Spell Interactions
+# Implementation Constraints
+
+## Procedural Tower
+
+Deferred.
+
+The first version should use authored room sequences.
+
+The goal is validating the gameplay loop.
+
+---
+
+## Dynamic Spell Mutation
+
+Deferred.
+
+Prefer:
+
+Modify future spell casts through SpellConfiguration.
+
+Avoid requiring all active runtime objects to transform dynamically.
+
+---
+
+## Universal Interaction Systems
+
+Deferred.
 
 Prefer explicit interaction points.
 
-Avoid unrestricted interactions between all possible principles.
+Avoid attempting to generate every possible magical interaction automatically.
 
 ---
 
-## Runtime Mutation
+# Implementation Order
 
-Prefer modifying future spell casts.
+## Phase 1 - Run Foundation
 
-Avoid requiring all existing runtime objects to transform dynamically.
+Introduce:
+
+- Run lifecycle
+- Start run
+- End run
+- Reset temporary state
+
+---
+
+## Phase 2 - Room Progression
+
+Introduce:
+
+- Room sequence
+- Combat room
+- Research room
+- Guardian room
+
+No procedural generation.
+
+---
+
+## Phase 3 - Research Choices
+
+Expand rewards into:
+
+- Spell modifications
+- Experiment choices
+- Research opportunities
+
+---
+
+## Phase 4 - Knowledge
+
+Introduce minimal permanent progression:
+
+- Unlock discoveries
+- Expand available principles
+
+No power scaling.
 
 ---
 
@@ -168,10 +389,21 @@ Avoid requiring all existing runtime objects to transform dynamically.
 
 Still requiring design:
 
-* Combat encounter structure
-* Enemy roles
-* Boss philosophy
-* Exact reward system
-* Research branch implementation
-* Instability details
-* Resource systems
+- Exact research room presentation
+- Guardian philosophy
+- Enemy roles
+- Spell complexity rules
+- Instability implementation
+- Knowledge unlock structure
+- Multiple spell management
+- Passive spell design
+
+---
+
+# Success Criteria
+
+The vertical slice succeeds if the player experience creates the feeling:
+
+"I discovered a magical principle and created something that could not have existed before."
+
+The system should encourage experimentation rather than optimization toward a single strongest build.
