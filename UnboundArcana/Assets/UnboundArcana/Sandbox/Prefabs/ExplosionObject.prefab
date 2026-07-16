@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ec57d16421b7354c93947a0788f2387, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Runtime.Views.ExplosionView
+  explosionClip: {fileID: 0}
 --- !u!1 &2783649835033203078
 GameObject:
   m_ObjectHideFlags: 0
@@ -123,9 +124,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: 1425153191
+  m_SortingLayer: 2
+  m_SortingOrder: -1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 8713120321045492238, guid: 9b25ed288c417a04490a19ca69a2c634, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
