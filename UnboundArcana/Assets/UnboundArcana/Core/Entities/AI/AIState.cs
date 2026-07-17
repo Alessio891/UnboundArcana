@@ -6,10 +6,13 @@ namespace UnboundArcana.Core.Entities.AI
 	public abstract class AIState
 	{
 		protected AIController controller;
-
-		public virtual void Initialize(AIController controller)
+		protected AIBehavior Behavior { get; private set; }
+		public virtual void Initialize(
+			AIController controller,
+			AIBehavior behavior)
 		{
 			this.controller = controller;
+			Behavior = behavior;
 		}
 
 		public virtual void Enter()
@@ -31,7 +34,7 @@ namespace UnboundArcana.Core.Entities.AI
 		{
 			if (controller.Target.CurrentTarget != null)
 			{
-				controller.SetState(
+				Behavior.ChangeState(
 					new ChaseState()
 				);
 			}
@@ -51,19 +54,18 @@ namespace UnboundArcana.Core.Entities.AI
 
 			if (target == null)
 			{
-				controller.SetState(new IdleState());
+				Behavior.ChangeState(new IdleState());
 				return;
 			}
 
 			Vector2 direction =
-				target.transform.position -
-				controller.transform.position;
+				Behavior.GetMovementDirection(target);
 
-			float distance = direction.magnitude;
+			float distance = Vector3.Distance(controller.transform.position, target.transform.position);// direction.magnitude;
 
 			if (distance <= controller.Profile.AttackRange)
 			{
-				controller.SetState(new AttackState());
+				Behavior.ChangeState(new AttackState());
 				return;
 			}
 
@@ -94,22 +96,20 @@ namespace UnboundArcana.Core.Entities.AI
 
 			if (target == null)
 			{
-				controller.SetState(new IdleState());
+				Behavior.ChangeState(new IdleState());
 				return;
 			}
 
 
-			Vector2 direction =
-				target.transform.position -
-				controller.transform.position;
+			Vector2 direction = Behavior.GetMovementDirection(target);
 
 
-			float distance = direction.magnitude;
+			float distance = Vector3.Distance(controller.transform.position, target.transform.position);
 
 
 			if (distance > controller.Profile.AttackRange)
 			{
-				controller.SetState(new ChaseState());
+				Behavior.ChangeState(new ChaseState());
 				return;
 			}
 
@@ -118,11 +118,11 @@ namespace UnboundArcana.Core.Entities.AI
 				direction
 			);
 
-			controller.Caster.SetAimDirection(
+			controller.Caster?.SetAimDirection(
 				direction
 			);
 
-			controller.Caster.BeginCast();
+			Behavior.ExecuteAttack(target);
 		}
 
 

@@ -6,7 +6,7 @@ namespace UnboundArcana.Core.Entities.AI
 {
 	public class AIController : EntityController
 	{
-		private AIStateMachine stateMachine;
+		private AIBehavior behavior;
 		private EntitySensor sensor;
 		public TargetingComponent Target => Targeting;
 
@@ -22,15 +22,16 @@ namespace UnboundArcana.Core.Entities.AI
 		{
 			base.Awake();
 
-			stateMachine = new AIStateMachine();
 			sensor = GetComponentInChildren<EntitySensor>();
 
 			sensor.EntityDetected += OnEntityDetected;
 			sensor.EntityLost += OnEntityLost;
+			behavior =
+				Entity.Definition
+					  .behavior
+					  .CreateBehavior(this);
 
-			SetState(
-				Entity.Definition.behavior.CreateInitialState()
-			);
+			behavior.Initialize();
 		}
 
 		private void OnEntityDetected(Entity entity)
@@ -50,13 +51,7 @@ namespace UnboundArcana.Core.Entities.AI
 		}
 		private void Update()
 		{
-			stateMachine.Tick();
-		}
-
-		public void SetState(AIState state)
-		{
-			state.Initialize(this);
-			stateMachine.ChangeState(state);
+			behavior.Tick();
 		}
 	}
 }
