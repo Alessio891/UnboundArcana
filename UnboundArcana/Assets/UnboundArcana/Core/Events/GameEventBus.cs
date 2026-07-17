@@ -7,7 +7,7 @@ namespace UnboundArcana.Core.Events
 	{
 		private readonly Dictionary<Type, List<Delegate>> listeners = new();
 
-		public void Subscribe<T>(Action<T> listener) where T : SpellEvent
+		public void Subscribe<T>(Action<T> listener)
 		{
 			Type type = typeof(T);
 
@@ -19,7 +19,7 @@ namespace UnboundArcana.Core.Events
 			listeners[type].Add(listener);
 		}
 
-		public void Unsubscribe<T>(Action<T> listener) where T : SpellEvent
+		public void Unsubscribe<T>(Action<T> listener)
 		{
 			Type type = typeof(T);
 
@@ -31,7 +31,7 @@ namespace UnboundArcana.Core.Events
 			listeners[type].Remove(listener);
 		}
 
-		public void Publish<T>(T eventData) where T : SpellEvent
+		public void Publish<T>(T eventData)
 		{
 			Type type = typeof(T);
 

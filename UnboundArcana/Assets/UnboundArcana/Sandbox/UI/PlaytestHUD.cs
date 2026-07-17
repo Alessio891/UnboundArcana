@@ -30,7 +30,7 @@ namespace UnboundArcana.Sandbox.UI
 
 
 			SpellTester.RuntimeManager.GameEvents
-				.Subscribe<EnemyKilledEvent>(OnEnemyKilled);
+				.Subscribe<SpellKillEvent>(OnEnemyKilled);
 
 			RefreshSpell();
 		}
@@ -58,7 +58,7 @@ namespace UnboundArcana.Sandbox.UI
 				.Unsubscribe<DamageEvent>(OnDamage);
 
 			SpellTester.RuntimeManager.GameEvents
-				.Unsubscribe<EnemyKilledEvent>(OnEnemyKilled);
+				.Unsubscribe<SpellKillEvent>(OnEnemyKilled);
 		}
 		private void OnDamage(
 	DamageEvent eventData)
@@ -71,7 +71,7 @@ namespace UnboundArcana.Sandbox.UI
 		}
 
 		private void OnEnemyKilled(
-			EnemyKilledEvent eventData)
+			SpellKillEvent eventData)
 		{
 			CombatPanel.AddKill();
 		}

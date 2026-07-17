@@ -10,15 +10,13 @@ namespace UnboundArcana.Core.Runtime
 	{
 		private readonly List<SpellInstance> spells = new();
 		private readonly List<SpellInstance> pendingSpells = new();
-		public GameEventBus GameEvents { get; private set; }
+		private GameRuntimeManager gameRuntimeManager;
+		public GameEventBus GameEvents => gameRuntimeManager.Events;
 		
-		private DamageSystem damageSystem;
-
+		private DamageSystem damageSystem => gameRuntimeManager.Damage;
 		private void Awake()
 		{
-			GameEvents = new GameEventBus();
-			damageSystem = new DamageSystem();
-			damageSystem.Initialize(GameEvents);
+			gameRuntimeManager = GetComponent<GameRuntimeManager>();
 		}
 		public void Register(SpellInstance spell)
 		{

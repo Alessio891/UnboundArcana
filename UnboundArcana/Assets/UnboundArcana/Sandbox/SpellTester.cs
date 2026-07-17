@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 using UnboundArcana.Core.Runtime;
 using UnboundArcana.Spells.Modules;
 using UnboundArcana.Core.Combat;
+using UnboundArcana.Core.Entities;
 
 namespace UnboundArcana.Sandbox
 {
@@ -18,16 +19,14 @@ namespace UnboundArcana.Sandbox
 		public SpellModuleDefinition explosionModule;
 		public SpellModuleDefinition sizeModule;
 
-		[SerializeField] private float health = 100f;
 
 		private SpellConfiguration spellConfiguration;
 		private SpellInstance activeSpell;
 
-		private UnboundArcanaControls controls;
 		private Camera mainCamera;
 		private bool isCasting;
 		private Vector2 moveInput;
-
+		private CharacterMotor motor;
 		public float MoveSpeed = 10.0f;
 		public SpellConfiguration Configuration => spellConfiguration;
 		[SerializeField] private float castCooldown = 0.25f;
@@ -35,13 +34,16 @@ namespace UnboundArcana.Sandbox
 		private float castTimer;
 		private void Awake()
 		{
-			controls = new UnboundArcanaControls();
 			mainCamera = Camera.main;
+			motor = GetComponent<CharacterMotor>();
 		}
 
 		private void Start()
 		{
 			spellConfiguration = new SpellConfiguration(projectileSpell);
+			GetComponent<Entity>()
+				.Stats
+				.Set(EntityStatId.MaxHealth, 100);
 		}
 
 		private SpellInstance CreateSpellInstance()
@@ -57,36 +59,16 @@ namespace UnboundArcana.Sandbox
 
 		private void OnEnable()
 		{
-			controls.Gameplay.Enable();
-
-			controls.Gameplay.Cast.performed += OnCast;
-			controls.Gameplay.Cast.canceled += OnCastEnd;
-
-			controls.Gameplay.Move.performed += ctx =>
-			{
-				moveInput = ctx.ReadValue<Vector2>();
-			};
-
-			controls.Gameplay.Move.canceled += ctx =>
-			{
-				moveInput = Vector2.zero;
-			};
+			
 		}
 
 		private void OnDisable()
 		{
-			controls.Gameplay.Cast.performed -= OnCast;
-			controls.Gameplay.Cast.canceled -= OnCastEnd;
-
-			controls.Gameplay.Disable();
+			
 		}
-
 		private void Update()
 		{
-			transform.position +=
-				new Vector3(moveInput.x, moveInput.y, 0) *
-				MoveSpeed *
-				Time.deltaTime;
+			
 			castTimer -= Time.deltaTime;
 			if (moveInput.x != 0)
 			{
@@ -118,8 +100,7 @@ namespace UnboundArcana.Sandbox
 			);
 		}
 
-		private void OnCast(
-			InputAction.CallbackContext context)
+		public void BeginCast()
 		{
 			if (castTimer > 0f)
 			{
@@ -158,8 +139,7 @@ namespace UnboundArcana.Sandbox
 			);
 		}
 
-		private void OnCastEnd(
-			InputAction.CallbackContext context)
+		public void EndCast()
 		{
 			isCasting = false;
 
@@ -176,15 +156,6 @@ namespace UnboundArcana.Sandbox
 
 		public void TakeDamage(DamageInfo damage)
 		{
-			health -= damage.Amount;
-
-			Debug.Log($"Player damaged. HP: {health}");
-
-			if (health <= 0)
-			{
-				Debug.Log("Player defeated");
-				Time.timeScale = 0.0f;
-			}
 		}
 	}
 }

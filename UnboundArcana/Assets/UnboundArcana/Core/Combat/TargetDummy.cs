@@ -101,7 +101,7 @@ namespace UnboundArcana.Sandbox
 			OnDeath?.Invoke();
 
 			gameEvents?.Publish(
-				new EnemyKilledEvent(gameObject)
+				new SpellKillEvent(gameObject)
 			);
 
 			Destroy(gameObject);

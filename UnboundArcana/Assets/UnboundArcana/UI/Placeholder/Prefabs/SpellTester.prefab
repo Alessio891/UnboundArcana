@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7327629927972999288}
   - component: {fileID: 8843379801218550247}
+  - component: {fileID: 461159344327279585}
   m_Layer: 0
   m_Name: sprite
   m_TagString: Untagged
@@ -26,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 512674037284719831}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -81,7 +82,7 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -6866571286258344739, guid: af820bcf25c10a84c9f2f4a628c96c3d, type: 3}
+  m_Sprite: {fileID: 3427114271967980436, guid: 86ebc9ab75e9a0a42ac0bed03b68a8d1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -91,6 +92,110 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 1
+--- !u!95 &461159344327279585
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 512674037284719831}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8d5ba698515265140bace5a9cb957e70, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &716248270558281323
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4445244858950807883}
+  - component: {fileID: 4150277400661762160}
+  - component: {fileID: 3583724472626557886}
+  m_Layer: 0
+  m_Name: InteractionSensor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4445244858950807883
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 716248270558281323}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5280616634683722583}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!58 &4150277400661762160
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 716248270558281323}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 1.34
+--- !u!114 &3583724472626557886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 716248270558281323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02d6cc2bb8426594da87e6be4b570f82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Interaction.InteractionSensor
+  controller: {fileID: 0}
 --- !u!1 &4040393986165503249
 GameObject:
   m_ObjectHideFlags: 0
@@ -237,9 +342,18 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5280616634683722583}
-  - component: {fileID: 8832926351166496584}
   - component: {fileID: 4401261293862142485}
   - component: {fileID: 5468815315786889365}
+  - component: {fileID: 5007324215775615495}
+  - component: {fileID: 4721763144406732354}
+  - component: {fileID: 4469700791478100117}
+  - component: {fileID: 4701518993873676262}
+  - component: {fileID: 8942802052331823371}
+  - component: {fileID: 5867268251859782719}
+  - component: {fileID: 1853958896152230354}
+  - component: {fileID: 5265852904588073924}
+  - component: {fileID: 1363279346379533129}
+  - component: {fileID: 589551392017092344}
   m_Layer: 0
   m_Name: SpellTester
   m_TagString: Untagged
@@ -262,28 +376,9 @@ Transform:
   m_Children:
   - {fileID: 5572256434974566363}
   - {fileID: 7327629927972999288}
+  - {fileID: 4445244858950807883}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8832926351166496584
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8682490158059739663}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd547ad96e7026149a3d9a41abe3f4d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Sandbox.SpellTester
-  RuntimeManager: {fileID: 0}
-  projectileSpell: {fileID: 11400000, guid: 67ebb923e85a9ba42b24adb27a86ca36, type: 2}
-  fireModule: {fileID: 11400000, guid: c318f855860865143b2306c92f3941c2, type: 2}
-  explosionModule: {fileID: 11400000, guid: 8682e9d1c54ad7943b82f7ac8fef366b, type: 2}
-  sizeModule: {fileID: 11400000, guid: 67f67c0c04456814fb627dde6446a1db, type: 2}
-  health: 100
-  MoveSpeed: 3
-  castCooldown: 0.25
 --- !u!70 &4401261293862142485
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -318,7 +413,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.01, y: -0.47}
+  m_Offset: {x: 0.01, y: 0}
   m_Size: {x: 0.22, y: 0.2}
   m_Direction: 0
 --- !u!50 &5468815315786889365
@@ -348,3 +443,128 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &5007324215775615495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8682490158059739663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fcf1e96669edab4e9ba65f56ddeacf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.Entity
+  definition: {fileID: 11400000, guid: acd5a0252c9f049488bb832c530a4543, type: 2}
+--- !u!114 &4721763144406732354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8682490158059739663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a3a1a726b129904d8f6bf5079d11d79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.EntityHealth
+--- !u!114 &4469700791478100117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8682490158059739663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cccc6f7997b2b746b0b63d86dc09b22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.CharacterMotor
+--- !u!114 &4701518993873676262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8682490158059739663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f09da9508ea43de438036025069cb283, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Player.PlayerInput
+  inputEnabled: 1
+--- !u!114 &8942802052331823371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8682490158059739663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6babac2bc46e02d4582184b6a3028b21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Player.PlayerController
+--- !u!114 &5867268251859782719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8682490158059739663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a31eaf324329a0648b8bf2a43f9748b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.SpellCaster
+  RuntimeManager: {fileID: 0}
+  SpellDefinition: {fileID: 11400000, guid: 67ebb923e85a9ba42b24adb27a86ca36, type: 2}
+  castCooldown: 0.25
+--- !u!114 &1853958896152230354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8682490158059739663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b62fb5e26a68d74baefa38d093f97c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EntityLifecycle
+--- !u!114 &5265852904588073924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8682490158059739663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0430df88ed340c945be7711f2e633d02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.EntityAnimatorController
+--- !u!114 &1363279346379533129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8682490158059739663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1ee06527e8c7974bbbe22252ca70d1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Interaction.InteractionController
+--- !u!114 &589551392017092344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8682490158059739663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e507d35f59e9dcb4ba0c8ed97132ef18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.EntityFacing
