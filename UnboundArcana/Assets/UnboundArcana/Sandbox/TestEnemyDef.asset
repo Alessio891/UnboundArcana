@@ -17,4 +17,4 @@ MonoBehaviour:
   castSpeed: 1
   armor: 0
   aiProfile: {fileID: 11400000, guid: e8d99d6e47e45c34eaa86a74b02c9b4a, type: 2}
-  behavior: {fileID: 11400000, guid: 05c5ebb2f8c6adb4591cd7d897c68f50, type: 2}
+  behavior: {fileID: 11400000, guid: a064b814eea96ae4ebba4487d5383fc5, type: 2}

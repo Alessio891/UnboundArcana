@@ -9,6 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: New Chase Attack Behavior Definition
-  m_EditorClassIdentifier: Assembly-CSharp::ChaseAttackBehaviorDefinition
+  m_Script: {fileID: 11500000, guid: b874ef3335bfc5945820c52f9f83a975, type: 3}
+  m_Name: New Chasing Enemy Definition
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.AI.ChasingEnemyDefinition

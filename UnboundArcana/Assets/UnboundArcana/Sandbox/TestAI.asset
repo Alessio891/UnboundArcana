@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: TestAI
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.AI.AIProfile
   detectionRange: 5
-  attackRange: 0.5
+  attackRange: 1
   attackCooldown: 1
