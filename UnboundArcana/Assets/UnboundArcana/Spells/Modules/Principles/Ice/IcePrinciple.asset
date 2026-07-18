@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3cc1d15d63c5624a9162b5b7b6123d1, type: 3}
+  m_Name: IcePrinciple
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.Ice.IceModuleDefinition
+  category: 1
+  icon: {fileID: 5361114426108692022, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
+  damage: 5
+  projectileSprite: {fileID: -6433197586683392462, guid: 9c62626eb5e00634da78f64e24c779a6, type: 3}
+  chilledStatus: {fileID: 11400000, guid: 37f02cc1f278ca947bbe3c8b8a08d20d, type: 2}

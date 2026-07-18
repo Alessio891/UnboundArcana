@@ -15,4 +15,5 @@ MonoBehaviour:
   icon: {fileID: -776987064487763947, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
   projectilePrefab: {fileID: 5930129938759342534, guid: c9388eb75394ea641b70062f5e891436, type: 3}
   lifetime: 1.5
-  speed: 8
+  speed: 5
+  baseDamage: 10

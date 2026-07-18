@@ -1,3 +1,4 @@
+using UnboundArcana.Core.Entities;
 using UnboundArcana.Core.Events;
 using UnboundArcana.Core.Runtime;
 using UnityEngine;
@@ -116,7 +117,7 @@ namespace UnboundArcana.Sandbox
 					GetEnemyModifiers();
 
 				dummy.Initialize(
-					player,
+					player.GetComponent<Entity>(),
 					GameEvents,
 					healthMultiplier,
 					speedMultiplier

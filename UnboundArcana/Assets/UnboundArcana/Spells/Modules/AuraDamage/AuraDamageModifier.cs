@@ -1,4 +1,5 @@
 using UnboundArcana.Core.Combat;
+using UnboundArcana.Core.Entities;
 using UnboundArcana.Core.Events;
 using UnboundArcana.Core.Stats;
 using UnboundArcana.Spells.Runtime;
@@ -62,11 +63,14 @@ namespace UnboundArcana.Spells.Modules.AuraDamage
 				{
 					continue;
 				}
+				if (hit.GetComponent<Entity>() == null) {
+					continue;
+				}
 
 				spell.Runtime.GameEvents.Publish(
 					new DamageEvent(
 						spell.Owner,
-						hit.gameObject,
+						hit.GetComponent<Entity>(),
 						damage,
 						DamageType.Fire
 					)

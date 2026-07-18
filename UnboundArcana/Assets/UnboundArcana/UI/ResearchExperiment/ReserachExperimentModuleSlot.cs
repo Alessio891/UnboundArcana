@@ -2,6 +2,7 @@ using UnboundArcana.Spells.Behaviors;
 using UnboundArcana.Spells.Modules;
 using UnboundArcana.Spells.Runtime;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
@@ -9,7 +10,7 @@ public enum ResearchExperimentSlotType {
 	Core, Principle, Catalyst, Flux
 }
 
-public class ReserachExperimentModuleSlot : MonoBehaviour
+public class ReserachExperimentModuleSlot : MonoBehaviour, IDropHandler
 {
 	[SerializeField] private ResearchExperimentSlotType type;
 	[SerializeField] private Image icon;
@@ -19,6 +20,7 @@ public class ReserachExperimentModuleSlot : MonoBehaviour
 	[SerializeField]
 	private SpellBehaviorDefinition spellBehavior;
 
+	public ReserachExperimentUI uiManager;
 	private void Awake()
 	{
 		if (module != null)
@@ -57,5 +59,12 @@ public class ReserachExperimentModuleSlot : MonoBehaviour
 			icon.enabled = true;
 		}
 		icon.sprite = behavior.Icon;
+	}
+
+	public void OnDrop(PointerEventData eventData)
+	{
+		Debug.Log("Dropped something on slot");
+		uiManager.RewardDroppedOnSlot();
+		uiManager.EndDragReward();
 	}
 }

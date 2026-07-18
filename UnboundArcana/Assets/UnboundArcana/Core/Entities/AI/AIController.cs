@@ -14,7 +14,6 @@ namespace UnboundArcana.Core.Entities.AI
 
 		public Entity CurrentEntity => Entity;
 
-		public AIProfile Profile => Entity.Definition.aiProfile;
 		public SpellCaster Caster => SpellCaster;
 
 		public EntityFacing FacingDirection => Facing;

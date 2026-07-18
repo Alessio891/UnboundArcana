@@ -1,4 +1,5 @@
 using UnboundArcana.Core.Combat;
+using UnboundArcana.Core.Entities;
 using UnboundArcana.Core.Events;
 using UnboundArcana.Core.Stats;
 using UnboundArcana.Spells.Runtime;
@@ -24,19 +25,23 @@ namespace UnboundArcana.Spells.Modules.Fire
 		}
 
 		private void OnProjectileSpawned(ProjectileSpawnedEvent e) {
-			e.Projectile.SetProjectileColor(UnityEngine.Color.red);
+			
+			if (definition.projectileSprite)
+			{
+				e.Projectile.SetProjectileSprite(definition.projectileSprite);
+			}
+			else
+			{
+				e.Projectile.SetProjectileColor(UnityEngine.Color.red);
+			}
 		}
 
 		private void OnHit(HitEvent hitEvent)
 		{
-			gameEvents.Publish(
-				new DamageEvent(
-					spell.Owner,
-					hitEvent.Target,
-					spell.Stats.Get(StatId.Damage),
-					DamageType.Fire
-				)
-			);
+			if (!hitEvent.Target.Status.Has(definition.burningStatus))
+			{
+				hitEvent.Target.Status.Apply(definition.burningStatus, hitEvent.Owner.GetComponent<Entity>());
+			}
 		}
 		public override void ApplyStats(
 			StatCollection stats)

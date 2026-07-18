@@ -4,7 +4,7 @@ using UnboundArcana.Spells.Data;
 
 namespace UnboundArcana.Spells.Modules.CastSpellOnDestroy
 {
-	[CreateAssetMenu(menuName = "Unbound Arcana/Modules/Cast Spell On Destroy")]
+	[CreateAssetMenu(menuName = "Spells/Modules/Cast Spell On Destroy")]
 	public class CastSpellOnDestroyModuleDefinition : SpellModuleDefinition
 	{
 		public SpellDefinition spellToCast;

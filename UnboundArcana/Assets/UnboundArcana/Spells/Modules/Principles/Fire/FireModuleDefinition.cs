@@ -1,3 +1,4 @@
+using UnboundArcana.Core.Entities.Statuses;
 using UnboundArcana.Spells.Runtime;
 using UnityEngine;
 
@@ -7,6 +8,8 @@ namespace UnboundArcana.Spells.Modules.Fire
 	public class FireModuleDefinition : SpellModuleDefinition
 	{
 		public float damage;
+		public BurningStatusDefinition burningStatus;
+		public Sprite projectileSprite;
 
 		public override SpellModule CreateRuntime()
 		{

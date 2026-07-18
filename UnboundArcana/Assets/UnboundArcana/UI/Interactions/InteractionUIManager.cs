@@ -85,7 +85,6 @@ namespace UnboundArcana.UI
 		private void OnInteractionDeselected(
 			InteractionDeselectedEvent eventData)
 		{
-			Debug.Log("UI ON INTERACTION DESELECTED");
 
 			currentAnchor = null;
 

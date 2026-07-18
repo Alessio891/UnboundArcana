@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 555b9863227106e478ad58360e5b604c, type: 3}
   m_Name: TestEnemyDef
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.EntityDefinition
-  maxHealth: 100
+  maxHealth: 100000
   moveSpeed: 1
   castSpeed: 1
   armor: 0
-  aiProfile: {fileID: 11400000, guid: e8d99d6e47e45c34eaa86a74b02c9b4a, type: 2}
-  behavior: {fileID: 11400000, guid: a064b814eea96ae4ebba4487d5383fc5, type: 2}
+  behavior: {fileID: 11400000, guid: 07cc5b832a421154f828eceb11199187, type: 2}
+  initialSpells: []

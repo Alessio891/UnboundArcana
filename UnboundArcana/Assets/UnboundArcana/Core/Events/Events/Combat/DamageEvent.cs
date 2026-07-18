@@ -1,4 +1,5 @@
 using UnboundArcana.Core.Combat;
+using UnboundArcana.Core.Entities;
 using UnityEngine;
 
 namespace UnboundArcana.Core.Events
@@ -6,13 +7,13 @@ namespace UnboundArcana.Core.Events
 	public class DamageEvent : SpellEvent
 	{
 		public GameObject Source { get; }
-		public GameObject Target { get; }
+		public Entity Target { get; }
 		public float Amount { get; }
 		public DamageType Type { get; }
 
 		public DamageEvent(
 			GameObject source,
-			GameObject target,
+			Entity target,
 			float amount,
 			DamageType type)
 		{

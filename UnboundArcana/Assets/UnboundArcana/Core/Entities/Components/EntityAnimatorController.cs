@@ -68,7 +68,6 @@ namespace UnboundArcana.Core.Entities
 		private void OnDamaged(
 			EntityDamagedEvent evt)
 		{
-			Debug.Log("Damaged!");
 			animator.SetTrigger(Hit);
 		}
 

@@ -41,7 +41,6 @@ namespace UnboundArcana.Core.Entities.AI
 			{
 				return;
 			}
-			Debug.Log("tick behav");
 
 
 			Vector2 direction =

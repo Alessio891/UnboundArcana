@@ -26,7 +26,7 @@ public class ReserachExperimentUI : MonoBehaviour
 	[SerializeField] private List<SpellModuleDefinition> testRewardsModule;
 	[SerializeField] private List<SpellBehaviorDefinition> testRewardsBehavior;
 
-
+	private GameReward draggedRewardData;
 	private bool isOpen = false;
 
 	private SpellConfiguration spellConfiguration;
@@ -35,7 +35,7 @@ public class ReserachExperimentUI : MonoBehaviour
 	{
 		GameRuntimeManager.Instance.Events.Subscribe<ResearchExperimentStationEvent>(OnStationUsed);
 		gameObject.SetActive(false);
-		SetSpellConfiguration(testCaster.SpellConfiguration);
+		//SetSpellConfiguration(testCaster.SpellLoadout.GetCurrentSpell());
 	}
 
 	void GenerateDebugRewards() {
@@ -71,6 +71,7 @@ public class ReserachExperimentUI : MonoBehaviour
 	public void StartDragReward(GameReward reward) {
 		draggedReward.enabled = true;
 		draggedReward.sprite = reward.icon;
+		draggedRewardData = reward;
 	}
 	public void UpdateDragReward(PointerEventData eventData) { 
 		draggedReward.transform.position = eventData.position;
@@ -78,13 +79,28 @@ public class ReserachExperimentUI : MonoBehaviour
 	public void EndDragReward() {
 		draggedReward.enabled = false;
 	}
+	public void RewardDroppedOnSlot()
+	{
+		if (draggedRewardData is SpellModuleReward moduleReward)
+		{
+			GameRuntimeManager.Instance.SpellModification.TryAddModule(spellConfiguration, moduleReward.module);
+			isOpen = false;
+			gameObject.SetActive(false);
+		}
+		else if (draggedRewardData is SpellBehaviorReward behaviorReward)
+		{
+			GameRuntimeManager.Instance.SpellModification.TrySetBehavior(spellConfiguration, behaviorReward.behavior);
+			isOpen = false;
+			gameObject.SetActive(false);
+		}
+	}
 
 	void OnStationUsed(ResearchExperimentStationEvent evt) {
 		if (!isOpen)
 		{
 			gameObject.SetActive(true);
 			isOpen = true;
-			SetSpellConfiguration(testCaster.SpellConfiguration);
+			SetSpellConfiguration(testCaster.SpellLoadout.GetCurrentSpell());
 			GenerateDebugRewards();
 		}
 	}

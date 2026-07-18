@@ -20,6 +20,10 @@ namespace UnboundArcana.Spells.Data
 			}
 		}
 
+		public void SetBehavior(SpellBehaviorDefinition behavior) {
+			this.behavior = behavior;
+		}
+
 		public void AddModule(
 			SpellModuleDefinition module)
 		{

@@ -10,6 +10,7 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 		public GameObject projectilePrefab;
 		public float lifetime = 1.0f;
 		public float speed = 1.0f;
+		public float baseDamage = 1.0f;
 
 		public override SpellBehavior CreateRuntime()
 		{
@@ -33,6 +34,12 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 			stats.AddBase(
 				StatId.Duration,
 				lifetime,
+				this
+			);
+
+			stats.AddBase(
+				StatId.Damage,
+				baseDamage,
 				this
 			);
 

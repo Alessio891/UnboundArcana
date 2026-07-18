@@ -5,6 +5,7 @@ namespace UnboundArcana.Core.Combat
 		Physical,
 		Fire,
 		Ice,
-		Lightning
+		Lightning,
+		SpellPhysical
 	}
 }

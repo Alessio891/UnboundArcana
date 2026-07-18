@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: TestFork
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.Fork.ForkModuleDefinition
   category: 5
+  icon: {fileID: 6822123260829992848, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
   additionalProjectiles: 2
   angle: 35

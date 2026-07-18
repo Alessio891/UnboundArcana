@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b0fdaf11b1d056479042162c92a583b, type: 3}
+  m_Name: FirePrinciple
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.Fire.FireModuleDefinition
+  category: 0
+  icon: {fileID: -1509297006414492915, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
+  damage: 10
+  burningStatus: {fileID: 11400000, guid: cc94984b3662a104ebff2b5d61728d9a, type: 2}
+  projectileSprite: {fileID: 4608453086985582127, guid: 9c62626eb5e00634da78f64e24c779a6, type: 3}

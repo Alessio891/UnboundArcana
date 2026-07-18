@@ -5,6 +5,8 @@ using UnboundArcana.Spells.Runtime.Views;
 using System.Collections;
 using UnboundArcana.Core.Events;
 using UnboundArcana.Core.Stats;
+using UnityEditor.PackageManager;
+using UnboundArcana.Core.Combat;
 
 namespace UnboundArcana.Spells.Behaviors.Projectile
 {
@@ -17,6 +19,21 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 		{
 			this.definition = definition;
 			lifetime = definition.lifetime;
+		}
+		public override void Initialize(SpellInstance spell)
+		{
+			base.Initialize(spell);
+			spell.Events.Subscribe<HitEvent>(OnHit);
+		}
+		void OnHit(HitEvent hitEvent) {
+			GameRuntimeManager.Instance.Events.Publish(
+					new DamageEvent(
+						spell.Owner,
+						hitEvent.Target,
+						spell.Stats.Get(StatId.Damage),
+						DamageType.SpellPhysical
+					)
+				);
 		}
 
 		public void SpawnProjectile(SpawnContext context)

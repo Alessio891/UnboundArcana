@@ -3,6 +3,7 @@ using UnboundArcana.Spells.Runtime.Objects;
 using UnboundArcana.Spells.Runtime;
 using UnityEngine;
 using UnboundArcana.Core.Combat;
+using UnboundArcana.Core.Entities;
 
 public class ChainModifier : IRuntimeObjectModifier
 {
@@ -19,8 +20,8 @@ public class ChainModifier : IRuntimeObjectModifier
 		this.range = range;
 		remainingChains = maxChains;
 	}
-	private GameObject FindTarget(
-			GameObject previousTarget)
+	private Entity FindTarget(
+			Entity previousTarget)
 	{
 		Collider2D[] hits =
 			Physics2D.OverlapCircleAll(
@@ -34,7 +35,7 @@ public class ChainModifier : IRuntimeObjectModifier
 			{
 				continue;
 			}
-
+			if (hit.GetComponent<Entity>() == null) continue;
 			if (hit.GetComponent<IDamageable>() == null)
 			{
 				continue;
@@ -48,7 +49,7 @@ public class ChainModifier : IRuntimeObjectModifier
 				continue;
 			}
 
-			return hit.gameObject;
+			return hit.GetComponent<Entity>();
 		}
 
 		return null;
@@ -61,7 +62,7 @@ public class ChainModifier : IRuntimeObjectModifier
 			return;
 		}
 
-		GameObject target = FindTarget(
+		Entity target = FindTarget(
 			hitEvent.Target
 		);
 

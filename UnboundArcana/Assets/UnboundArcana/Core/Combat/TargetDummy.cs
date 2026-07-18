@@ -1,4 +1,5 @@
 using UnboundArcana.Core.Combat;
+using UnboundArcana.Core.Entities;
 using UnboundArcana.Core.Events;
 using UnityEngine;
 
@@ -16,14 +17,14 @@ namespace UnboundArcana.Sandbox
 		private float damageTimer;
 
 		private bool isDead;
-		[SerializeField] private Transform target;
+		[SerializeField] private Entity target;
 
 		public System.Action OnDeath;
 
 		private GameEventBus gameEvents;
 
 		public void Initialize(
-	Transform target,
+	Entity target,
 	GameEventBus gameEvents,
 	float healthMultiplier,
 	float speedMultiplier)
@@ -44,7 +45,7 @@ namespace UnboundArcana.Sandbox
 
 			damageTimer -= Time.deltaTime;
 
-			Vector3 direction = target.position - transform.position;
+			Vector3 direction = target.transform.position - transform.position;
 			direction.z = 0f;
 
 			if (direction.sqrMagnitude > contactRange * contactRange)
@@ -72,7 +73,7 @@ namespace UnboundArcana.Sandbox
 			gameEvents?.Publish(
 				new DamageEvent(
 					gameObject,
-					target.gameObject,
+					target,
 					contactDamage,
 					DamageType.Physical
 				)

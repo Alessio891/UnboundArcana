@@ -1,5 +1,7 @@
 using UnboundArcana.Core.Entities.AI;
+using UnboundArcana.Spells.Data;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace UnboundArcana.Core.Entities
 {
@@ -12,7 +14,8 @@ namespace UnboundArcana.Core.Entities
 		public float moveSpeed = 5f;
 		public float castSpeed = 1f;
 		public float armor = 0f;
-		public AIProfile aiProfile;
 		public AIBehaviorDefinition behavior;
+
+		public List<SpellDefinition> initialSpells;
 	}
 }

@@ -4,6 +4,7 @@ using UnboundArcana.Core.Combat;
 using UnboundArcana.Core.Stats;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 using System;
+using UnboundArcana.Core.Entities;
 
 namespace UnboundArcana.Spells.Runtime.Objects
 {
@@ -89,25 +90,27 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			{
 				return;
 			}
-
+			
 			if (spawnContext.HitHistory.HasHit(target))
 			{
 				return;
 			}
 
 			spawnContext.HitHistory.Add(target);
-			Debug.Log($"TRIGGER HIT EVENT {position}");
-			HitEvent hitEvent =
-				new HitEvent(
-					this,
-					view.transform.position,
-					target,
-					owner
-				);
 
-			NotifyHit(hitEvent);
+			if (target.GetComponent<Entity>() != null)
+			{
+				HitEvent hitEvent =
+					new HitEvent(
+						this,
+						view.transform.position,
+						target.GetComponent<Entity>(),
+						owner
+					);
+				NotifyHit(hitEvent);
+				spell.Events.Publish(hitEvent);
+			}
 
-			spell.Events.Publish(hitEvent);
 
 			remainingHits--;
 
@@ -124,6 +127,11 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		}
 		public void SetProjectileScale(float scale) {
 			this.scale = scale;
+		}
+		public void SetProjectileSprite(Sprite sprite) {
+			if (view) {
+				view.GetComponentInChildren<SpriteRenderer>().sprite = sprite;
+			}
 		}
 		public void SetProjectileColor(Color color) {
 			if (view) {

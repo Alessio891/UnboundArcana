@@ -3,17 +3,43 @@ using UnboundArcana.Core.Events;
 using UnboundArcana.Core.Runtime;
 using UnboundArcana.Spells.Data;
 using UnboundArcana.Spells.Runtime;
+using System;
+using System.Collections.Generic;
 
 namespace UnboundArcana.Core.Entities
 {
+
+	public class SpellLoadout {
+		public List<SpellConfiguration> Spellconfigurations = new();
+
+		public int CurrentSpell = 0;
+
+		public void AddSpell(SpellConfiguration config) { 
+			if (Spellconfigurations.Contains(config)) return;
+
+			Spellconfigurations.Add(config); 
+		}
+		public void AddSpell(SpellDefinition definition) {
+			SpellConfiguration newConfig = new SpellConfiguration(definition);
+			Spellconfigurations.Add(newConfig);
+		}
+
+		public SpellConfiguration GetCurrentSpell() {
+			if (CurrentSpell < 0 || CurrentSpell >= Spellconfigurations.Count) return null;
+
+			return Spellconfigurations[CurrentSpell];
+		}
+	}
+
 	public class SpellCaster : MonoBehaviour
 	{
 		public SpellRuntimeManager RuntimeManager;
 		public SpellDefinition SpellDefinition;
 
-		private SpellConfiguration configuration;
 		private SpellInstance activeSpell;
-		public SpellConfiguration SpellConfiguration => configuration;
+		
+		private SpellLoadout spellLoadout;
+		public SpellLoadout SpellLoadout => spellLoadout;
 
 		private Vector3 aimDirection;
 
@@ -24,10 +50,14 @@ namespace UnboundArcana.Core.Entities
 
 		private void Awake()
 		{
-			configuration =
-				new SpellConfiguration(
-					SpellDefinition
-				);
+		}
+
+		public void  InitializeLoadout(List<SpellDefinition> spells) {
+			spellLoadout = new SpellLoadout();
+
+			foreach (var definition in spells) { 
+				spellLoadout.AddSpell(definition);
+			}
 		}
 
 		private void Update()
@@ -60,6 +90,7 @@ namespace UnboundArcana.Core.Entities
 			{
 				return;
 			}
+			if (spellLoadout.GetCurrentSpell().behavior == null) return;
 
 			castTimer = castCooldown;
 
@@ -93,7 +124,7 @@ namespace UnboundArcana.Core.Entities
 		private SpellInstance CreateSpellInstance()
 		{
 			return SpellFactory.Create(
-				configuration,
+				spellLoadout.GetCurrentSpell(),
 				new SpellRuntimeContext(
 					RuntimeManager,
 					RuntimeManager.GameEvents),

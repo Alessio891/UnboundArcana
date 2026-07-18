@@ -18,3 +18,5 @@ MonoBehaviour:
   armor: 0
   aiProfile: {fileID: 0}
   behavior: {fileID: 0}
+  initialSpells:
+  - {fileID: 11400000, guid: ebce367906d6d6f40a2b3e41373f6eae, type: 2}

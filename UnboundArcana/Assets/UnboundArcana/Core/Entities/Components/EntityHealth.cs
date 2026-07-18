@@ -27,13 +27,13 @@ namespace UnboundArcana.Core.Entities
 			DamageInfo damage)
 		{
 			currentHealth -= damage.Amount;
-			Debug.Log($"Entity new health is {currentHealth}");
+			Debug.Log("[Health] Publishing entity damage event");
 			entity.Events.Publish(
 				new EntityDamagedEvent(
 					entity,
 					damage)
 			);
-
+			
 			if (currentHealth <= 0)
 			{
 				entity.Events.Publish(
