@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: TestFireModule
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.Fire.FireModuleDefinition
   category: 0
+  icon: {fileID: -1509297006414492915, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
   damage: 20

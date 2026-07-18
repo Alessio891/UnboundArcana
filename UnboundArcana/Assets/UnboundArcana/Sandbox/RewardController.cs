@@ -100,14 +100,14 @@ namespace UnboundArcana.Sandbox
 
 				bool categoryAlreadyPresent = false;
 
-				foreach (SpellModuleDefinition reward in currentRewards)
-				{
-					if (reward.Category == candidate.Category)
-					{
-						categoryAlreadyPresent = true;
-						break;
-					}
-				}
+				//foreach (SpellModuleDefinition reward in currentRewards)
+				//{
+				//	if (reward.Category == candidate.Category)
+				//	{
+				//		categoryAlreadyPresent = true;
+				//		break;
+				//	}
+				//}
 
 				if (!categoryAlreadyPresent)
 				{

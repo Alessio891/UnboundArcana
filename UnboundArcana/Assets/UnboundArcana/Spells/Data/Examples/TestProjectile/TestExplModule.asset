@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: TestExplModule
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.Explosion.ExplosionModuleDefinition
   category: 2
+  icon: {fileID: 6162703683875510967, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
   radius: 2.5
   damage: 15
   duration: 0.4

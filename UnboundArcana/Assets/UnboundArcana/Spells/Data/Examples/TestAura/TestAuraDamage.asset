@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: TestAuraDamage
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.AuraDamage.AuraDamageModuleDefinition
   category: 7
+  icon: {fileID: -4982617681489162317, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
   damage: 15
   interval: 0.5

@@ -6,6 +6,9 @@ namespace UnboundArcana.Spells.Behaviors
 {
 	public abstract class SpellBehaviorDefinition : ScriptableObject, IStatProvider
 	{
+		[SerializeField] private Sprite icon;
+		public Sprite Icon => icon;
+
 		public abstract SpellBehavior CreateRuntime();
 
 		public virtual void ApplyStats(

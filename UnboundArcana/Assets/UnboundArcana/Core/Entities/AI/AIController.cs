@@ -18,6 +18,10 @@ namespace UnboundArcana.Core.Entities.AI
 		public SpellCaster Caster => SpellCaster;
 
 		public EntityFacing FacingDirection => Facing;
+		
+		[SerializeField]
+		private AIBehaviorDefinition behaviorDefinition;
+
 		protected override void Awake()
 		{
 			base.Awake();
@@ -27,11 +31,9 @@ namespace UnboundArcana.Core.Entities.AI
 			sensor.EntityDetected += OnEntityDetected;
 			sensor.EntityLost += OnEntityLost;
 			behavior =
-				Entity.Definition
-					  .behavior
-					  .CreateBehavior(this);
+				behaviorDefinition.CreateBehavior();
 
-			behavior.Initialize();
+			behavior.Initialize(this);
 		}
 
 		private void OnEntityDetected(Entity entity)
@@ -51,7 +53,7 @@ namespace UnboundArcana.Core.Entities.AI
 		}
 		private void Update()
 		{
-			behavior.Tick();
+			behavior?.Tick();
 		}
 	}
 }

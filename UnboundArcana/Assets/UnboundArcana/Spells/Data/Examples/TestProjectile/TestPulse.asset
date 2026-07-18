@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: TestPulse
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.Pulse.PulseModuleDefinition
   category: 7
+  icon: {fileID: -8472147379822769018, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
   interval: 0.5

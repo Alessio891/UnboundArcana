@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: CastOnDestr
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.CastSpellOnDestroy.CastSpellOnDestroyModuleDefinition
   category: 4
+  icon: {fileID: -5879199864497988780, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
   spellToCast: {fileID: 11400000, guid: 67ebb923e85a9ba42b24adb27a86ca36, type: 2}

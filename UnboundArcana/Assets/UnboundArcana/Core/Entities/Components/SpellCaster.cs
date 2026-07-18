@@ -13,6 +13,7 @@ namespace UnboundArcana.Core.Entities
 
 		private SpellConfiguration configuration;
 		private SpellInstance activeSpell;
+		public SpellConfiguration SpellConfiguration => configuration;
 
 		private Vector3 aimDirection;
 
