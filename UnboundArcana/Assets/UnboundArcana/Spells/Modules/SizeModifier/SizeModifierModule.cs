@@ -25,7 +25,7 @@ namespace UnboundArcana.Spells.Modules.Modifiers
 		public IEnumerable<StatModifier> GetModifiers()
 		{
 			yield return new StatModifier(
-				StatId.Size,
+				StatKeys.Spell.Size,
 				definition.percentage,
 				ModifierOperation.Percent,
 				this

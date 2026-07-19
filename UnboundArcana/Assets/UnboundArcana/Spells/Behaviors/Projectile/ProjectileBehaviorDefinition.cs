@@ -26,24 +26,24 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 			StatCollection stats)
 		{
 			stats.AddBase(
-				StatId.Speed,
+				StatKeys.Spell.Speed,
 				speed,
 				this
 			);
 
 			stats.AddBase(
-				StatId.Duration,
+				StatKeys.Spell.Duration,
 				lifetime,
 				this
 			);
 
 			stats.AddBase(
-				StatId.Damage,
+				StatKeys.Spell.Damage,
 				baseDamage,
 				this
 			);
 
-			stats.AddBase(StatId.Size, 1.0f, this);
+			stats.AddBase(StatKeys.Spell.Size, 1.0f, this);
 		}
 	}
 

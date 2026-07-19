@@ -5,7 +5,6 @@ namespace UnboundArcana.Sandbox.UI
 {
 	public class PlaytestHUD : MonoBehaviour
 	{
-		public SpellTester SpellTester;
 
 		public PlaytestSpellPanel SpellPanel;
 		public PlaytestWavePanel WavePanel;
@@ -13,23 +12,23 @@ namespace UnboundArcana.Sandbox.UI
 		public PlaytestCombatPanel CombatPanel;
 		private void Start()
 		{
-			SpellTester.RuntimeManager.GameEvents
+			GameRuntimeManager.Instance.Events
 				.Subscribe<WaveStartedEvent>(OnWaveStarted);
 
-			SpellTester.RuntimeManager.GameEvents
+			GameRuntimeManager.Instance.Events
 				.Subscribe<EncounterCompletedEvent>(OnEncounterCompleted);
 
-			SpellTester.RuntimeManager.GameEvents
+			GameRuntimeManager.Instance.Events
 				.Subscribe<RewardOfferedEvent>(OnRewardOffered);
 
-			SpellTester.RuntimeManager.GameEvents
+			GameRuntimeManager.Instance.Events
 				.Subscribe<RewardSelectedEvent>(OnRewardSelected);
 
-			SpellTester.RuntimeManager.GameEvents
+			GameRuntimeManager.Instance.Events
 				.Subscribe<DamageEvent>(OnDamage);
 
 
-			SpellTester.RuntimeManager.GameEvents
+			GameRuntimeManager.Instance.Events
 				.Subscribe<SpellKillEvent>(OnEnemyKilled);
 
 			RefreshSpell();
@@ -37,27 +36,23 @@ namespace UnboundArcana.Sandbox.UI
 
 		private void OnDestroy()
 		{
-			if (SpellTester == null)
-			{
-				return;
-			}
 
-			SpellTester.RuntimeManager.GameEvents
+			GameRuntimeManager.Instance.Events
 				.Unsubscribe<WaveStartedEvent>(OnWaveStarted);
 
-			SpellTester.RuntimeManager.GameEvents
+			GameRuntimeManager.Instance.Events
 				.Unsubscribe<EncounterCompletedEvent>(OnEncounterCompleted);
 
-			SpellTester.RuntimeManager.GameEvents
+			GameRuntimeManager.Instance.Events
 				.Unsubscribe<RewardOfferedEvent>(OnRewardOffered);
 
-			SpellTester.RuntimeManager.GameEvents
+			GameRuntimeManager.Instance.Events
 				.Unsubscribe<RewardSelectedEvent>(OnRewardSelected);
 
-			SpellTester.RuntimeManager.GameEvents
+			GameRuntimeManager.Instance.Events
 				.Unsubscribe<DamageEvent>(OnDamage);
-
-			SpellTester.RuntimeManager.GameEvents
+					
+			GameRuntimeManager.Instance.Events
 				.Unsubscribe<SpellKillEvent>(OnEnemyKilled);
 		}
 		private void OnDamage(
@@ -106,14 +101,7 @@ namespace UnboundArcana.Sandbox.UI
 
 		private void RefreshSpell()
 		{
-			if (SpellTester.Configuration == null)
-			{
-				return;
-			}
-
-			SpellPanel.SetSpell(
-				SpellTester.Configuration
-			);
+			
 		}
 	}
 }

@@ -10,8 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c3b690b714ff9b54cb65e460809d8acd, type: 3}
-  m_Name: TestChain
+  m_Name: Chain
   m_EditorClassIdentifier: Assembly-CSharp::ChainModuleDefinition
-  category: 7
+  category: 1
+  Rarity: 1
+  icon: {fileID: 5455954570043948648, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
+  moduleName: Chain
+  moduleDescription: Projectiles chain to the nearest target on hit
+  complexity: 1
+  instability: 1
   range: 5
   maxChains: 15

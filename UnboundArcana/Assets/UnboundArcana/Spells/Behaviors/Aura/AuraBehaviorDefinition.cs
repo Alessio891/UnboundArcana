@@ -23,13 +23,13 @@ namespace UnboundArcana.Spells.Behaviors.Aura
 			StatCollection stats)
 		{
 			stats.AddBase(
-				StatId.Duration,
+				StatKeys.Spell.Duration,
 				duration,
 				this
 			);
 
 			stats.AddBase(
-				StatId.Size,
+				StatKeys.Spell.Size,
 				size,
 				this
 			);

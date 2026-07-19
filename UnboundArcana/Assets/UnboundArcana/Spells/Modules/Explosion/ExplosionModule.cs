@@ -56,19 +56,13 @@ namespace UnboundArcana.Spells.Modules.Explosion
 			StatCollection stats)
 		{
 			stats.AddBase(
-				StatId.Size,
+				StatKeys.Spell.Size,
 				definition.radius,
 				this
 			);
 
 			stats.AddBase(
-				StatId.Damage,
-				definition.damage,
-				this
-			);
-
-			stats.AddBase(
-				StatId.Duration,
+				StatKeys.Spell.Duration,
 				definition.duration,
 				this
 			);

@@ -1,3 +1,4 @@
+using UnboundArcana.Core.Stats;
 using UnityEngine;
 
 namespace UnboundArcana.Spells.Runtime.Objects
@@ -26,7 +27,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		{
 			elapsedTime += deltaTime;
 			base.Tick(deltaTime);
-			float size = spell.Stats.Get(Core.Stats.StatId.Size);
+			float size = spell.Stats.Get(StatKeys.Spell.Size);
 			if (view) {
 				view.transform.localScale = new Vector3(size, size, size);
 			}

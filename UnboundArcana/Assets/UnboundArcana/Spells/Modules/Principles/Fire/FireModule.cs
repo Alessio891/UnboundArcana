@@ -47,7 +47,7 @@ namespace UnboundArcana.Spells.Modules.Fire
 			StatCollection stats)
 		{
 			stats.AddBase(
-				StatId.Damage,
+				StatKeys.Spell.Damage,
 				definition.damage,
 				this
 			);

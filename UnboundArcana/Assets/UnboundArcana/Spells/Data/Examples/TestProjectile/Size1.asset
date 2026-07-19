@@ -12,5 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cb9d2cb3d9425849ba7690f658d4285, type: 3}
   m_Name: Size1
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.SizeModifier.SizeModifierModuleDefinition
-  category: 2
+  category: 1
+  Rarity: 1
+  icon: {fileID: 8719262700846709511, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
+  moduleName: Expansion
+  moduleDescription: Increase projectile and explosion size by 20%
+  complexity: 1
+  instability: 1
   percentage: 0.2

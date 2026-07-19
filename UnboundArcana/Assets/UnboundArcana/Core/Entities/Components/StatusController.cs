@@ -48,23 +48,23 @@ namespace UnboundArcana.Core.Entities.Statuses
 
 			StatusInstance instance =
 				definition.CreateRuntime();
+			if (instance.CanApply(entity))
+			{
+				instance.Initialize(
+					entity,
+					source
+				);
 
-			instance.Initialize(
-				entity,
-				source
-			);
+				statuses.Add(instance);
 
-			statuses.Add(instance);
-
-			entity.Events.Publish(new EntityStatusAppliedEvent(instance));
+				entity.Events.Publish(new EntityStatusAppliedEvent(instance));
+			}
 		}
 
 		public bool Has(
 			StatusDefinition definition)
 		{
-			return statuses.Exists(
-				x => x.Definition == definition
-			);
+			return Get(definition) != null;
 		}
 
 		public StatusInstance Get(

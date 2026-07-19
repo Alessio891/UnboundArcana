@@ -55,6 +55,7 @@ namespace UnboundArcana.Core.Entities.Statuses
 			Refresh();
 		}
 
+		public virtual bool CanApply(Entity target) {  return true; }
 		public virtual void OnRemove() { }
 
 		public bool IsExpired =>

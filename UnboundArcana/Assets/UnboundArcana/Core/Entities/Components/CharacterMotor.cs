@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnboundArcana.Core.Entities.Events;
+using UnboundArcana.Core.Stats;
 
 namespace UnboundArcana.Core.Entities
 {
@@ -27,7 +28,7 @@ namespace UnboundArcana.Core.Entities
 		private void FixedUpdate()
 		{
 			float moveSpeed = entity.Stats.Get(
-				EntityStatId.MoveSpeed);
+				StatKeys.Entity.MoveSpeed);
 
 			velocity =
 				moveInput * moveSpeed;

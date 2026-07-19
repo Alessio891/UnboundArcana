@@ -37,16 +37,15 @@ namespace UnboundArcana.Spells.Modules.Ice
 
 		private void OnHit(HitEvent hitEvent)
 		{
-			if (!hitEvent.Target.Status.Has(definition.chilledStatus))
-			{
-				hitEvent.Target.Status.Apply(definition.chilledStatus, hitEvent.Owner.GetComponent<Entity>());
-			}
+			
+			hitEvent.Target.Status.Apply(definition.chilledStatus, hitEvent.Owner.GetComponent<Entity>());
+			
 		}
 		public override void ApplyStats(
 			StatCollection stats)
 		{
 			stats.AddBase(
-				StatId.Damage,
+				StatKeys.Spell.Damage,
 				definition.damage,
 				this
 			);

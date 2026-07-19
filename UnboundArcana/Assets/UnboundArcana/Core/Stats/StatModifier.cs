@@ -2,13 +2,13 @@ namespace UnboundArcana.Core.Stats
 {
 	public class StatModifier
 	{
-		public StatId Stat { get; }
+		public string Stat { get; }
 		public float Value { get; }
 		public ModifierOperation Operation { get; }
 		public object Source { get; }
 
 		public StatModifier(
-			StatId stat,
+			string stat,
 			float value,
 			ModifierOperation operation,
 			object source)

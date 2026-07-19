@@ -15,7 +15,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		public Vector3 Position => position;
 		public float Duration => duration;
 
-		public float Radius => spell.Stats.Get(StatId.Size);
+		public float Radius => spell.Stats.Get(StatKeys.Spell.Size);
 
 		public ExplosionRuntimeObject(
 			Vector3 position,
@@ -41,7 +41,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			lifetime -= deltaTime;
 
 			if (view) {
-				float scale = spell.Stats.Get(StatId.Size);
+				float scale = spell.Stats.Get(StatKeys.Spell.Size);
 				view.transform.position = position;
 				view.transform.localScale = new Vector3(scale, scale, scale);
 			}
@@ -70,7 +70,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 					new DamageEvent(
 						spell.Owner,
 						hit.GetComponent<Entity>(),
-						spell.Stats.Get(StatId.Damage),
+						spell.Stats.Get(StatKeys.Spell.Damage),
 						DamageType.Fire
 					)
 				);

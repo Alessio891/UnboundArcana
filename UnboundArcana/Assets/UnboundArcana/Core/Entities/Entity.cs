@@ -1,6 +1,7 @@
 using System;
 using UnboundArcana.Core.Entities.Events;
 using UnboundArcana.Core.Entities.Statuses;
+using UnboundArcana.Core.Stats;
 using UnityEngine;
 
 namespace UnboundArcana.Core.Entities
@@ -26,30 +27,33 @@ namespace UnboundArcana.Core.Entities
 
 		private void OnEntityDamaged(EntityDamagedEvent evt)
 		{
-			Debug.Log("Entity Damaged!");
 			GameRuntimeManager.Instance.Events.Publish(evt);
 		}
 
 		private void InitializeStats()
 		{
-			Stats.Set(
-				EntityStatId.MaxHealth,
-				definition.maxHealth
+			Stats.AddBase(
+				StatKeys.Entity.MaxHealth,
+				definition.maxHealth,
+				this
 			);
 
-			Stats.Set(
-				EntityStatId.MoveSpeed,
-				definition.moveSpeed
+			Stats.AddBase(
+				StatKeys.Entity.MoveSpeed,
+				definition.moveSpeed,
+				this
 			);
 
-			Stats.Set(
-				EntityStatId.CastSpeed,
-				definition.castSpeed
+			Stats.AddBase(
+				StatKeys.Entity.CastSpeed,
+				definition.castSpeed,
+				this
 			);
 
-			Stats.Set(
-				EntityStatId.Armor,
-				definition.armor
+			Stats.AddBase(
+				StatKeys.Entity.Armor,
+				definition.armor,
+				this
 			);
 		}
 	}

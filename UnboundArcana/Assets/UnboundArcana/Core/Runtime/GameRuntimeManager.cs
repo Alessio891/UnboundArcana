@@ -18,6 +18,9 @@ public class GameRuntimeManager : MonoBehaviour
 
 	private static GameRuntimeManager instance;
 	public static GameRuntimeManager Instance => instance;
+	[SerializeField]
+	private ModuleRewardTable RewardTable;
+	public ModuleRewardService ModuleReward { get; private set; }
 
 	private void Awake()
 	{
@@ -32,6 +35,8 @@ public class GameRuntimeManager : MonoBehaviour
 		SpellModification = new SpellModificationService(Events);
 		Damage.Initialize(Events);
 		DamageText = new DamageTextSystem(Events, damageTextPrefab);
+
+		ModuleReward = new ModuleRewardService(RewardTable);
 		DontDestroyOnLoad(gameObject);
 	}
 }

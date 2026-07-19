@@ -12,5 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cb9d2cb3d9425849ba7690f658d4285, type: 3}
   m_Name: Size2
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.SizeModifier.SizeModifierModuleDefinition
-  category: 2
-  percentage: 2
+  category: 1
+  icon: {fileID: -5486722672270362897, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
+  moduleName: Collapse
+  moduleDescription: Decrease projectile and explosion size by 20%
+  complexity: 1
+  instability: 1
+  percentage: -0.2

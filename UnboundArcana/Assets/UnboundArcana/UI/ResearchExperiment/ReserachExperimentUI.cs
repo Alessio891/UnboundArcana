@@ -41,7 +41,11 @@ public class ReserachExperimentUI : MonoBehaviour
 	void GenerateDebugRewards() {
 		foreach(Transform t in rewardList.transform) { Destroy(t.gameObject); }
 
-		foreach(var module in testRewardsModule) {
+		var rewards = GameRuntimeManager.Instance.ModuleReward.RollModules(
+			GameDatabase.Instance.Spells.modules, 3
+		);
+
+		foreach(var module in rewards) {
 			SpellModuleReward reward = new();
 
 			reward.module = module;
@@ -53,19 +57,19 @@ public class ReserachExperimentUI : MonoBehaviour
 			slot.uiManager = this;
 			slot.SetReward(reward);
 		}
-		foreach (var behavior in testRewardsBehavior)
-		{
-			SpellBehaviorReward reward = new();
+		//foreach (var behavior in testRewardsBehavior)
+		//{
+		//	SpellBehaviorReward reward = new();
 
-			reward.behavior = behavior;
-			reward.icon = behavior.Icon;
-			reward.cost = 50;
+		//	reward.behavior = behavior;
+		//	reward.icon = behavior.Icon;
+		//	reward.cost = 50;
 
-			ResearchExperimentRewardSlot slot = Instantiate(rewardPrefab);
-			slot.uiManager = this;
-			slot.transform.SetParent(rewardList.transform, false);
-			slot.SetReward(reward);
-		}
+		//	ResearchExperimentRewardSlot slot = Instantiate(rewardPrefab);
+		//	slot.uiManager = this;
+		//	slot.transform.SetParent(rewardList.transform, false);
+		//	slot.SetReward(reward);
+		//}
 	}
 
 	public void StartDragReward(GameReward reward) {

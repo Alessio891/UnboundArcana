@@ -4,15 +4,17 @@ namespace UnboundArcana.Core.Stats
 {
 	public class StatCollection
 	{
-		private readonly Dictionary<StatId, List<StatModifier>> baseValues = new();
+		private readonly Dictionary<string, List<StatModifier>> baseValues = new();
 		private readonly List<StatModifier> modifiers = new();
 
 		public void AddBase(
-			StatId stat,
+			string stat,
 			float value,
 			object source)
 		{
-			if (!baseValues.TryGetValue(stat, out List<StatModifier> values))
+			if (!baseValues.TryGetValue(
+				stat,
+				out List<StatModifier> values))
 			{
 				values = new List<StatModifier>();
 				baseValues.Add(stat, values);
@@ -50,11 +52,13 @@ namespace UnboundArcana.Core.Stats
 		}
 
 		public float Get(
-			StatId stat)
+			string stat)
 		{
 			float value = 0;
 
-			if (baseValues.TryGetValue(stat, out List<StatModifier> values))
+			if (baseValues.TryGetValue(
+				stat,
+				out List<StatModifier> values))
 			{
 				foreach (StatModifier modifier in values)
 				{

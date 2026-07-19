@@ -12,5 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd5c8e8992e77cf428891fe95b0ce75b, type: 3}
   m_Name: Accelleration
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.ProjectileSpeed.ProjectileSpeedModuleDefinition
-  category: 7
+  category: 1
+  Rarity: 0
+  icon: {fileID: 5277769112043999946, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
+  moduleName: Accelleration
+  moduleDescription: Projectiles created by spell will accellerate with time
+  complexity: 1
+  instability: 1
   acceleration: 15

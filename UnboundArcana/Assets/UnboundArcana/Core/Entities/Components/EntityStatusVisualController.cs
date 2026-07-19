@@ -6,6 +6,8 @@ using UnityEngine;
 public class EntityStatusVisualController : MonoBehaviour
 {
 	private Entity entity;
+	[SerializeField] private GameObject frozenStatusEffect;
+	GameObject currentFrozenEffect;
 
 	private void Awake()
 	{
@@ -27,6 +29,8 @@ public class EntityStatusVisualController : MonoBehaviour
 	{
 		if (evt.StatusInstance.Definition is ChilledStatusDefinition) {
 			GetComponentInChildren<SpriteRenderer>().color = Color.white;
+		} else if (evt.StatusInstance.Definition is FrozenStatusDefinition) {
+			if (currentFrozenEffect) Destroy(currentFrozenEffect);
 		}
 	}
 
@@ -35,6 +39,10 @@ public class EntityStatusVisualController : MonoBehaviour
 		if (evt.StatusInstance.Definition is ChilledStatusDefinition)
 		{
 			GetComponentInChildren<SpriteRenderer>().color = Color.blue;
+		} else if (evt.StatusInstance.Definition is FrozenStatusDefinition)
+		{
+			currentFrozenEffect = Instantiate(frozenStatusEffect);
+			currentFrozenEffect.transform.position = transform.position;
 		}
 	}
 

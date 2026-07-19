@@ -30,7 +30,7 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 					new DamageEvent(
 						spell.Owner,
 						hitEvent.Target,
-						spell.Stats.Get(StatId.Damage),
+						spell.Stats.Get(StatKeys.Spell.Damage),
 						DamageType.SpellPhysical
 					)
 				);
@@ -62,7 +62,7 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 				)
 			);
 
-			float scale = spell.Stats.Get(StatId.Size);
+			float scale = spell.Stats.Get(StatKeys.Spell.Size);
 			if (scale <= 0) scale = 1.0f;
 			view.transform.localScale = new Vector3(scale, scale, scale);
 		}

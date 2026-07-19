@@ -55,7 +55,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		{
 			elapsedTime += deltaTime;
 			
-			this.speed = spell.Stats.Get(StatId.Speed);
+			this.speed = spell.Stats.Get(StatKeys.Spell.Speed);
 			TickModifiers(deltaTime);
 			if (!modifiers.Exists(x => x.ControlsMovement))
 			{

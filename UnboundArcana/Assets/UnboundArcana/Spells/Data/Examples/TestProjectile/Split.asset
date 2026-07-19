@@ -12,6 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d9b526320fd624eaf4678395d1a3b1, type: 3}
   m_Name: Split
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.Split.SplitOnDestroyModuleDefinition
-  category: 4
+  category: 1
+  Rarity: 1
+  icon: {fileID: -5710920985140780199, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
+  moduleName: Split
+  moduleDescription: 'Projectiles split on hit. Split projectiles created by this
+    catalyst can''t hit the source from which
+
+    they were created'
+  complexity: 1
+  instability: 1
   count: 2
   spreadAngle: 45

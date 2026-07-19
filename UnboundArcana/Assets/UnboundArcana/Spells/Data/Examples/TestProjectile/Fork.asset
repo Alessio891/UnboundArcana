@@ -10,9 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36b6de40d307b05439cd68a42bbb9bc3, type: 3}
-  m_Name: TestFork
+  m_Name: Fork
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.Fork.ForkModuleDefinition
-  category: 5
+  category: 1
+  Rarity: 1
   icon: {fileID: 6822123260829992848, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
-  additionalProjectiles: 2
-  angle: 35
+  moduleName: Fork
+  moduleDescription: Creates 1 additional projectile
+  complexity: 1
+  instability: 1
+  additionalProjectiles: 1
+  angle: 15

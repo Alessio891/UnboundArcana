@@ -10,7 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5221fb215ce2c1540bcf8903b62f06cd, type: 3}
-  m_Name: TestPierce
+  m_Name: Pierce
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.Piercing.PiercingModuleDefinition
-  category: 7
+  category: 1
+  Rarity: 2
+  icon: {fileID: 2735185093568259707, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
+  moduleName: Pierce
+  moduleDescription: Projectiles pierce 2 additional times
+  complexity: 1
+  instability: 1
   additionalHits: 2

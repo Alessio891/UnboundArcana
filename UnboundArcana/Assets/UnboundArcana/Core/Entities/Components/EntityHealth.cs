@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnboundArcana.Core.Combat;
 using UnboundArcana.Core.Entities.Events;
+using UnboundArcana.Core.Stats;
 
 namespace UnboundArcana.Core.Entities
 {
@@ -19,7 +20,7 @@ namespace UnboundArcana.Core.Entities
 		{
 			currentHealth =
 				entity.Stats.Get(
-					EntityStatId.MaxHealth
+					StatKeys.Entity.MaxHealth
 				);
 		}
 
@@ -27,7 +28,6 @@ namespace UnboundArcana.Core.Entities
 			DamageInfo damage)
 		{
 			currentHealth -= damage.Amount;
-			Debug.Log("[Health] Publishing entity damage event");
 			entity.Events.Publish(
 				new EntityDamagedEvent(
 					entity,

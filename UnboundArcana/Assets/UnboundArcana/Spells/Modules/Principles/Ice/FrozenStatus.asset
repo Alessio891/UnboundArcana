@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c45bf44fa086124a8878e13e2fdb7a4, type: 3}
-  m_Name: TestHoming
-  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.Homing.HomingModuleDefinition
-  category: 7
-  strength: 25
+  m_Script: {fileID: 11500000, guid: 6af1ccc22838f9a4eaec9f71d89cd4ee, type: 3}
+  m_Name: FrozenStatus
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.Statuses.FrozenStatusDefinition
+  duration: 5
+  maxStacks: 1

@@ -14,5 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpellDataCatalog
   modules:
   - {fileID: 11400000, guid: de0936971afef1a4ca1b299a9bbe3b93, type: 2}
-  behaviors: []
-  status: []
+  - {fileID: 11400000, guid: add7f0d1f8178a6428a3ef8408e81a4a, type: 2}
+  - {fileID: 11400000, guid: 27a794ab07f206f4fb496fe67fbfbee6, type: 2}
+  - {fileID: 11400000, guid: 0af3b59a177b84242b1c0be8d972e355, type: 2}
+  - {fileID: 11400000, guid: 8682e9d1c54ad7943b82f7ac8fef366b, type: 2}
+  - {fileID: 11400000, guid: 52c27441f5fb7bf4f9fb2e03239dfc6b, type: 2}
+  - {fileID: 11400000, guid: e807838cf5fcbfe449a1492c10b9917a, type: 2}
+  - {fileID: 11400000, guid: e20d22579e3e4c447ad39ff648c19c9c, type: 2}
+  - {fileID: 11400000, guid: 33193d18f72f5b448acf593ad665e3a7, type: 2}
+  - {fileID: 11400000, guid: 52ca19c2e98e7fa46a3711d33161ba56, type: 2}
+  - {fileID: 11400000, guid: 67f67c0c04456814fb627dde6446a1db, type: 2}
+  - {fileID: 11400000, guid: 68a01f65e9ae66341b500704f7c94fa0, type: 2}
+  - {fileID: 11400000, guid: 782cea6dc9932c147901ccf1323b368f, type: 2}
+  behaviors:
+  - {fileID: 11400000, guid: fbf2d3d06e26ae446949109b4a9f08fa, type: 2}
+  - {fileID: 11400000, guid: 18bdfcdc9646b6840b8bc648976a72dc, type: 2}
+  - {fileID: 11400000, guid: c0cee36dc7c11b647be7759645276300, type: 2}
+  status:
+  - {fileID: 11400000, guid: cc94984b3662a104ebff2b5d61728d9a, type: 2}
+  - {fileID: 11400000, guid: 37f02cc1f278ca947bbe3c8b8a08d20d, type: 2}
+  - {fileID: 11400000, guid: 136fb55179a5fc2428ce371f9ee6cb98, type: 2}

@@ -54,7 +54,7 @@ namespace UnboundArcana.Spells.Modules.AuraDamage
 
 			Collider2D[] hits = Physics2D.OverlapCircleAll(
 				aura.Position,
-				spell.Stats.Get(StatId.Size)
+				spell.Stats.Get(StatKeys.Spell.Size)
 			);
 
 			foreach (Collider2D hit in hits)

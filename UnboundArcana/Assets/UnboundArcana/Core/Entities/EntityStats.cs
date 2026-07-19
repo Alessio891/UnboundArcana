@@ -1,35 +1,8 @@
-using System.Collections.Generic;
+using UnboundArcana.Core.Stats;
 
 namespace UnboundArcana.Core.Entities
 {
-	public enum EntityStatId
+	public class EntityStats : StatCollection
 	{
-		MaxHealth,
-		MoveSpeed,
-		CastSpeed,
-		Armor
-	}
-
-	public class EntityStats
-	{
-		private readonly Dictionary<EntityStatId, float> values = new();
-
-		public void Set(
-			EntityStatId stat,
-			float value)
-		{
-			values[stat] = value;
-		}
-
-		public float Get(
-			EntityStatId stat)
-		{
-			if (values.TryGetValue(stat, out float value))
-			{
-				return value;
-			}
-
-			return 0f;
-		}
 	}
 }
