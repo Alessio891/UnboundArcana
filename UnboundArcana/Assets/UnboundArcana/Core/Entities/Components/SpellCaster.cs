@@ -25,7 +25,11 @@ namespace UnboundArcana.Core.Entities
 		}
 
 		public SpellConfiguration GetCurrentSpell() {
-			if (CurrentSpell < 0 || CurrentSpell >= Spellconfigurations.Count) return null;
+			if (CurrentSpell < 0 || CurrentSpell >= Spellconfigurations.Count)
+			{
+				Debug.LogError($"Requested spell {CurrentSpell} in loadout with {Spellconfigurations.Count} spells.");
+				return null;
+			}
 
 			return Spellconfigurations[CurrentSpell];
 		}
@@ -33,7 +37,7 @@ namespace UnboundArcana.Core.Entities
 
 	public class SpellCaster : MonoBehaviour
 	{
-		public SpellRuntimeManager RuntimeManager;
+		public SpellRuntimeManager RuntimeManager => GameRuntimeManager.Instance.SpellRuntimeManager;
 		public SpellDefinition SpellDefinition;
 
 		private SpellInstance activeSpell;
@@ -55,7 +59,8 @@ namespace UnboundArcana.Core.Entities
 		public void  InitializeLoadout(List<SpellDefinition> spells) {
 			spellLoadout = new SpellLoadout();
 
-			foreach (var definition in spells) { 
+			foreach (var definition in spells) {
+				Debug.Log($"Adding spell {definition.name} to entity {name} at start");
 				spellLoadout.AddSpell(definition);
 			}
 		}

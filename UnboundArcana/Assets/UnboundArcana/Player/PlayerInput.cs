@@ -20,6 +20,9 @@ namespace UnboundArcana.Player
 		{
 			controls = new UnboundArcanaControls();
 		}
+		public void SetInputEnabled(bool enabled) {
+			inputEnabled = enabled; 
+		}
 		private void Update()
 		{
 			if (inputEnabled != controls.Gameplay.enabled)

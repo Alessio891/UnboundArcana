@@ -30,22 +30,24 @@ public class ReserachExperimentUI : MonoBehaviour
 	private bool isOpen = false;
 
 	private SpellConfiguration spellConfiguration;
-
+	private CanvasGroup canvasGroup;
 	private void Awake()
 	{
 		GameRuntimeManager.Instance.Events.Subscribe<ResearchExperimentStationEvent>(OnStationUsed);
-		gameObject.SetActive(false);
-		//SetSpellConfiguration(testCaster.SpellLoadout.GetCurrentSpell());
+		canvasGroup = GetComponent<CanvasGroup>();
+		Close();
 	}
 
-	void GenerateDebugRewards() {
-		foreach(Transform t in rewardList.transform) { Destroy(t.gameObject); }
+	void GenerateDebugRewards()
+	{
+		foreach (Transform t in rewardList.transform) { Destroy(t.gameObject); }
 
 		var rewards = GameRuntimeManager.Instance.ModuleReward.RollModules(
 			GameDatabase.Instance.Spells.modules, 3
 		);
 
-		foreach(var module in rewards) {
+		foreach (var module in rewards)
+		{
 			SpellModuleReward reward = new();
 
 			reward.module = module;
@@ -72,15 +74,18 @@ public class ReserachExperimentUI : MonoBehaviour
 		//}
 	}
 
-	public void StartDragReward(GameReward reward) {
+	public void StartDragReward(GameReward reward)
+	{
 		draggedReward.enabled = true;
 		draggedReward.sprite = reward.icon;
 		draggedRewardData = reward;
 	}
-	public void UpdateDragReward(PointerEventData eventData) { 
+	public void UpdateDragReward(PointerEventData eventData)
+	{
 		draggedReward.transform.position = eventData.position;
 	}
-	public void EndDragReward() {
+	public void EndDragReward()
+	{
 		draggedReward.enabled = false;
 	}
 	public void RewardDroppedOnSlot()
@@ -89,33 +94,51 @@ public class ReserachExperimentUI : MonoBehaviour
 		{
 			GameRuntimeManager.Instance.SpellModification.TryAddModule(spellConfiguration, moduleReward.module);
 			isOpen = false;
-			gameObject.SetActive(false);
+			Close();
 		}
 		else if (draggedRewardData is SpellBehaviorReward behaviorReward)
 		{
 			GameRuntimeManager.Instance.SpellModification.TrySetBehavior(spellConfiguration, behaviorReward.behavior);
 			isOpen = false;
-			gameObject.SetActive(false);
+			Close();
 		}
 	}
 
-	void OnStationUsed(ResearchExperimentStationEvent evt) {
+	void Open()
+	{
 		if (!isOpen)
 		{
-			gameObject.SetActive(true);
+			canvasGroup.alpha = 1.0f;
+			canvasGroup.blocksRaycasts = true;
 			isOpen = true;
-			SetSpellConfiguration(testCaster.SpellLoadout.GetCurrentSpell());
+		}
+	}
+	void Close()
+	{
+		canvasGroup.alpha = 0.0f;
+		canvasGroup.blocksRaycasts = false;
+		isOpen = false;
+
+	}
+	void OnStationUsed(ResearchExperimentStationEvent evt)
+	{
+		if (!isOpen)
+		{
+			Open();
+			SetSpellConfiguration(evt.Entity.GetComponent<SpellCaster>().SpellLoadout.GetCurrentSpell());
 			GenerateDebugRewards();
 		}
 	}
 
-	public void SetSpellConfiguration(SpellConfiguration spell) { 
+	public void SetSpellConfiguration(SpellConfiguration spell)
+	{
 		spellConfiguration = spell;
-		
+
 		if (spell == null) return;
 		Debug.Log("Setting spell config");
 		int index = 0;
-		foreach(var module in spell.modules) {
+		foreach (var module in spell.modules)
+		{
 			if (index >= principleSlots.Count) break;
 
 			principleSlots[index].SetSpellModule(module);

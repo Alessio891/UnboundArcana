@@ -20,7 +20,6 @@ namespace UnboundArcana.Core.Entities
 		{
 			Stats = new EntityStats();
 			Status = GetComponent<StatusController>();
-			GetComponent<SpellCaster>()?.InitializeLoadout(definition.initialSpells);
 			InitializeStats();
 			Events.Subscribe<EntityDamagedEvent>(OnEntityDamaged);
 		}
@@ -32,6 +31,8 @@ namespace UnboundArcana.Core.Entities
 
 		private void InitializeStats()
 		{
+			GetComponent<SpellCaster>().InitializeLoadout(definition.initialSpells);
+
 			Stats.AddBase(
 				StatKeys.Entity.MaxHealth,
 				definition.maxHealth,

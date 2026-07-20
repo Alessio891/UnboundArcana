@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TestPlayerDefinition
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.EntityDefinition
   maxHealth: 1000000
-  moveSpeed: 5
+  moveSpeed: 3
   castSpeed: 1
   armor: 0
   behavior: {fileID: 0}

@@ -36,6 +36,7 @@ namespace UnboundArcana.Spells.Services
 			ModuleRewardTable rewardTable)
 		{
 			this.rewardTable = rewardTable;
+
 		}
 
 		public List<SpellModuleDefinition> RollModules(

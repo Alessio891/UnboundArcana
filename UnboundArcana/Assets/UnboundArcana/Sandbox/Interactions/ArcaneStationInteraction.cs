@@ -39,7 +39,7 @@ public class ArcaneStationInteraction : MonoBehaviour, IInteractable, IInteracti
 
 	public bool Interact(Entity entity)
 	{
-		GameRuntimeManager.Instance.Events.Publish(new ResearchExperimentStationEvent(gameObject));
+		GameRuntimeManager.Instance.Events.Publish(new ResearchExperimentStationEvent(gameObject, entity));
 		return true;
 	}
 }

@@ -19,6 +19,7 @@ namespace UnboundArcana.UI
 
 			prompt.gameObject.SetActive(false);
 			prompt.transform.SetParent(transform, false);
+			prompt.transform.SetAsFirstSibling();
 		}
 
 		private void OnEnable()

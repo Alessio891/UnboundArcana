@@ -14,15 +14,43 @@ namespace UnboundArcana.Core.Entities
 		private Vector2 moveInput;
 		private Vector2 velocity;
 
+		private bool movingToPosition = false;
+		private Vector3 targetMoveToPosition;
+
+
 		private void Awake()
 		{
 			entity = GetComponent<Entity>();
 			rb = GetComponent<Rigidbody2D>();
 		}
 
+		public void MoveTo(Vector3 position) {
+			movingToPosition = true;
+			targetMoveToPosition = position;
+			Debug.Log($"Moving to {position}");
+		}
+		
 		public void SetMovementIntent(Vector2 input)
 		{
+			if (movingToPosition) { return; }
+
 			moveInput = Vector2.ClampMagnitude(input, 1f);
+		}
+
+		private void Update()
+		{
+			if (movingToPosition)
+			{
+				Vector2 direction = (targetMoveToPosition - transform.position).normalized;
+				moveInput = direction;
+
+				if (Vector3.Distance(transform.position, targetMoveToPosition) < 0.1f)
+				{
+					movingToPosition = false;
+					moveInput = Vector2.zero;
+					entity.Events.Publish(new EntityMoveToCompleteEvent());
+				}
+			}
 		}
 
 		private void FixedUpdate()

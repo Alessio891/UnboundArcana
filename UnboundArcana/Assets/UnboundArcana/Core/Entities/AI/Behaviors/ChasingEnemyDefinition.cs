@@ -22,9 +22,7 @@ namespace UnboundArcana.Core.Entities.AI
 
 		protected override void OnInitialize()
 		{
-			target =
-				GameObject.FindGameObjectWithTag("Player")
-				.GetComponent<Entity>();
+		
 		}
 
 
