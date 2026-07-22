@@ -119,6 +119,85 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &361889180
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 361889181}
+  m_Layer: 0
+  m_Name: PlayerSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &361889181
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 361889180}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1511912189
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1511912191}
+  - component: {fileID: 1511912190}
+  m_Layer: 0
+  m_Name: TowerController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1511912190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511912189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 475d68252f33a1441ad68b1a2a96854d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Rooms.TowerSceneController
+  debugPlayer: {fileID: 11400000, guid: acd5a0252c9f049488bb832c530a4543, type: 2}
+  playerSpawn: {fileID: 361889181}
+  startingRoom: {fileID: 11400000, guid: aad98572f68c13545b9eaa9792464779, type: 2}
+  roomParent: {fileID: 1853042813}
+--- !u!4 &1511912191
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511912189}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.44399, y: 1.68838, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1853042811
 GameObject:
   m_ObjectHideFlags: 0
@@ -148,11 +227,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7401e1e50ff04fb4fae6fe1a93d44192, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Rooms.RoomAssemblerTester
-  sections:
-  - {fileID: 4502884726214052274, guid: 3652febf9afc3ec4d8ed2e5bd86cb854, type: 3}
-  - {fileID: 3278201949083174002, guid: 3bc6c65ffaf3614418423701754ec63a, type: 3}
-  - {fileID: 2762494890422748271, guid: 07b39dc01e6547d40b5e8061d84981e5, type: 3}
-  sectionCount: 8
+  roomDefinition: {fileID: 11400000, guid: aad98572f68c13545b9eaa9792464779, type: 2}
+  roomParent: {fileID: 1853042813}
+  startRoomAfterGeneration: 1
 --- !u!4 &1853042813
 Transform:
   m_ObjectHideFlags: 0
@@ -186,11 +263,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8548217668623494754, guid: 3bc6c65ffaf3614418423701754ec63a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.44
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8548217668623494754, guid: 3bc6c65ffaf3614418423701754ec63a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.09046
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8548217668623494754, guid: 3bc6c65ffaf3614418423701754ec63a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -247,11 +324,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5574016905344119359, guid: 3652febf9afc3ec4d8ed2e5bd86cb854, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.76
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5574016905344119359, guid: 3652febf9afc3ec4d8ed2e5bd86cb854, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.09046
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5574016905344119359, guid: 3652febf9afc3ec4d8ed2e5bd86cb854, type: 3}
       propertyPath: m_LocalPosition.z
@@ -306,13 +383,21 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4556009679821048688, guid: 07b39dc01e6547d40b5e8061d84981e5, type: 3}
+      propertyPath: showGrid
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4556009679821048688, guid: 07b39dc01e6547d40b5e8061d84981e5, type: 3}
+      propertyPath: rectangles.Array.data[0].Size.x
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 9011202318238620989, guid: 07b39dc01e6547d40b5e8061d84981e5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.44
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9011202318238620989, guid: 07b39dc01e6547d40b5e8061d84981e5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.247
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9011202318238620989, guid: 07b39dc01e6547d40b5e8061d84981e5, type: 3}
       propertyPath: m_LocalPosition.z
@@ -359,3 +444,5 @@ SceneRoots:
   - {fileID: 1967049715213909270}
   - {fileID: 8684999179680932373}
   - {fileID: 1853042813}
+  - {fileID: 1511912191}
+  - {fileID: 361889181}

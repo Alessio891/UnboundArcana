@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 namespace UnboundArcana.Core.Rooms
@@ -22,7 +23,19 @@ namespace UnboundArcana.Core.Rooms
 		public int Width => width;
 
 		public RoomSectionConnector ConnectedTo { get; set; }
+		public void RefreshCellPosition(Grid grid)
+		{
+			Vector3Int cell =
+				grid.WorldToCell(transform.position);
 
+			cellPosition = new Vector2Int(
+				cell.x,
+				cell.y
+			);
+
+			transform.position =
+				grid.GetCellCenterWorld(cell);
+		}
 		private void OnDrawGizmosSelected()
 		{
 			if (ConnectedTo == null)

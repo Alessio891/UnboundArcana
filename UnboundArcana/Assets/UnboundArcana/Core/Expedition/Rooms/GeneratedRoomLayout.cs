@@ -17,6 +17,7 @@ namespace UnboundArcana.Core.Rooms
 		public Vector2Int CellPosition;
 
 		public List<int> UsedConnectorIndices { get; } = new();
+		public RoomSection Instance;
 	}
 
 	public class RoomConnection

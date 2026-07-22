@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnboundArcana.Core.Camera;
 using UnboundArcana.Core.Entities;
+using UnboundArcana.Core.Runtime;
 using UnboundArcana.Player;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -10,8 +11,8 @@ using UnityEngine.Playables;
 public class ExpeditionController : MonoBehaviour
 {
 
-	private PlayerController player;
-	public PlayerController Player => player;
+	private Entity player;
+	public Entity Player => player;
 
 	private static ExpeditionController instance;
 	public static ExpeditionController Instance => instance;
@@ -19,8 +20,8 @@ public class ExpeditionController : MonoBehaviour
 	[Header("Placeholders?")]
 	[SerializeField] private InitialCorePickerUI corePickerUI;
 	[SerializeField] private GameTilemapController tilemapController;
-	[SerializeField] private PlayerController playerPrefab;
-	
+	[SerializeField] private EntityDefinition playerDefinition;
+
 	[SerializeField] private Transform playerStartPosition;
 	[SerializeField] private GameObject arcanaCoreSprite;
 	[SerializeField] private List<Transform> targets;
@@ -34,14 +35,30 @@ public class ExpeditionController : MonoBehaviour
 
 	private void Start()
 	{
-		player = Instantiate(playerPrefab);
-		player.transform.position = playerStartPosition.position;
-		player.gameObject.SetActive(false);
+		
 		portalAnimator.gameObject.SetActive(false);
 		StartCoroutine(startSequence());
 	}
+	private void SpawnPlayer()
+	{
+		player =
+			GameRuntimeManager.Instance.PlayerSpawner.Spawn(
+				GameSession.Instance.Player,
+				playerStartPosition.position,
+				null);
+	}
+	private void EnsureSession()
+	{
+		if (GameSession.Instance.Player != null)
+			return;
 
+		GameSession.Instance.CreatePlayer(
+			playerDefinition);
+	}
 	IEnumerator startSequence() {
+		EnsureSession();
+		SpawnPlayer();
+		player.gameObject.SetActive(false);
 		tilemapController.StartConstructing();
 		player.GetComponent<PlayerInput>().SetInputEnabled(false);
 		yield return new WaitForSeconds(2.5f);

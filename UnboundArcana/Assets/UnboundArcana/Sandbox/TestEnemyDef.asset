@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 555b9863227106e478ad58360e5b604c, type: 3}
   m_Name: TestEnemyDef
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.EntityDefinition
+  prefab: {fileID: 5726457839046327981, guid: 189ae5e918391e44eb8295d361249fcc, type: 3}
   maxHealth: 100000
   moveSpeed: 1
   castSpeed: 1

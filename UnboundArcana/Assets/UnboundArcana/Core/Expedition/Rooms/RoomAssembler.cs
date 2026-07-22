@@ -79,7 +79,7 @@ namespace UnboundArcana.Core.Rooms
 					Template = candidate,
 					CellPosition = position
 				};
-
+				
 				if (Overlaps(layout, generated))
 					continue;
 
@@ -153,12 +153,27 @@ namespace UnboundArcana.Core.Rooms
 		}
 
 		private bool Overlaps(
-			GeneratedRoomLayout layout,
-			GeneratedSection candidate)
+	GeneratedRoomLayout layout,
+	GeneratedSection candidate)
 		{
+			HashSet<Vector2Int> occupied =
+				new();
+
 			foreach (var section in layout.Sections)
 			{
-				if (section.CellPosition == candidate.CellPosition)
+				foreach (var cell in section.Template.Footprint.GetCells())
+				{
+					occupied.Add(
+						section.CellPosition + cell);
+				}
+			}
+
+			foreach (var cell in candidate.Template.Footprint.GetCells())
+			{
+				Vector2Int worldCell =
+					candidate.CellPosition + cell;
+
+				if (occupied.Contains(worldCell))
 					return true;
 			}
 

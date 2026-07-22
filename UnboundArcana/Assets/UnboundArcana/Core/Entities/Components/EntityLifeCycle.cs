@@ -33,7 +33,7 @@ public class EntityLifecycle : MonoBehaviour
 		}
 
 		IsAlive = false;
-
+		GameRuntimeManager.Instance.Events.Publish(evt);
 		// temporary
 		gameObject.SetActive(false);
 	}

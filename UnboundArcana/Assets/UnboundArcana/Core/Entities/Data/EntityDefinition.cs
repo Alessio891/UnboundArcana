@@ -10,12 +10,18 @@ namespace UnboundArcana.Core.Entities
 	)]
 	public class EntityDefinition : ScriptableObject
 	{
+		[SerializeField]
+		private GameObject prefab;
+
 		public float maxHealth = 100f;
 		public float moveSpeed = 5f;
 		public float castSpeed = 1f;
 		public float armor = 0f;
+
 		public AIBehaviorDefinition behavior;
 
 		public List<SpellDefinition> initialSpells;
+
+		public GameObject Prefab => prefab;
 	}
 }

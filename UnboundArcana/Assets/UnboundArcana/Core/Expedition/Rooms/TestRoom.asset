@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97990363d68ade14aa09327e6688b5cb, type: 3}
+  m_Name: TestRoom
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Rooms.RoomDefinition
+  roomId: test_room
+  type: 0
+  minSections: 4
+  maxSections: 6
+  availableSections:
+  - {fileID: 4502884726214052274, guid: 3652febf9afc3ec4d8ed2e5bd86cb854, type: 3}
+  - {fileID: 3278201949083174002, guid: 3bc6c65ffaf3614418423701754ec63a, type: 3}
+  - {fileID: 2762494890422748271, guid: 07b39dc01e6547d40b5e8061d84981e5, type: 3}
+  behaviour: {fileID: 11400000, guid: 37d01697032a92f48b14a9dbcfdf2e5b, type: 2}
+  encounter: {fileID: 11400000, guid: 0d4ca94e72dfa0a47946dbb2a319cd50, type: 2}
