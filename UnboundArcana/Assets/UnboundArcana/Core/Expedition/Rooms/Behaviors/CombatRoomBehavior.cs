@@ -1,35 +1,27 @@
 using System.Collections.Generic;
-using UnboundArcana.Core.Entities;
-using UnboundArcana.Core.Entities.Events;
 using UnityEngine;
 
 namespace UnboundArcana.Core.Rooms
 {
-
 	[CreateAssetMenu(
 		menuName = "Unbound Arcana/Rooms/Behaviours/Combat")]
 	public class CombatRoomBehaviour : RoomBehaviour
 	{
-		[SerializeField]
-		private List<EntityDefinition> enemies = new();
-
-		[SerializeField]
-		private int enemiesToSpawn = 5;
-
-		private readonly Dictionary<RoomInstance, RoomEncounter> encounters = new();
+		private readonly Dictionary<RoomInstance, EncounterInstance> encounters = new();
 
 		public override void StartRoom(
 			RoomInstance room)
 		{
-			var encounter =
-				new RoomEncounter(
+			EncounterInstance encounter =
+				new CombatEncounterInstance(
 					room,
-					enemies,
-					enemiesToSpawn);
+					room.Definition.Encounter);
 
 			encounters[room] = encounter;
 
 			encounter.Start();
+
+			room.StartObjective();
 		}
 
 		public override void StopRoom(
@@ -37,12 +29,14 @@ namespace UnboundArcana.Core.Rooms
 		{
 			if (encounters.TryGetValue(
 				room,
-				out var encounter))
+				out EncounterInstance encounter))
 			{
 				encounter.Stop();
 
 				encounters.Remove(room);
 			}
+
+			room.StopObjective();
 		}
 
 		public override void Tick(
@@ -50,10 +44,12 @@ namespace UnboundArcana.Core.Rooms
 		{
 			if (encounters.TryGetValue(
 				room,
-				out var encounter))
+				out EncounterInstance encounter))
 			{
 				encounter.Tick();
 			}
+
+			room.TickObjective();
 		}
 	}
 }

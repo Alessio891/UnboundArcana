@@ -15,14 +15,14 @@ namespace UnboundArcana.Core.Rooms
 		public GeneratedRoomLayout Layout { get; private set; }
 
 		private RoomBehaviour behaviour;
-
+		private RoomObjective objective;
 		public void Initialize(
 			RoomDefinition definition,
 			GeneratedRoomLayout layout)
 		{
 			Definition = definition;
 			Layout = layout;
-
+			objective = definition.Objective;
 			behaviour = definition.Behaviour;
 
 			sections.Clear();
@@ -43,7 +43,20 @@ namespace UnboundArcana.Core.Rooms
 				markers.AddRange(sectionMarkers);
 			}
 		}
+		public void StartObjective()
+		{
+			objective?.StartObjective(this);
+		}
 
+		public void TickObjective()
+		{
+			objective?.Tick(this);
+		}
+
+		public void StopObjective()
+		{
+			objective?.StopObjective(this);
+		}
 		public void StartRoom()
 		{
 			behaviour?.StartRoom(this);
@@ -54,13 +67,15 @@ namespace UnboundArcana.Core.Rooms
 
 		public void Complete()
 		{
+			Debug.Log(
+				$"Room completed: {Definition.RoomId}");
+
 			behaviour?.StopRoom(this);
 
+			StopObjective();
+
 			GameRuntimeManager.Instance.Events.Publish(
-				new RoomCompletedEvent
-				(
-				this
-				));
+				new RoomCompletedEvent(this));
 		}
 
 		public void Tick()

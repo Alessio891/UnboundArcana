@@ -36,6 +36,9 @@ namespace UnboundArcana.Core.Rooms
 		[SerializeField]
 		private EncounterDefinition encounter;
 
+		[SerializeField]
+		private RoomObjective objective;
+		public RoomObjective Objective => objective;
 		public EncounterDefinition Encounter => encounter;
 		public RoomBehaviour Behaviour => behaviour;
 		public string RoomId => roomId;

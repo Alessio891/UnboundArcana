@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnboundArcana.Core.Entities;
 using UnboundArcana.Core.Runtime;
+using UnboundArcana.Core.Camera;
 
 namespace UnboundArcana.Core.Rooms
 {
@@ -45,6 +46,7 @@ namespace UnboundArcana.Core.Rooms
 					GameSession.Instance.Player,
 					playerSpawn.position,
 					null);
+			MainCameraManager.Instance.SetFollowTarget(player.transform);
 		}
 
 		private void GenerateRoom()

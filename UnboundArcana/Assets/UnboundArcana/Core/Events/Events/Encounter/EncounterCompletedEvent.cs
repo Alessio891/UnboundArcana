@@ -1,14 +1,15 @@
-using UnboundArcana.Core.Events;
+using UnboundArcana.Core.Rooms;
 
 namespace UnboundArcana.Core.Events
 {
-	public class EncounterCompletedEvent : SpellEvent
+	public class EncounterCompletedEvent
 	{
-		public int Wave { get; }
+		public EncounterInstance Encounter { get; }
 
-		public EncounterCompletedEvent(int wave)
+		public EncounterCompletedEvent(
+			EncounterInstance encounter)
 		{
-			Wave = wave;
+			Encounter = encounter;
 		}
 	}
 }

@@ -183,9 +183,7 @@ namespace UnboundArcana.Sandbox
 		{
 			waitingForNextWave = true;
 
-			GameEvents?.Publish(
-				new EncounterCompletedEvent(waveIndex)
-			);
+			
 
 			Debug.Log("Wave completed");
 		}
