@@ -18,7 +18,7 @@ MonoBehaviour:
   maxSections: 6
   availableSections:
   - {fileID: 7067505564307293476, guid: 39c20c4c8e6e31640a9730918a0eb1fb, type: 3}
-  - {fileID: 7067505564307293476, guid: 000bd28b22ca99a499be3be6dbed9a11, type: 3}
+  - {fileID: 7067505564307293476, guid: db56cb94298a93349b50900f21144ed5, type: 3}
   behaviour: {fileID: 11400000, guid: 37d01697032a92f48b14a9dbcfdf2e5b, type: 2}
   encounter: {fileID: 11400000, guid: 0d4ca94e72dfa0a47946dbb2a319cd50, type: 2}
   objective: {fileID: 11400000, guid: 2e6610a43a8b8b040ae2a3aa7948dd7c, type: 2}

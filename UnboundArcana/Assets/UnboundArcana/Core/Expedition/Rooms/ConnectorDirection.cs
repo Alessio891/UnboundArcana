@@ -7,8 +7,13 @@ namespace UnboundArcana.Core.Rooms
 		South,
 		West
 	}
+
 	public enum ConnectorType
 	{
-		Standard
+		Stone,
+		Wood,
+		Arcane,
+		Ruins,
+		Cave
 	}
 }

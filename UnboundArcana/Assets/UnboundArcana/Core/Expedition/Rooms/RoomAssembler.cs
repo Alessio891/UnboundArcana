@@ -110,7 +110,7 @@ namespace UnboundArcana.Core.Rooms
 			{
 				var connector = section.Connectors[i];
 
-				if (connector.Type == target.Type &&
+				if (connector.Shape == target.Shape &&
 					connector.Direction == target.Direction.Opposite())
 				{
 					return i;

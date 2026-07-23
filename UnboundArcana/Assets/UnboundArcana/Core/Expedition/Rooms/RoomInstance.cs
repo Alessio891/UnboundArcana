@@ -17,12 +17,12 @@ namespace UnboundArcana.Core.Rooms
 		private RoomBehaviour behaviour;
 		private RoomObjective objective;
 		public void Initialize(
-			RoomDefinition definition,
-			GeneratedRoomLayout layout)
+	RoomDefinition definition,
+	GeneratedRoomLayout layout)
 		{
 			Definition = definition;
 			Layout = layout;
-			objective = definition.Objective;
+
 			behaviour = definition.Behaviour;
 
 			sections.Clear();
@@ -41,6 +41,31 @@ namespace UnboundArcana.Core.Rooms
 					instance.GetComponentsInChildren<RoomMarker>();
 
 				markers.AddRange(sectionMarkers);
+			}
+
+			ApplyConnectorStates();
+		}
+		private void ApplyConnectorStates()
+		{
+			foreach (var section in Layout.Sections)
+			{
+				if (section.Instance == null)
+					continue;
+
+				var connectors =
+					section.Instance.Connectors;
+
+				for (int i = 0; i < connectors.Count; i++)
+				{
+					RoomSectionConnector connector =
+						connectors[i];
+
+					bool connected =
+						section.UsedConnectorIndices.Contains(i);
+
+					connector.SetConnected(
+						connected);
+				}
 			}
 		}
 		public void StartObjective()
