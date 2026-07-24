@@ -290,86 +290,10 @@ namespace UnboundArcana.Core.Rooms.Editor
 			if (reference == null)
 				return;
 
-			renderer.sortingLayerID =
-				reference.sortingLayerID;
+			renderer.sortingLayerName = "Interactives";
 
 			renderer.sortingOrder =
 				reference.sortingOrder + 1;
 		}
-
-#if UNITY_EDITOR
-		//private void OnSceneGUI()
-		//{
-		//	foreach (Tilemap tilemap in GetOverlayTilemaps())
-		//	{
-		//		if (!tilemap.gameObject.activeInHierarchy)
-		//			continue;
-
-		//		DrawContractOverlay(tilemap);
-		//		DrawInvalidTiles(tilemap);
-		//	}
-		//}
-
-		private void DrawContractOverlay(
-			Tilemap tilemap)
-		{
-			HashSet<Vector2Int> cells =
-				new(
-					connector.GetOverlayContractCells());
-
-			foreach (Vector2Int cell in cells)
-			{
-				Vector3 center =
-					tilemap.CellToWorld(
-						new Vector3Int(
-							cell.x,
-							cell.y,
-							0));
-
-				Handles.DrawSolidRectangleWithOutline(
-					new Rect(
-						center,
-						tilemap.layoutGrid.cellSize),
-					new Color(
-						0,
-						1,
-						0,
-						0.15f),
-					Color.green);
-			}
-		}
-
-		private void DrawInvalidTiles(
-			Tilemap tilemap)
-		{
-			HashSet<Vector2Int> valid =
-				new(
-					connector.GetOverlayContractCells());
-
-			foreach (Vector3Int pos in tilemap.cellBounds.allPositionsWithin)
-			{
-				if (tilemap.GetTile(pos) == null)
-					continue;
-
-				if (valid.Contains(
-					new Vector2Int(pos.x, pos.y)))
-					continue;
-
-				Vector3 center =
-					tilemap.CellToWorld(pos);
-
-				Handles.DrawSolidRectangleWithOutline(
-					new Rect(
-						center,
-						tilemap.layoutGrid.cellSize),
-					new Color(
-						1,
-						0,
-						0,
-						0.35f),
-					Color.red);
-			}
-		}
-#endif
 	}
 }

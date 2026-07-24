@@ -232,7 +232,7 @@ namespace UnboundArcana.Core.Rooms
 
 			CreateTilemap(
 				"Walls",
-				"Interactive",
+				"Interactives",
 				0);
 
 			EditorUtility.SetDirty(this);
@@ -280,7 +280,7 @@ namespace UnboundArcana.Core.Rooms
 
 			TilemapRenderer renderer =
 				obj.AddComponent<TilemapRenderer>();
-
+			obj.AddComponent<TilemapCollider2D>();
 			SetupRenderer(
 				renderer,
 				sortingLayer,
