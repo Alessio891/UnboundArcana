@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 393f4ea09bf431f4090189e05427edd4, type: 3}
+  m_Name: New Room Section Preview Library
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Rooms.RoomSectionPreviewLibrary
+  sections:
+  - {fileID: 7067505564307293476, guid: 39c20c4c8e6e31640a9730918a0eb1fb, type: 3}

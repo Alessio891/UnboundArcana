@@ -9,6 +9,7 @@ namespace UnboundArcana.Core.Rooms.Editor
 	public class RoomSectionConnectorEditor : UnityEditor.Editor
 	{
 		private RoomSectionConnector connector;
+		private RoomSectionPreviewLibrary previewLibrary;
 
 		private void OnEnable()
 		{
@@ -20,15 +21,36 @@ namespace UnboundArcana.Core.Rooms.Editor
 		{
 			DrawDefaultInspector();
 
+			if (GUILayout.Button("Snap Cell Position"))
+			{
+				Grid grid =
+					connector.GetComponentInParent<Grid>();
+
+				if (grid != null)
+				{
+					Undo.RecordObject(
+						connector.transform,
+						"Snap Connector");
+
+					Undo.RecordObject(
+						connector,
+						"Update Connector Position");
+
+					connector.SnapToGrid(grid);
+
+					EditorUtility.SetDirty(connector);
+				}
+			}
+
 			EditorGUILayout.Space();
 
 			EditorGUILayout.LabelField(
 				"Connector Overlay",
 				EditorStyles.boldLabel);
 
-			if (GUILayout.Button("Create Overlay Tilemaps"))
+			if (GUILayout.Button("Create Overlay Roots"))
 			{
-				CreateOverlayTilemaps();
+				CreateOverlayRoots();
 			}
 
 			if (GUILayout.Button("Validate Overlay"))
@@ -41,31 +63,205 @@ namespace UnboundArcana.Core.Rooms.Editor
 				TrimOverlay();
 			}
 
-			EditorGUILayout.Space();
-
 			ConnectorTilemapOverride overlay =
-				connector.GetComponent<ConnectorTilemapOverride>();
+				connector.TilemapOverride;
 
 			if (overlay != null)
 			{
 				if (GUILayout.Button("Preview Open"))
 				{
 					overlay.ApplyOpen();
+					RoomSectionPreviewSpawner.ApplyOpen();
 				}
 
 				if (GUILayout.Button("Preview Closed"))
 				{
 					overlay.ApplyClosed();
+					RoomSectionPreviewSpawner.ApplyClosed();
+				}
+			}
+
+			EditorGUILayout.Space();
+
+			EditorGUILayout.LabelField(
+				"Room Preview",
+				EditorStyles.boldLabel);
+
+			previewLibrary =
+				(RoomSectionPreviewLibrary)
+				EditorGUILayout.ObjectField(
+					"Preview Library",
+					previewLibrary,
+					typeof(RoomSectionPreviewLibrary),
+					false);
+
+			if (GUILayout.Button("Spawn Compatible Sections"))
+			{
+				RoomSectionPreviewSpawner.Spawn(
+					connector,
+					previewLibrary);
+			}
+
+			if (GUILayout.Button("Clear Preview"))
+			{
+				RoomSectionPreviewSpawner.Clear();
+			}
+		}
+
+		private void CreateOverlayRoots()
+		{
+			ConnectorTilemapOverride component =
+				connector.TilemapOverride;
+
+			if (component == null)
+			{
+				component =
+					Undo.AddComponent<ConnectorTilemapOverride>(
+						connector.gameObject);
+			}
+
+			GameObject open =
+				CreateRoot("OpenOverlay");
+
+			GameObject closed =
+				CreateRoot("ClosedOverlay");
+
+			CreateLayerIfMissing(open);
+			CreateLayerIfMissing(closed);
+
+			component.Assign(
+				open,
+				closed);
+
+			EditorUtility.SetDirty(component);
+		}
+
+		private GameObject CreateRoot(
+			string name)
+		{
+			Transform existing =
+				connector.transform.Find(name);
+
+			if (existing != null)
+				return existing.gameObject;
+
+			GameObject obj =
+				new GameObject(name);
+
+			Undo.RegisterCreatedObjectUndo(
+				obj,
+				"Create Overlay Root");
+
+			obj.transform.SetParent(
+				connector.transform);
+
+			obj.transform.localPosition =
+				Vector3.zero;
+
+			return obj;
+		}
+
+		private void CreateLayerIfMissing(
+			GameObject root)
+		{
+			if (root.GetComponentInChildren<Tilemap>() != null)
+				return;
+
+			GameObject obj =
+				new GameObject("Layer_0");
+
+			Undo.RegisterCreatedObjectUndo(
+				obj,
+				"Create Overlay Layer");
+
+			obj.transform.SetParent(
+				root.transform);
+
+			Tilemap tilemap =
+				obj.AddComponent<Tilemap>();
+
+			TilemapRenderer renderer =
+				obj.AddComponent<TilemapRenderer>();
+
+			obj.AddComponent<TilemapCollider2D>();
+
+			CopyRendererSettings(renderer);
+		}
+
+		private IEnumerable<Tilemap> GetOverlayTilemaps()
+		{
+			ConnectorTilemapOverride overlay =
+				connector.TilemapOverride;
+
+			if (overlay == null)
+				yield break;
+
+			if (overlay.OpenRoot != null)
+			{
+				foreach (var tilemap in
+					overlay.OpenRoot
+					.GetComponentsInChildren<Tilemap>(true))
+				{
+					yield return tilemap;
+				}
+			}
+
+			if (overlay.ClosedRoot != null)
+			{
+				foreach (var tilemap in
+					overlay.ClosedRoot
+					.GetComponentsInChildren<Tilemap>(true))
+				{
+					yield return tilemap;
 				}
 			}
 		}
 
 		private void TrimOverlay()
 		{
-			ConnectorTilemapOverride overlay =
-				connector.TilemapOverride;
+			HashSet<Vector2Int> valid =
+				new(
+					connector.GetOverlayContractCells());
 
-			if (overlay == null || !overlay.IsValid())
+			foreach (Tilemap tilemap in GetOverlayTilemaps())
+			{
+				TrimTilemap(
+					tilemap,
+					valid);
+			}
+		}
+
+		private void TrimTilemap(
+			Tilemap tilemap,
+			HashSet<Vector2Int> valid)
+		{
+			Undo.RecordObject(
+				tilemap,
+				"Trim Connector Overlay");
+
+			foreach (Vector3Int pos in tilemap.cellBounds.allPositionsWithin)
+			{
+				if (tilemap.GetTile(pos) == null)
+					continue;
+
+				Vector2Int cell =
+					new(
+						pos.x,
+						pos.y);
+
+				if (!valid.Contains(cell))
+					tilemap.SetTile(
+						pos,
+						null);
+			}
+
+			EditorUtility.SetDirty(tilemap);
+		}
+
+		private void ValidateOverlay()
+		{
+			if (connector.TilemapOverride == null ||
+				!connector.TilemapOverride.IsValid())
 			{
 				Debug.LogWarning(
 					"Invalid connector overlay",
@@ -74,147 +270,9 @@ namespace UnboundArcana.Core.Rooms.Editor
 				return;
 			}
 
-			bool confirm =
-				EditorUtility.DisplayDialog(
-					"Trim Connector Overlay",
-					"Remove all tiles outside the connector shape?",
-					"Trim",
-					"Cancel");
-
-			if (!confirm)
-				return;
-
-			HashSet<Vector2Int> validCells =
-				new(
-					connector.GetOverlayContractCells());
-
-			TrimTilemap(
-				overlay.OpenOverlay,
-				validCells);
-
-			TrimTilemap(
-				overlay.ClosedOverlay,
-				validCells);
-		}
-
-		private void TrimTilemap(
-			Tilemap tilemap,
-			HashSet<Vector2Int> validCells)
-		{
-			if (tilemap == null)
-				return;
-
-			Undo.RegisterCompleteObjectUndo(
-				tilemap,
-				"Trim Connector Overlay");
-
-			BoundsInt bounds =
-				tilemap.cellBounds;
-
-			foreach (Vector3Int position in bounds.allPositionsWithin)
-			{
-				if (tilemap.GetTile(position) == null)
-					continue;
-
-				Vector2Int cell =
-					new(
-						position.x,
-						position.y);
-
-				if (!validCells.Contains(cell))
-				{
-					tilemap.SetTile(
-						position,
-						null);
-				}
-			}
-
-			EditorUtility.SetDirty(tilemap);
-		}
-
-		private void CreateOverlayTilemaps()
-		{
-			Undo.RecordObject(
-				connector,
-				"Create Connector Overlay");
-
-			ConnectorTilemapOverride overrideComponent =
-				connector.GetComponent<ConnectorTilemapOverride>();
-
-			if (overrideComponent == null)
-			{
-				overrideComponent =
-					Undo.AddComponent<ConnectorTilemapOverride>(
-						connector.gameObject);
-			}
-
-			CreateChild("OpenOverlay");
-			CreateChild("ClosedOverlay");
-
-			Tilemap open =
-				connector.transform
-				.Find("OpenOverlay")
-				.GetComponent<Tilemap>();
-
-			Tilemap closed =
-				connector.transform
-				.Find("ClosedOverlay")
-				.GetComponent<Tilemap>();
-
-			overrideComponent.Assign(
-				open,
-				closed);
-
-			EditorUtility.SetDirty(
+			Debug.Log(
+				"Connector overlay valid",
 				connector);
-		}
-
-		private void CreateChild(
-			string name)
-		{
-			Transform existing =
-				connector.transform.Find(name);
-
-			if (existing != null)
-				return;
-
-			GameObject obj =
-				new(name);
-
-			Undo.RegisterCreatedObjectUndo(
-				obj,
-				"Create Connector Overlay");
-
-			obj.transform.SetParent(
-				connector.transform);
-
-			SetupOverlayTransform(
-				obj.transform);
-
-			Tilemap tilemap =
-				obj.AddComponent<Tilemap>();
-
-			TilemapRenderer renderer =
-				obj.AddComponent<TilemapRenderer>();
-
-			CopyRendererSettings(
-				renderer);
-		}
-
-		private void SetupOverlayTransform(
-	Transform overlay)
-		{
-			Transform gridTransform =
-				connector.GetComponentInParent<Grid>().transform;
-
-			overlay.position =
-				gridTransform.position;
-
-			overlay.rotation =
-				gridTransform.rotation;
-
-			overlay.localScale =
-				Vector3.one;
 		}
 
 		private void CopyRendererSettings(
@@ -237,146 +295,78 @@ namespace UnboundArcana.Core.Rooms.Editor
 
 			renderer.sortingOrder =
 				reference.sortingOrder + 1;
-
-			renderer.mode =
-				reference.mode;
-		}
-
-		private void ValidateOverlay()
-		{
-			ConnectorTilemapOverride overlay =
-				connector.GetComponent<ConnectorTilemapOverride>();
-
-			if (overlay == null)
-			{
-				Debug.LogWarning(
-					"Missing ConnectorTilemapOverride",
-					connector);
-
-				return;
-			}
-
-			if (!overlay.IsValid())
-			{
-				Debug.LogWarning(
-					"Connector overlay is missing tilemaps",
-					connector);
-
-				return;
-			}
-
-			Debug.Log(
-				"Connector overlay valid",
-				connector);
 		}
 
 #if UNITY_EDITOR
-		private void OnSceneGUI()
-		{
-			if (connector.TilemapOverride == null)
-				return;
+		//private void OnSceneGUI()
+		//{
+		//	foreach (Tilemap tilemap in GetOverlayTilemaps())
+		//	{
+		//		if (!tilemap.gameObject.activeInHierarchy)
+		//			continue;
 
-			Tilemap activeTilemap = null;
+		//		DrawContractOverlay(tilemap);
+		//		DrawInvalidTiles(tilemap);
+		//	}
+		//}
 
-			if (connector.TilemapOverride.OpenOverlay.gameObject.activeSelf)
-			{
-				activeTilemap =
-					connector.TilemapOverride.OpenOverlay;
-			}
-
-			if (connector.TilemapOverride.ClosedOverlay.gameObject.activeSelf)
-			{
-				activeTilemap =
-					connector.TilemapOverride.ClosedOverlay;
-			}
-
-			if (activeTilemap == null)
-				return;
-
-			DrawContractOverlay(activeTilemap);
-			DrawInvalidTiles(activeTilemap);
-		}
 		private void DrawContractOverlay(
-	Tilemap tilemap)
+			Tilemap tilemap)
 		{
 			HashSet<Vector2Int> cells =
 				new(
 					connector.GetOverlayContractCells());
 
-			Handles.color =
-				new Color(
-					0f,
-					1f,
-					0f,
-					0.15f);
-
 			foreach (Vector2Int cell in cells)
 			{
-				Vector3Int tilePosition =
-					new(
-						cell.x,
-						cell.y,
-						0);
-
 				Vector3 center =
 					tilemap.CellToWorld(
-						tilePosition);
-
-				center +=
-					tilemap.layoutGrid.cellSize / 2f;
+						new Vector3Int(
+							cell.x,
+							cell.y,
+							0));
 
 				Handles.DrawSolidRectangleWithOutline(
 					new Rect(
-						center -
-						tilemap.layoutGrid.cellSize / 2f,
+						center,
 						tilemap.layoutGrid.cellSize),
 					new Color(
-						0f,
-						1f,
-						0f,
+						0,
+						1,
+						0,
 						0.15f),
 					Color.green);
 			}
 		}
+
 		private void DrawInvalidTiles(
 			Tilemap tilemap)
 		{
-			if (tilemap == null)
-				return;
-
 			HashSet<Vector2Int> valid =
 				new(
 					connector.GetOverlayContractCells());
 
-			Handles.color =
-				new Color(
-					1f,
-					0f,
-					0f,
-					0.35f);
-
-			foreach (Vector3Int position in tilemap.cellBounds.allPositionsWithin)
+			foreach (Vector3Int pos in tilemap.cellBounds.allPositionsWithin)
 			{
-				if (tilemap.GetTile(position) == null)
+				if (tilemap.GetTile(pos) == null)
 					continue;
 
-				Vector2Int cell =
-					new(
-						position.x,
-						position.y);
-
-				if (valid.Contains(cell))
+				if (valid.Contains(
+					new Vector2Int(pos.x, pos.y)))
 					continue;
 
 				Vector3 center =
-					tilemap.layoutGrid
-					.GetCellCenterWorld(position);
+					tilemap.CellToWorld(pos);
 
 				Handles.DrawSolidRectangleWithOutline(
 					new Rect(
-						center - tilemap.layoutGrid.cellSize / 2,
+						center,
 						tilemap.layoutGrid.cellSize),
-					new Color(1f, 0f, 0f, 0.35f),
+					new Color(
+						1,
+						0,
+						0,
+						0.35f),
 					Color.red);
 			}
 		}

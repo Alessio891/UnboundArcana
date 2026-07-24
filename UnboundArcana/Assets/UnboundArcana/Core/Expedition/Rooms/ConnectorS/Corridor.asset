@@ -13,5 +13,4 @@ MonoBehaviour:
   m_Name: Corridor
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Rooms.ConnectorShapeDefinition
   shapeId: 
-  size: {x: 6, y: 4}
-  offset: {x: -3, y: 0}
+  size: {x: 2, y: 5}

@@ -373,6 +373,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: '[MainCamera]'
       objectReference: {fileID: 0}
+    - target: {fileID: 9181113433673016946, guid: ec71b297281c4fd418fa841f85687b02, type: 3}
+      propertyPath: defaultZoom
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

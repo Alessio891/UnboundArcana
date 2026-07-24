@@ -127,10 +127,11 @@ namespace UnboundArcana.Core.Rooms
 
 			Gizmos.color =
 				new Color(
-					0f,
 					1f,
-					0f,
-					0.25f);
+					1f,
+					1f,
+					0.65f);
+			Gizmos.DrawSphere(transform.position, 0.05f);
 
 			//foreach (Vector2Int cell in GetContractCells())
 			//{

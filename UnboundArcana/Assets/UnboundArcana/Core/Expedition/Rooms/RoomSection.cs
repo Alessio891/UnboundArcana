@@ -187,5 +187,121 @@ namespace UnboundArcana.Core.Rooms
 			);
 		}
 #endif
+#if UNITY_EDITOR
+		[ContextMenu("Setup Section")]
+		private void SetupSection()
+		{
+			Undo.RecordObject(
+				this,
+				"Setup Room Section");
+
+			if (grid == null)
+			{
+				Transform existing =
+					transform.Find("Grid");
+
+				if (existing != null)
+				{
+					grid =
+						existing.GetComponent<Grid>();
+				}
+				else
+				{
+					GameObject gridObject =
+						new GameObject("Grid");
+
+					Undo.RegisterCreatedObjectUndo(
+						gridObject,
+						"Create Section Grid");
+
+					gridObject.transform.SetParent(
+						transform);
+
+					gridObject.transform.localPosition =
+						Vector3.zero;
+
+					grid =
+						gridObject.AddComponent<Grid>();
+				}
+			}
+
+			CreateTilemap(
+				"Floor",
+				"Background",
+				0);
+
+			CreateTilemap(
+				"Walls",
+				"Interactive",
+				0);
+
+			EditorUtility.SetDirty(this);
+		}
+#endif
+#if UNITY_EDITOR
+		private void CreateTilemap(
+			string name,
+			string sortingLayer,
+			int sortingOrder)
+		{
+			Transform existing =
+				grid.transform.Find(name);
+
+			if (existing != null)
+			{
+				SetupRenderer(
+					existing.GetComponent<TilemapRenderer>(),
+					sortingLayer,
+					sortingOrder);
+
+				return;
+			}
+
+			GameObject obj =
+				new GameObject(name);
+
+			Undo.RegisterCreatedObjectUndo(
+				obj,
+				"Create Section Tilemap");
+
+			obj.transform.SetParent(
+				grid.transform);
+
+			obj.transform.localPosition =
+				Vector3.zero;
+
+			obj.transform.localRotation =
+				Quaternion.identity;
+
+			obj.transform.localScale =
+				Vector3.one;
+
+			obj.AddComponent<Tilemap>();
+
+			TilemapRenderer renderer =
+				obj.AddComponent<TilemapRenderer>();
+
+			SetupRenderer(
+				renderer,
+				sortingLayer,
+				sortingOrder);
+		}
+#endif
+#if UNITY_EDITOR
+		private void SetupRenderer(
+			TilemapRenderer renderer,
+			string sortingLayer,
+			int sortingOrder)
+		{
+			if (renderer == null)
+				return;
+
+			renderer.sortingLayerName =
+				sortingLayer;
+
+			renderer.sortingOrder =
+				sortingOrder;
+		}
+#endif
 	}
 }
