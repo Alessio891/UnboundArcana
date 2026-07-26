@@ -14,4 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Rooms.EncounterDefinition
   groups:
   - entity: {fileID: 11400000, guid: 1229311691b63e04db2642477daffcef, type: 2}
-    count: 1
+    count: 2
+  - entity: {fileID: 11400000, guid: 7a9eebe2ec6910b4b9380651106be4b5, type: 2}
+    count: 2

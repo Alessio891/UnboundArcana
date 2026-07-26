@@ -1,9 +1,16 @@
 using System;
+using UnboundArcana.Core.Entities;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace UnboundArcana.Player
 {
+	public class PlayerInputStateChangedEvent
+	{
+		public bool isEnabled = false;
+		public PlayerInputStateChangedEvent(bool e) { isEnabled = e; }
+	}
+
 	public class PlayerInput : MonoBehaviour
 	{
 		private UnboundArcanaControls controls;
@@ -11,7 +18,8 @@ namespace UnboundArcana.Player
 
 		public bool InputEnabled => inputEnabled;
 		public Vector2 Movement { get; private set; }
-
+		private Entity entity; 
+		
 		public event Action CastStarted;
 		public event Action CastEnded;
 		public event Action InteractStarted;
@@ -19,9 +27,14 @@ namespace UnboundArcana.Player
 		private void Awake()
 		{
 			controls = new UnboundArcanaControls();
+			entity = GetComponent<Entity>();
 		}
 		public void SetInputEnabled(bool enabled) {
-			inputEnabled = enabled; 
+			inputEnabled = enabled;
+			if (!enabled) {
+				Movement = Vector2.zero;
+				entity.Events.Publish(new PlayerInputStateChangedEvent(InputEnabled));
+			}
 		}
 		private void Update()
 		{

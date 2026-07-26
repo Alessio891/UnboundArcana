@@ -3,6 +3,11 @@ using UnboundArcana.Core.Runtime;
 
 namespace UnboundArcana.Core.Research
 {
+	public class ResearchGrantedEvent
+	{
+		public ResearchInstance research;
+		public ResearchGrantedEvent( ResearchInstance research) { this.research = research; }
+	}
 	public class ResearchSystem
 	{
 		public void ActivateCompletedResearches(
@@ -14,8 +19,8 @@ namespace UnboundArcana.Core.Research
 			Debug.Log("Activating completed research");
 			foreach (ResearchInstance research in player.Researches)
 			{
-				if (!research.IsCompleted ||
-					research.IsActivated)
+				Debug.Log($"Check research status {research.Definition.DisplayName}: {research.Knowledge}/{research.Definition.RequiredKnowledge} | isCompleted? {research.IsCompleted}");
+				if (!research.IsCompleted )
 				{
 					continue;
 				}
@@ -26,7 +31,7 @@ namespace UnboundArcana.Core.Research
 				player.Modifiers.Add(modifier);
 
 				research.Activate();
-
+				GameRuntimeManager.Instance.Events.Publish(new ResearchGrantedEvent(research));
 				Debug.Log(
 					$"Activated research '{research.Definition.DisplayName}'");
 			}

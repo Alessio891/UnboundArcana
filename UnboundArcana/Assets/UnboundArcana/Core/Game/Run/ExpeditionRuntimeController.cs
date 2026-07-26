@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnboundArcana.Core.Camera;
 using UnboundArcana.Core.Entities;
+using UnboundArcana.Core.Entities.Events;
 using UnboundArcana.Core.Events;
 using UnboundArcana.Core.Research;
 using UnboundArcana.Core.Rooms;
@@ -50,6 +51,9 @@ namespace UnboundArcana.Core.Expedition
 
 		public static ExpeditionRuntimeController instance;
 		public static ExpeditionRuntimeController Instance => instance;
+
+		private bool isFirstRoom = true;
+
 		private void Awake()
 		{
 			if (instance != null && instance != this)
@@ -71,11 +75,19 @@ namespace UnboundArcana.Core.Expedition
 				OnRoomCompleted);
 
 			GameRuntimeManager.Instance.Events.Subscribe<ResearchCollectedEvent>(OnResearchCollected);
+
+			GameRuntimeManager.Instance.Events.Subscribe<EntityDeathEvent>(OnEntityDied);
+		}
+
+		private void OnEntityDied(EntityDeathEvent @event)
+		{
+			GameSession.Instance.Player.AddKnowledge(50);
 		}
 
 		private void OnResearchCollected(ResearchCollectedEvent evt)
 		{
-			foreach(var r in currentSpawnedResearches) {
+			player.GetComponent<PlayerInput>().SetInputEnabled(false);
+			foreach (var r in currentSpawnedResearches) {
 				Destroy(r.gameObject);
 			}
 			currentSpawnedResearches.Clear();
@@ -94,6 +106,7 @@ namespace UnboundArcana.Core.Expedition
 			GameRuntimeManager.Instance.Events.Unsubscribe<RoomCompletedEvent>(
 				OnRoomCompleted);
 			GameRuntimeManager.Instance.Events.Unsubscribe<ResearchCollectedEvent>(OnResearchCollected);
+			GameRuntimeManager.Instance.Events.Unsubscribe<EntityDeathEvent>(OnEntityDied);
 		}
 		public IEnumerator AdvanceToNextRoom()
 		{
@@ -121,8 +134,6 @@ namespace UnboundArcana.Core.Expedition
 				yield break;
 			}
 			yield return StartCoroutine(currentRoom.StartDeconstructEffect());
-			Debug.Log(
-				$"Advancing from room {currentRoom.Definition.RoomId}");
 
 			RoomInstance nextRoom =
 				GameRuntimeManager.Instance.Rooms.GenerateRoom(
@@ -195,6 +206,8 @@ namespace UnboundArcana.Core.Expedition
 				SetState(ExpeditionState.Failed);
 				return;
 			}
+			player.GetComponentInChildren<SpriteRenderer>().material.SetFloat("_Progress", 0.0f);
+			player.GetComponent<PlayerInput>().SetInputEnabled(false);
 		}
 
 
@@ -262,10 +275,29 @@ namespace UnboundArcana.Core.Expedition
 				return;
 			
 			currentRoom = evt.Room;
-			SetState(ExpeditionState.RoomActive);
+			StartCoroutine(RoomStartRoutine());
 			
+
 		}
 
+		IEnumerator RoomStartRoutine() {
+			if (isFirstRoom)
+			{
+				float value = 0.0f;
+				while (true)
+				{
+					player.GetComponentInChildren<SpriteRenderer>().material.SetFloat("_Progress", value);
+					value += Time.deltaTime * 1.5f;
+					if (value >= 1.0f) break;
+					yield return null;
+				}
+				GameRuntimeManager.Instance.Events.Publish(new ShowDialogueEvent("Am I inside the tower? Nice, let's focus on experimentations then!", null));
+				yield return new WaitForSeconds(2.5f);
+				isFirstRoom = false;
+			}
+			SetState(ExpeditionState.RoomActive);
+			player.GetComponent<PlayerInput>().SetInputEnabled(true);
+		}
 
 		private void OnRoomCompleted(RoomCompletedEvent evt)
 		{
@@ -316,23 +348,32 @@ namespace UnboundArcana.Core.Expedition
 							0,
 							availableResearch.Count)];
 
-				Vector2 rndOffset = Random.insideUnitCircle * 1.2f;
-				Vector3 offset = new Vector3(rndOffset.x, rndOffset.y, 0);
+				Vector3 spawnPos = marker.transform.position;
+				//spawnPos.x += (i * 1.2f);
+				int safeGuard = 0;
+				while (true)
+				{
+					Vector2 rndOffset = Random.onUnitCircle * 1.2f;
+					Vector3 offset = new Vector3(rndOffset.x, rndOffset.y, 0);
+					spawnPos = marker.transform.position + offset;
+					if (section.ContainsWorldPosition(spawnPos)) { break; }
+					safeGuard++;
+					if (safeGuard > 100) break;
+				}
 				ResearchPickup pickup =
 					Instantiate(
 						researchPickupPrefab,
-						marker.transform.position + offset,
+						spawnPos,
 						Quaternion.identity);
 
 				pickup.Initialize(definition);
 				currentSpawnedResearches.Add(pickup);
 				pickup.transform.localScale = Vector3.zero;
-				MainCameraManager.Instance.SetFollowTarget(pickup.transform);
-				yield return new WaitForSeconds(0.4f);
+				//MainCameraManager.Instance.SetFollowTarget(pickup.transform);
+				yield return new WaitForSeconds(0.2f);
 				iTween.ScaleTo(pickup.gameObject, iTween.Hash("scale", Vector3.one, "time", 0.7f, "easeType", "easeOutElastic"));
-				yield return new WaitForSeconds(0.9f);
-				Debug.Log(
-					$"Spawned research reward: {definition.DisplayName}");
+				yield return new WaitForSeconds(0.5f);
+				
 			}
 			yield return new WaitForSeconds(1.0f);
 			MainCameraManager.Instance.SetFollowTarget(player.transform);

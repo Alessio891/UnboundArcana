@@ -34,7 +34,13 @@ namespace UnboundArcana.Player
 
 		private void Update()
 		{
-			if (!playerInput.InputEnabled) return;
+			if (!playerInput.InputEnabled)
+			{
+				Motor.SetMovementIntent(
+					Vector2.zero
+				);
+				return;
+			}
 
 			Motor.SetMovementIntent(
 				playerInput.Movement

@@ -111,7 +111,7 @@ namespace UnboundArcana.Core.Rooms
 				{
 					r.material.SetFloat("_Progress", value);
 				}
-				value += 0.3f * Time.deltaTime;
+				value += 0.6f * Time.deltaTime;
 				yield return null;
 				if (value >= 1.0f) {
 					break;

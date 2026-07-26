@@ -38,7 +38,7 @@ namespace UnboundArcana.Core.Runtime
 
 				return null;
 			}
-
+			GameRuntimeManager.Instance.Events.Publish(new PlayerSpawnedEvent(entity));
 			return entity;
 		}
 	}

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnboundArcana.Core.Entities.Events;
+using System;
 
 namespace UnboundArcana.Core.Entities
 {
@@ -16,6 +17,9 @@ namespace UnboundArcana.Core.Entities
 
 		private static readonly int Death =
 			Animator.StringToHash("Death");
+
+		private static readonly int Melee =
+			Animator.StringToHash("Melee");
 
 		private void Awake()
 		{
@@ -36,6 +40,12 @@ namespace UnboundArcana.Core.Entities
 				OnDeath);
 
 			entity.Events.Subscribe<EntityFacingChangedEvent>(OnFacingChanged);
+			entity.Events.Subscribe<EntityMeleeAttackEvent>(OnMeleeAttack);
+		}
+
+		private void OnMeleeAttack(EntityMeleeAttackEvent evt)
+		{
+			animator.SetTrigger(Melee);
 		}
 
 		private void OnDisable()
@@ -49,6 +59,7 @@ namespace UnboundArcana.Core.Entities
 			entity.Events.Unsubscribe<EntityDeathEvent>(
 				OnDeath);
 			entity.Events.Unsubscribe<EntityFacingChangedEvent>(OnFacingChanged);
+			entity.Events.Unsubscribe<EntityMeleeAttackEvent>(OnMeleeAttack);
 		}
 
 		private void OnFacingChanged(EntityFacingChangedEvent ev) {

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnboundArcana.Core.Entities;
+using System.Linq;
 
 namespace UnboundArcana.Core.Interaction
 {
@@ -79,8 +80,10 @@ namespace UnboundArcana.Core.Interaction
 			{
 				return null;
 			}
-
-			return interactables[0];
+			IInteractable closest = interactables
+				.OrderBy(e => ((e as MonoBehaviour).transform.position - entity.transform.position).sqrMagnitude)
+				.FirstOrDefault();
+			return closest;
 		}
 
 		private void Update()

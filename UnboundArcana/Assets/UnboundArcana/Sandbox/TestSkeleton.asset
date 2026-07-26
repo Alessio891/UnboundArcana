@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 555b9863227106e478ad58360e5b604c, type: 3}
-  m_Name: TestEnemyDef
+  m_Name: TestSkeleton
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.EntityDefinition
-  prefab: {fileID: 5726457839046327981, guid: 189ae5e918391e44eb8295d361249fcc, type: 3}
+  prefab: {fileID: 5177555769886618615, guid: 782d8b94567c0794e84e5fa15ca8ffba, type: 3}
   maxHealth: 10
   moveSpeed: 1
   castSpeed: 1
   armor: 0
-  behavior: {fileID: 11400000, guid: 07cc5b832a421154f828eceb11199187, type: 2}
+  behavior: {fileID: 11400000, guid: a064b814eea96ae4ebba4487d5383fc5, type: 2}
   initialSpells: []

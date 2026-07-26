@@ -37,8 +37,11 @@ namespace UnboundArcana.Core.Entities.AI
 
 		private void OnEntityDetected(Entity entity)
 		{
-			Targeting.SetTarget(entity);
-			Debug.Log("Sensed target " + entity.name);
+			if (entity.tag == "Player")
+			{
+				Targeting.SetTarget(entity);
+				Debug.Log("Sensed target " + entity.name);
+			}
 		}
 
 
@@ -47,6 +50,7 @@ namespace UnboundArcana.Core.Entities.AI
 			if (Targeting.CurrentTarget == entity)
 			{
 				Debug.Log("Lost target");
+				Movement.SetMovementIntent(Vector2.zero);
 				Targeting.ClearTarget();
 			}
 		}

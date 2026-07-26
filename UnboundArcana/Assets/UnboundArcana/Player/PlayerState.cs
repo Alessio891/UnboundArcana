@@ -5,6 +5,12 @@ using UnboundArcana.Spells.Data;
 
 namespace UnboundArcana.Core.Runtime
 {
+	public class KnowledgeGainedEvent
+	{
+		int gained = 0;
+		public KnowledgeGainedEvent(int gained) { this.gained = gained; }
+	}
+
 	public class PlayerState
 	{
 		public EntityDefinition Definition { get; }
@@ -26,6 +32,7 @@ namespace UnboundArcana.Core.Runtime
 			{
 				research.AddKnowledge(amount);
 			}
+			GameRuntimeManager.Instance.Events.Publish(new KnowledgeGainedEvent(amount));
 		}
 		public void AddResearch(
 			ResearchDefinition definition)
