@@ -61,7 +61,11 @@ namespace UnboundArcana.Core.Camera
 			UpdateZoom();
 			UpdateShake();
 		}
-
+		public void SnapToTarget()
+		{
+			if (followTarget != null)
+				transform.position = followTarget.transform.position;
+		}
 		private void UpdatePosition()
 		{
 			Vector3 desiredPosition = transform.position;

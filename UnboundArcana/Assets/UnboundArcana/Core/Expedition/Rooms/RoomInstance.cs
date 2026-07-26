@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace UnboundArcana.Core.Rooms
 {
@@ -16,6 +18,9 @@ namespace UnboundArcana.Core.Rooms
 
 		private RoomBehaviour behaviour;
 		private RoomObjective objective;
+
+		private bool isCompleted;
+		public bool IsCompleted => isCompleted;
 		public void Initialize(
 	RoomDefinition definition,
 	GeneratedRoomLayout layout)
@@ -24,6 +29,7 @@ namespace UnboundArcana.Core.Rooms
 			Layout = layout;
 
 			behaviour = definition.Behaviour;
+			objective = definition.Objective;
 
 			sections.Clear();
 			markers.Clear();
@@ -68,6 +74,16 @@ namespace UnboundArcana.Core.Rooms
 				}
 			}
 		}
+		public RoomSection GetSectionAtWorldPosition(Vector3 worldPosition)
+		{
+			foreach (RoomSection section in sections)
+			{
+				if (section.ContainsWorldPosition(worldPosition))
+					return section;
+			}
+
+			return null;
+		}
 		public void StartObjective()
 		{
 			objective?.StartObjective(this);
@@ -84,14 +100,35 @@ namespace UnboundArcana.Core.Rooms
 		}
 		public void StartRoom()
 		{
+			StartCoroutine(StartConstructEffect());
+			
+		}
+		IEnumerator StartConstructEffect() {
+			float value = 0.0f;
+			
+			while(true) {
+				foreach (TilemapRenderer r in GetComponentsInChildren<TilemapRenderer>())
+				{
+					r.material.SetFloat("_Progress", value);
+				}
+				value += 0.3f * Time.deltaTime;
+				yield return null;
+				if (value >= 1.0f) {
+					break;
+				}
+			}
 			behaviour?.StartRoom(this);
 
 			GameRuntimeManager.Instance.Events.Publish(
 				new RoomStartedEvent(this));
 		}
-
 		public void Complete()
 		{
+			if (isCompleted)
+				return;
+
+			isCompleted = true;
+
 			Debug.Log(
 				$"Room completed: {Definition.RoomId}");
 
@@ -101,6 +138,25 @@ namespace UnboundArcana.Core.Rooms
 
 			GameRuntimeManager.Instance.Events.Publish(
 				new RoomCompletedEvent(this));
+			
+		}
+
+		public IEnumerator StartDeconstructEffect() {
+			float value = 1.0f;
+
+			while (true)
+			{
+				foreach (TilemapRenderer r in GetComponentsInChildren<TilemapRenderer>())
+				{
+					r.material.SetFloat("_Progress", value);
+				}
+				value -= 0.3f * Time.deltaTime;
+				yield return null;
+				if (value <= 0.0f)
+				{
+					break;
+				}
+			}
 		}
 
 		public void Tick()

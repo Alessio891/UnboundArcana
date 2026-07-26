@@ -8,7 +8,8 @@ namespace UnboundArcana.Core.Rooms
 		EnemySpawn,
 		Portal,
 		Event,
-		Decoration
+		Decoration,
+		RewardSpawn
 	}
 	public class RoomMarker : MonoBehaviour
 	{

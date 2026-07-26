@@ -66,6 +66,19 @@ namespace UnboundArcana.Core.Rooms
 
 			return bounds;
 		}
+		public bool ContainsWorldPosition(Vector3 worldPosition)
+		{
+			if (grid == null || footprint == null)
+				return false;
+
+			Vector3Int cell =
+				grid.WorldToCell(worldPosition);
+
+			return ContainsCell(
+				new Vector2Int(
+					cell.x,
+					cell.y));
+		}
 #if UNITY_EDITOR
 		[ContextMenu("Refresh Markers")]
 		private void RefreshMarkers()

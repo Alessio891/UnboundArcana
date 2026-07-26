@@ -1,5 +1,6 @@
 using UnboundArcana.Core.Combat;
 using UnboundArcana.Core.Events;
+using UnboundArcana.Core.Expedition;
 using UnboundArcana.Core.Rooms;
 using UnboundArcana.Core.Runtime;
 using UnboundArcana.Spells.Services;
@@ -22,6 +23,7 @@ public class GameRuntimeManager : MonoBehaviour
 	public static GameRuntimeManager Instance => instance;
 	[SerializeField]
 	private ModuleRewardTable RewardTable;
+	public RewardController Rewards { get; private set; }
 	public ModuleRewardService ModuleReward { get; private set; }
 	private SpellRuntimeManager spellRuntimeManager;
 	public SpellRuntimeManager SpellRuntimeManager => spellRuntimeManager;
@@ -43,6 +45,7 @@ public class GameRuntimeManager : MonoBehaviour
 		DamageText = new DamageTextSystem(Events, damageTextPrefab);
 		spellRuntimeManager = GetComponent<SpellRuntimeManager>();
 		ModuleReward = new ModuleRewardService(RewardTable);
+		Rewards = new RewardController(ModuleReward);
 		EntitySpawn = new EntitySpawnService();
 		PlayerSpawner =	new PlayerSpawner();
 		DontDestroyOnLoad(gameObject);

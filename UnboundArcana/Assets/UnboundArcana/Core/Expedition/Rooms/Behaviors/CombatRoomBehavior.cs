@@ -12,6 +12,8 @@ namespace UnboundArcana.Core.Rooms
 		public override void StartRoom(
 			RoomInstance room)
 		{
+			room.StartObjective();
+
 			EncounterInstance encounter =
 				new CombatEncounterInstance(
 					room,
@@ -20,8 +22,6 @@ namespace UnboundArcana.Core.Rooms
 			encounters[room] = encounter;
 
 			encounter.Start();
-
-			room.StartObjective();
 		}
 
 		public override void StopRoom(
@@ -35,8 +35,6 @@ namespace UnboundArcana.Core.Rooms
 
 				encounters.Remove(room);
 			}
-
-			room.StopObjective();
 		}
 
 		public override void Tick(
