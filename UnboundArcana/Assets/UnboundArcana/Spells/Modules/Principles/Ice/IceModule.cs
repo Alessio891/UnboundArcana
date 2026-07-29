@@ -28,6 +28,7 @@ namespace UnboundArcana.Spells.Modules.Ice
 			if (definition.projectileSprite)
 			{
 				e.Projectile.SetProjectileSprite(definition.projectileSprite);
+				e.Projectile.SetProjectileAnimator(definition.contorller);
 			}
 			else
 			{

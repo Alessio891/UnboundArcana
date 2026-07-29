@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnboundArcana.Core.Entities;
 using UnityEngine.InputSystem;
+using UnboundArcana.Core.Rooms;
+using System;
+using UnboundArcana.Core.Events;
+using UnboundArcana.Core.Expedition;
 
 namespace UnboundArcana.Core.Entities.AI
 {
@@ -21,6 +25,8 @@ namespace UnboundArcana.Core.Entities.AI
 		[SerializeField]
 		private AIBehaviorDefinition behaviorDefinition;
 
+		bool behaviorActive = false;
+
 		protected override void Awake()
 		{
 			base.Awake();
@@ -33,6 +39,19 @@ namespace UnboundArcana.Core.Entities.AI
 				behaviorDefinition.CreateBehavior();
 
 			behavior.Initialize(this);
+		}
+		private void OnEnable()
+		{
+			GameRuntimeManager.Instance.Events.Subscribe<BehaviorActivationEvent>(OnEncounterStarted);
+		}
+		private void OnDisable()
+		{
+			GameRuntimeManager.Instance.Events.Unsubscribe<BehaviorActivationEvent>(OnEncounterStarted);
+		}
+
+		private void OnEncounterStarted(BehaviorActivationEvent @event)
+		{
+			behaviorActive = true;
 		}
 
 		private void OnEntityDetected(Entity entity)
@@ -56,7 +75,8 @@ namespace UnboundArcana.Core.Entities.AI
 		}
 		private void Update()
 		{
-			behavior?.Tick();
+			if (behaviorActive)
+				behavior?.Tick();
 		}
 	}
 }

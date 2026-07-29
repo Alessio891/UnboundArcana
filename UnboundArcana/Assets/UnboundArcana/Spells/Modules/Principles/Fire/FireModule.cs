@@ -29,6 +29,7 @@ namespace UnboundArcana.Spells.Modules.Fire
 			if (definition.projectileSprite)
 			{
 				e.Projectile.SetProjectileSprite(definition.projectileSprite);
+				e.Projectile.SetProjectileAnimator(definition.controller);
 			}
 			else
 			{

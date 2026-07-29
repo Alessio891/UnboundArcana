@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnboundArcana.Core.Events;
+using UnboundArcana.Spells.Runtime.Views;
 using UnityEngine;
 
 namespace UnboundArcana.Spells.Runtime.Objects
@@ -59,7 +60,8 @@ namespace UnboundArcana.Spells.Runtime.Objects
 
 			if (view != null)
 			{
-				Object.Destroy(view);
+				view.GetComponent<ProjectileView>().DestroyView();
+				//Object.Destroy(view);
 			}
 		}
 

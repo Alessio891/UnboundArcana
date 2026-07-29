@@ -10,7 +10,7 @@ namespace UnboundArcana.Spells.Modules.Fire
 		public float damage;
 		public BurningStatusDefinition burningStatus;
 		public Sprite projectileSprite;
-
+		public RuntimeAnimatorController controller;
 		public override SpellModule CreateRuntime()
 		{
 			return new FireModule(this);

@@ -39,7 +39,7 @@ namespace UnboundArcana.Spells.Runtime
 
 			//Stats.AddBase(StatId.Size, 1, this);
 			//Stats.AddBase(StatId.Damage, 1);
-
+			Stats.AddBase(StatKeys.Spell.Cooldown, 2, this);
 			foreach (SpellModule module in modules)
 			{
 				module.Initialize(this);

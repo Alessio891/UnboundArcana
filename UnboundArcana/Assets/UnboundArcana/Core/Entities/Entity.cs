@@ -33,6 +33,9 @@ namespace UnboundArcana.Core.Entities
 		{
 			GetComponent<SpellCaster>().InitializeLoadout(definition.initialSpells);
 
+			Stats.AddBase(StatKeys.Entity.AttackSpeed, definition.attackSpeed, this);
+			Stats.AddBase(StatKeys.Entity.AttackCD, definition.meleeAttackCooldown, this);
+
 			Stats.AddBase(
 				StatKeys.Entity.MaxHealth,
 				definition.maxHealth,

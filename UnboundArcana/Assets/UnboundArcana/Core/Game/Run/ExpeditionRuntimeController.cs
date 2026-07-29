@@ -13,25 +13,37 @@ using UnityEngine;
 
 namespace UnboundArcana.Core.Expedition
 {
+	public class BehaviorActivationEvent
+	{
+		public BehaviorActivationEvent() { }
+	}
+
 	public class ExpeditionRuntimeController : MonoBehaviour
 	{
 		[SerializeField]
 		private EntityDefinition playerDefinition;
 
 		[SerializeField]
-		private RoomDefinition startingRoom;
+		private FloorDefinition startingFloor;
 
 		[SerializeField]
 		private Transform roomParent;
 
+
 		[SerializeField]
 		private List<SpellModuleDefinition> availableRewardModules = new();
+
 		private readonly ResearchSystem researchSystem = new();
+
+
 		[SerializeField]
 		private List<ResearchDefinition> availableResearch = new();
+
 		[SerializeField]
 		private ResearchPickup researchPickupPrefab;
-		List<ResearchPickup> currentSpawnedResearches = new();
+
+		private readonly List<ResearchPickup> currentSpawnedResearches = new();
+
 
 		[SerializeField]
 		private int rewardCount = 3;
@@ -40,19 +52,27 @@ namespace UnboundArcana.Core.Expedition
 		private Entity player;
 		public Entity Player => player;
 
-		private List<SpellModuleDefinition> currentRewards = new();
 
-		public ExpeditionState State { get; private set; }
+		private readonly List<SpellModuleDefinition> currentRewards = new();
 
 		public IReadOnlyList<SpellModuleDefinition> CurrentRewards =>
 			currentRewards;
 
+
 		private RoomInstance currentRoom;
+
+		private FloorInstance currentFloor;
+
+
+		public ExpeditionState State { get; private set; }
+
 
 		public static ExpeditionRuntimeController instance;
 		public static ExpeditionRuntimeController Instance => instance;
 
+
 		private bool isFirstRoom = true;
+
 
 		private void Awake()
 		{
@@ -61,8 +81,11 @@ namespace UnboundArcana.Core.Expedition
 				Destroy(gameObject);
 				return;
 			}
+
 			instance = this;
 		}
+
+
 		private void OnEnable()
 		{
 			if (GameRuntimeManager.Instance == null)
@@ -74,26 +97,13 @@ namespace UnboundArcana.Core.Expedition
 			GameRuntimeManager.Instance.Events.Subscribe<RoomCompletedEvent>(
 				OnRoomCompleted);
 
-			GameRuntimeManager.Instance.Events.Subscribe<ResearchCollectedEvent>(OnResearchCollected);
+			GameRuntimeManager.Instance.Events.Subscribe<ResearchCollectedEvent>(
+				OnResearchCollected);
 
-			GameRuntimeManager.Instance.Events.Subscribe<EntityDeathEvent>(OnEntityDied);
+			GameRuntimeManager.Instance.Events.Subscribe<EntityDeathEvent>(
+				OnEntityDied);
 		}
 
-		private void OnEntityDied(EntityDeathEvent @event)
-		{
-			GameSession.Instance.Player.AddKnowledge(50);
-		}
-
-		private void OnResearchCollected(ResearchCollectedEvent evt)
-		{
-			player.GetComponent<PlayerInput>().SetInputEnabled(false);
-			foreach (var r in currentSpawnedResearches) {
-				Destroy(r.gameObject);
-			}
-			currentSpawnedResearches.Clear();
-			GameSession.Instance.Player.AddResearch(evt.Research);
-			StartCoroutine(AdvanceToNextRoom());
-		}
 
 		private void OnDisable()
 		{
@@ -105,9 +115,46 @@ namespace UnboundArcana.Core.Expedition
 
 			GameRuntimeManager.Instance.Events.Unsubscribe<RoomCompletedEvent>(
 				OnRoomCompleted);
-			GameRuntimeManager.Instance.Events.Unsubscribe<ResearchCollectedEvent>(OnResearchCollected);
-			GameRuntimeManager.Instance.Events.Unsubscribe<EntityDeathEvent>(OnEntityDied);
+
+			GameRuntimeManager.Instance.Events.Unsubscribe<ResearchCollectedEvent>(
+				OnResearchCollected);
+
+			GameRuntimeManager.Instance.Events.Unsubscribe<EntityDeathEvent>(
+				OnEntityDied);
 		}
+
+
+		private void OnEntityDied(EntityDeathEvent @event)
+		{
+			GameSession.Instance.Player.AddKnowledge(50);
+		}
+
+
+		private void OnResearchCollected(
+			ResearchCollectedEvent evt)
+		{
+			player.GetComponent<PlayerInput>()
+				.SetInputEnabled(false);
+
+
+			foreach (var r in currentSpawnedResearches)
+			{
+				Destroy(r.gameObject);
+			}
+
+
+			currentSpawnedResearches.Clear();
+
+
+			GameSession.Instance.Player.AddResearch(
+				evt.Research);
+
+
+			StartCoroutine(
+				AdvanceToNextRoom());
+		}
+
+
 		public IEnumerator AdvanceToNextRoom()
 		{
 			if (State != ExpeditionState.Reward)
@@ -118,6 +165,7 @@ namespace UnboundArcana.Core.Expedition
 				yield break;
 			}
 
+
 			if (currentRoom == null)
 			{
 				Debug.LogWarning(
@@ -126,6 +174,7 @@ namespace UnboundArcana.Core.Expedition
 				yield break;
 			}
 
+
 			if (!currentRoom.IsCompleted)
 			{
 				Debug.LogWarning(
@@ -133,12 +182,36 @@ namespace UnboundArcana.Core.Expedition
 
 				yield break;
 			}
-			yield return StartCoroutine(currentRoom.StartDeconstructEffect());
+
+
+			yield return StartCoroutine(
+				currentRoom.StartDeconstructEffect());
+
+
+			bool hasNextRoom =
+				currentFloor.Advance();
+
+
+			if (!hasNextRoom)
+			{
+				Debug.Log(
+					"Floor completed.");
+
+				SetState(
+					ExpeditionState.Completed);
+
+				yield break;
+			}
+
+
+			RoomDefinition nextRoomDefinition =
+				currentFloor.GetCurrentRoom();
+
 
 			RoomInstance nextRoom =
-				GameRuntimeManager.Instance.Rooms.GenerateRoom(
-					startingRoom,
-					roomParent);
+				GenerateRoom(
+					nextRoomDefinition);
+
 
 			if (nextRoom == null)
 			{
@@ -147,23 +220,47 @@ namespace UnboundArcana.Core.Expedition
 
 				yield break;
 			}
-			researchSystem.ActivateCompletedResearches(GameSession.Instance.Player);
+
+
+			researchSystem.ActivateCompletedResearches(
+				GameSession.Instance.Player);
+
+
+			currentRoom = nextRoom;
+
+
 			MovePlayerToRoom(
 				nextRoom);
 
-			currentRoom = nextRoom;
 
 			SetState(
 				ExpeditionState.EnteringRoom);
 
+
 			GameRuntimeManager.Instance.Rooms.StartRoom();
 		}
+
+
+		private RoomInstance GenerateRoom(
+			RoomDefinition definition)
+		{
+			if (definition == null)
+				return null;
+
+
+			return GameRuntimeManager.Instance.Rooms.GenerateRoom(
+				definition,
+				roomParent);
+		}
+
+
 		private void MovePlayerToRoom(
-	RoomInstance room)
+			RoomInstance room)
 		{
 			List<RoomMarker> markers =
 				new(room.GetMarkers(
 					RoomMarkerType.PlayerStart));
+
 
 			if (markers.Count == 0)
 			{
@@ -173,41 +270,91 @@ namespace UnboundArcana.Core.Expedition
 				return;
 			}
 
+
 			player.transform.position =
 				markers[0].transform.position;
+
+
 			MainCameraManager.Instance.SnapToTarget();
 		}
+
+
 		public void StartExpedition()
 		{
 			if (State != ExpeditionState.None)
 				return;
 
-			SetState(ExpeditionState.Preparing);
+
+			SetState(
+				ExpeditionState.Preparing);
+
 
 			EnsureSession();
 
+
+			currentFloor =
+				GameRuntimeManager.Instance.Floors.GenerateFloor(
+					startingFloor);
+
+
+			if (currentFloor == null)
+			{
+				SetState(
+					ExpeditionState.Failed);
+
+				return;
+			}
+
+
+			RoomDefinition firstRoom =
+				currentFloor.GetCurrentRoom();
+
+
 			RoomInstance room =
-				GenerateStartingRoom();
+				GenerateRoom(
+					firstRoom);
+
 
 			if (room == null)
 			{
-				SetState(ExpeditionState.Failed);
+				SetState(
+					ExpeditionState.Failed);
+
 				return;
 			}
 
-			SetState(ExpeditionState.EnteringRoom);
 
+			SetState(
+				ExpeditionState.EnteringRoom);
+
+
+			currentRoom = room;
 
 
 			GameRuntimeManager.Instance.Rooms.StartRoom();
-			SpawnPlayer(room);
+
+
+			SpawnPlayer(
+				room);
+
+
 			if (player == null)
 			{
-				SetState(ExpeditionState.Failed);
+				SetState(
+					ExpeditionState.Failed);
+
 				return;
 			}
-			player.GetComponentInChildren<SpriteRenderer>().material.SetFloat("_Progress", 0.0f);
-			player.GetComponent<PlayerInput>().SetInputEnabled(false);
+
+
+			player.GetComponentInChildren<SpriteRenderer>()
+				.material.SetFloat(
+					"_Progress",
+					0.0f);
+
+
+			player.GetComponent<PlayerInput>()
+				.SetInputEnabled(false);
 		}
 
 
@@ -216,32 +363,19 @@ namespace UnboundArcana.Core.Expedition
 			if (GameSession.Instance.Player != null)
 				return;
 
+
 			GameSession.Instance.CreatePlayer(
 				playerDefinition);
 		}
 
 
-		private RoomInstance GenerateStartingRoom()
-		{
-			if (startingRoom == null)
-			{
-				Debug.LogWarning(
-					"No starting room assigned.");
-
-				return null;
-			}
-
-			return GameRuntimeManager.Instance.Rooms.GenerateRoom(
-				startingRoom,
-				roomParent);
-		}
-
-
-		private void SpawnPlayer(RoomInstance room)
+		private void SpawnPlayer(
+			RoomInstance room)
 		{
 			List<RoomMarker> markers =
 				new(room.GetMarkers(
 					RoomMarkerType.PlayerStart));
+
 
 			if (markers.Count == 0)
 			{
@@ -251,8 +385,10 @@ namespace UnboundArcana.Core.Expedition
 				return;
 			}
 
+
 			Vector3 position =
 				markers[0].transform.position;
+
 
 			player =
 				GameRuntimeManager.Instance.PlayerSpawner.Spawn(
@@ -260,10 +396,13 @@ namespace UnboundArcana.Core.Expedition
 					position,
 					null);
 
+
 			if (player != null)
 			{
 				MovePlayerToRoom(room);
-				MainCameraManager.Instance.SetFollowTarget(player.transform);
+
+				MainCameraManager.Instance.SetFollowTarget(
+					player.transform);
 			}
 		}
 
@@ -273,53 +412,97 @@ namespace UnboundArcana.Core.Expedition
 		{
 			if (State != ExpeditionState.EnteringRoom)
 				return;
-			
-			currentRoom = evt.Room;
-			StartCoroutine(RoomStartRoutine());
-			
 
+
+			currentRoom = evt.Room;
+
+			StartCoroutine(
+				RoomStartRoutine());
 		}
 
-		IEnumerator RoomStartRoutine() {
+
+		private IEnumerator RoomStartRoutine()
+		{
 			if (isFirstRoom)
 			{
 				float value = 0.0f;
+
 				while (true)
 				{
-					player.GetComponentInChildren<SpriteRenderer>().material.SetFloat("_Progress", value);
+					player.GetComponentInChildren<SpriteRenderer>()
+						.material.SetFloat(
+							"_Progress",
+							value);
+
 					value += Time.deltaTime * 1.5f;
-					if (value >= 1.0f) break;
+
+
+					if (value >= 1.0f)
+						break;
+
+
 					yield return null;
 				}
-				GameRuntimeManager.Instance.Events.Publish(new ShowDialogueEvent("Am I inside the tower? Nice, let's focus on experimentations then!", null));
+
+
+				GameRuntimeManager.Instance.Events.Publish(
+					new ShowDialogueEvent(
+						"Am I inside the tower? Nice, let's focus on experimentations then!",
+						null));
+
+
 				yield return new WaitForSeconds(2.5f);
+
+
 				isFirstRoom = false;
 			}
-			SetState(ExpeditionState.RoomActive);
-			player.GetComponent<PlayerInput>().SetInputEnabled(true);
+
+
+			SetState(
+				ExpeditionState.RoomActive);
+
+
+			player.GetComponent<PlayerInput>()
+				.SetInputEnabled(true);
+			GameRuntimeManager.Instance.Events.Publish(new BehaviorActivationEvent());
 		}
 
-		private void OnRoomCompleted(RoomCompletedEvent evt)
+
+		private void OnRoomCompleted(
+			RoomCompletedEvent evt)
 		{
 			if (State != ExpeditionState.RoomActive)
 				return;
 
 
-			SetState(ExpeditionState.Reward);
-			StartCoroutine(SpawnResearchRewards());
+			SetState(
+				ExpeditionState.Reward);
+
+
+			StartCoroutine(
+				SpawnResearchRewards());
+
 
 			GameRuntimeManager.Instance.Events.Publish(
 				new ExpeditionRewardStartedEvent());
 		}
+
+
 		private IEnumerator SpawnResearchRewards()
 		{
-			foreach(var r in currentSpawnedResearches) {
+			foreach (var r in currentSpawnedResearches)
+			{
 				Destroy(r.gameObject);
 			}
+
+
 			currentSpawnedResearches.Clear();
+
+
 			RoomSection section =
 				currentRoom.GetSectionAtWorldPosition(
 					player.transform.position);
+
 
 			if (section == null)
 			{
@@ -329,8 +512,10 @@ namespace UnboundArcana.Core.Expedition
 				yield break;
 			}
 
+
 			RoomMarker marker =
 				section.GetComponentInChildren<RoomMarker>();
+
 
 			if (marker == null)
 			{
@@ -339,7 +524,12 @@ namespace UnboundArcana.Core.Expedition
 
 				yield break;
 			}
-			player.GetComponent<PlayerInput>().SetInputEnabled(false);
+
+
+			player.GetComponent<PlayerInput>()
+				.SetInputEnabled(false);
+
+
 			for (int i = 0; i < rewardCount; i++)
 			{
 				ResearchDefinition definition =
@@ -348,54 +538,102 @@ namespace UnboundArcana.Core.Expedition
 							0,
 							availableResearch.Count)];
 
-				Vector3 spawnPos = marker.transform.position;
-				//spawnPos.x += (i * 1.2f);
+
+				Vector3 spawnPos =
+					marker.transform.position;
+
+
 				int safeGuard = 0;
+
+
 				while (true)
 				{
-					Vector2 rndOffset = Random.onUnitCircle * 1.2f;
-					Vector3 offset = new Vector3(rndOffset.x, rndOffset.y, 0);
-					spawnPos = marker.transform.position + offset;
-					if (section.ContainsWorldPosition(spawnPos)) { break; }
+					Vector2 rndOffset =
+						Random.onUnitCircle * 1.2f;
+
+
+					Vector3 offset =
+						new Vector3(
+							rndOffset.x,
+							rndOffset.y,
+							0);
+
+
+					spawnPos =
+						marker.transform.position +
+						offset;
+
+
+					if (section.ContainsWorldPosition(spawnPos))
+						break;
+
+
 					safeGuard++;
-					if (safeGuard > 100) break;
+
+
+					if (safeGuard > 100)
+						break;
 				}
+
+
 				ResearchPickup pickup =
 					Instantiate(
 						researchPickupPrefab,
 						spawnPos,
 						Quaternion.identity);
 
-				pickup.Initialize(definition);
-				currentSpawnedResearches.Add(pickup);
-				pickup.transform.localScale = Vector3.zero;
-				//MainCameraManager.Instance.SetFollowTarget(pickup.transform);
+
+				pickup.Initialize(
+					definition);
+
+
+				currentSpawnedResearches.Add(
+					pickup);
+
+
+				pickup.transform.localScale =
+					Vector3.zero;
+
+
 				yield return new WaitForSeconds(0.2f);
-				iTween.ScaleTo(pickup.gameObject, iTween.Hash("scale", Vector3.one, "time", 0.7f, "easeType", "easeOutElastic"));
+
+
+				iTween.ScaleTo(
+					pickup.gameObject,
+					iTween.Hash(
+						"scale",
+						Vector3.one,
+						"time",
+						0.7f,
+						"easeType",
+						"easeOutElastic"));
+
+
 				yield return new WaitForSeconds(0.5f);
-				
 			}
+
+
 			yield return new WaitForSeconds(1.0f);
-			MainCameraManager.Instance.SetFollowTarget(player.transform);
-			player.GetComponent<PlayerInput>().SetInputEnabled(true);
+
+
+			MainCameraManager.Instance.SetFollowTarget(
+				player.transform);
+
+
+			player.GetComponent<PlayerInput>()
+				.SetInputEnabled(true);
 		}
+
 
 		private void GenerateRewards()
 		{
-			currentRewards =
+			currentRewards.Clear();
+
+			currentRewards.AddRange(
 				GameRuntimeManager.Instance.Rewards
 					.GenerateModuleRewards(
 						availableRewardModules,
-						rewardCount);
-
-			Debug.Log(
-				$"Generated {currentRewards.Count} expedition rewards");
-
-			foreach (var reward in currentRewards)
-			{
-				Debug.Log(
-					$"Reward: {reward.name} ({reward.Rarity})");
-			}
+						rewardCount));
 		}
 
 
@@ -405,7 +643,9 @@ namespace UnboundArcana.Core.Expedition
 			if (State == state)
 				return;
 
+
 			State = state;
+
 
 			Debug.Log(
 				$"Expedition state: {State}");

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TestSkeleton
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.EntityDefinition
   prefab: {fileID: 5177555769886618615, guid: 782d8b94567c0794e84e5fa15ca8ffba, type: 3}
-  maxHealth: 10
+  maxHealth: 100
   moveSpeed: 1
   castSpeed: 1
   armor: 0

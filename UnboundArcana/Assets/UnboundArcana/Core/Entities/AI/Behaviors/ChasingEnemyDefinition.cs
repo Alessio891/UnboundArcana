@@ -26,14 +26,14 @@ namespace UnboundArcana.Core.Entities.AI
 		private Entity target;
 		ChasingEnemyDefinition definition;
 		float attackTimer = 0f;
-
+		MeleeAttacker attacker;
 		public ChasingEnemyBehavior(ChasingEnemyDefinition def) {
 			this.definition = def;
 		}
 
 		protected override void OnInitialize()
 		{
-		
+			attacker = Controller.GetComponent<MeleeAttacker>();
 		}
 
 
@@ -49,6 +49,12 @@ namespace UnboundArcana.Core.Entities.AI
 			if (Controller.Target?.CurrentTarget == null)
 			{
 				return;
+			}
+			
+			if (attacker) {
+				if (attacker.IsAttacking) {
+					return;
+				}
 			}
 
 			float dist = Vector3.Distance(Controller.Target.CurrentTarget.transform.position, Controller.transform.position);

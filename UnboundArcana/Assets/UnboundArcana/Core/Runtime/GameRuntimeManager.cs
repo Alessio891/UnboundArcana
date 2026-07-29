@@ -28,6 +28,7 @@ public class GameRuntimeManager : MonoBehaviour
 	private SpellRuntimeManager spellRuntimeManager;
 	public SpellRuntimeManager SpellRuntimeManager => spellRuntimeManager;
 	public RoomService Rooms { get; private set; }
+	public FloorService Floors { get; private set; }
 	public PlayerSpawner PlayerSpawner { get; private set; }
 	private void Awake()
 	{
@@ -40,6 +41,7 @@ public class GameRuntimeManager : MonoBehaviour
 		Events = new GameEventBus();
 		Damage = new DamageSystem();
 		Rooms = new RoomService(new RoomGenerator(0.3f), Events);
+		Floors = new FloorService();
 		SpellModification = new SpellModificationService(Events);
 		Damage.Initialize(Events);
 		DamageText = new DamageTextSystem(Events, damageTextPrefab);

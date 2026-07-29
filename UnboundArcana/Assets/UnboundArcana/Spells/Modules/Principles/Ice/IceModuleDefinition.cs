@@ -11,6 +11,7 @@ namespace UnboundArcana.Spells.Modules.Ice
 		public float damage = 1.0f;
 		public Sprite projectileSprite;
 		public ChilledStatusDefinition chilledStatus;
+		public RuntimeAnimatorController contorller;
 		public override SpellModule CreateRuntime()
 		{
 			return new IceModule(this);

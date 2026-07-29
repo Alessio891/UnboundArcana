@@ -111,6 +111,11 @@ namespace UnboundArcana.Core.Rooms
 				{
 					r.material.SetFloat("_Progress", value);
 				}
+				foreach (RoomSection r in GetComponentsInChildren<RoomSection>())
+				{
+					foreach(SpriteRenderer renderer in r.Props)
+						renderer.material.SetFloat("_Progress", value);
+				}
 				value += 0.6f * Time.deltaTime;
 				yield return null;
 				if (value >= 1.0f) {
@@ -149,6 +154,11 @@ namespace UnboundArcana.Core.Rooms
 				foreach (TilemapRenderer r in GetComponentsInChildren<TilemapRenderer>())
 				{
 					r.material.SetFloat("_Progress", value);
+				}
+				foreach (RoomSection r in GetComponentsInChildren<RoomSection>())
+				{
+					foreach (SpriteRenderer renderer in r.Props)
+						renderer.material.SetFloat("_Progress", value);
 				}
 				value -= 0.3f * Time.deltaTime;
 				yield return null;

@@ -14,7 +14,10 @@ namespace UnboundArcana.Core.Rooms
 			this.room = room;
 		}
 
-		public abstract void Start();
+		public virtual void Start() {
+			GameRuntimeManager.Instance.Events.Publish(
+				new EncounterStartEvent());
+		}
 
 		public virtual void Tick()
 		{

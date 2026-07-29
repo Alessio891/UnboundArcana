@@ -9,7 +9,7 @@ namespace UnboundArcana.Core.Entities
 	{
 		private Entity entity;
 
-		private float currentHealth;
+		public float currentHealth { get; private set; }
 
 		private void Awake()
 		{
@@ -27,6 +27,8 @@ namespace UnboundArcana.Core.Entities
 		public void TakeDamage(
 			DamageInfo damage)
 		{
+			if (currentHealth <= 0) return;
+
 			currentHealth -= damage.Amount;
 			entity.Events.Publish(
 				new EntityDamagedEvent(

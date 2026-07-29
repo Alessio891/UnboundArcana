@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -26,6 +27,8 @@ namespace UnboundArcana.Core.Rooms
 		private Vector3 gridOffset;
 		public string SectionId => sectionId;
 		public IReadOnlyList<RoomSectionConnector> Connectors => connectors;
+
+		public List<SpriteRenderer> Props;
 
 		public bool ContainsCell(Vector2Int localCell)
 		{
@@ -80,6 +83,20 @@ namespace UnboundArcana.Core.Rooms
 					cell.y));
 		}
 #if UNITY_EDITOR
+		[ContextMenu("Gather Props")]
+		private void GatherProps() {
+			Props.Clear();
+			foreach(Transform t in transform) {
+				if (t.gameObject.name == "_props_") {
+					foreach(Transform t2 in t) {
+						var s = t2.GetComponent<SpriteRenderer>();
+						if (s != null) {
+							Props.Add(s);
+						}
+					}
+				}
+			}
+		}
 		[ContextMenu("Refresh Markers")]
 		private void RefreshMarkers()
 		{

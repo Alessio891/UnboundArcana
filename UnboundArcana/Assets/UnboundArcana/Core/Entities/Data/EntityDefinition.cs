@@ -17,6 +17,8 @@ namespace UnboundArcana.Core.Entities
 		public float moveSpeed = 5f;
 		public float castSpeed = 1f;
 		public float armor = 0f;
+		public float attackSpeed = 1f;
+		public float meleeAttackCooldown = 1.5f;
 
 		public AIBehaviorDefinition behavior;
 

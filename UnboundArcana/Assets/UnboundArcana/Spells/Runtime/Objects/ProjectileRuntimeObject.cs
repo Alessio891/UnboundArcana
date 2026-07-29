@@ -5,6 +5,7 @@ using UnboundArcana.Core.Stats;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 using System;
 using UnboundArcana.Core.Entities;
+using UnityEngine.Tilemaps;
 
 namespace UnboundArcana.Spells.Runtime.Objects
 {
@@ -86,11 +87,6 @@ namespace UnboundArcana.Spells.Runtime.Objects
 				return;
 			}
 
-			if (target.GetComponent<IDamageable>() == null)
-			{
-				return;
-			}
-			
 			if (spawnContext.HitHistory.HasHit(target))
 			{
 				return;
@@ -109,15 +105,19 @@ namespace UnboundArcana.Spells.Runtime.Objects
 					);
 				NotifyHit(hitEvent);
 				spell.Events.Publish(hitEvent);
+				remainingHits--;
+				if (remainingHits <= 0 && !preventDestroy)
+				{
+					Destroy();
+				}
 			}
-
-
-			remainingHits--;
-
-			if (remainingHits <= 0 && !preventDestroy)
+			else if (target.GetComponent<TilemapCollider2D>() != null)
 			{
+				remainingHits = 0;
 				Destroy();
 			}
+		
+			
 
 			preventDestroy = false;
 		}
@@ -131,6 +131,11 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		public void SetProjectileSprite(Sprite sprite) {
 			if (view) {
 				view.GetComponentInChildren<SpriteRenderer>().sprite = sprite;
+			}
+		}
+		public void SetProjectileAnimator(RuntimeAnimatorController controller) {
+			if (view) {
+				view.GetComponentInChildren<Animator>().runtimeAnimatorController = controller;
 			}
 		}
 		public void SetProjectileColor(Color color) {

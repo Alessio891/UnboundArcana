@@ -55,7 +55,7 @@ namespace UnboundArcana.Core.Camera
 			DontDestroyOnLoad(gameObject);
 		}
 
-		private void LateUpdate()
+		private void FixedUpdate()
 		{
 			UpdatePosition();
 			UpdateZoom();

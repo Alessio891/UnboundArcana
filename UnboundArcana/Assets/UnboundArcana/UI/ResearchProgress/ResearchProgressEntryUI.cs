@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class ResearchProgressEntryUI : MonoBehaviour
 {
 	[SerializeField] private Text progress;
+	[SerializeField] private Image progressBar;
 	public ResearchDefinition definition;
 	public ResearchInstance researchInstance;
 	public void Initialize(ResearchDefinition research) {
@@ -14,7 +15,8 @@ public class ResearchProgressEntryUI : MonoBehaviour
 	public void UpdateProgress(ResearchInstance instance) {
 		researchInstance = instance;
 		progress.text = $"{instance.Definition.DisplayName} {instance.Knowledge}/{instance.Definition.RequiredKnowledge}";
-		if (instance.Knowledge >= instance.Definition.RequiredKnowledge)
-			progress.color = Color.green;
+		progressBar.fillAmount = (float)instance.Knowledge / (float)instance.Definition.RequiredKnowledge;
+		//if (instance.Knowledge >= instance.Definition.RequiredKnowledge)
+		//	progress.color = Color.green;
 	}
 }

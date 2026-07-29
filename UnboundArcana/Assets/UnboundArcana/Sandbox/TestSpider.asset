@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TestSpider
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.EntityDefinition
   prefab: {fileID: 8241494673653344874, guid: 0e375a469d3e44d46b04cfb983d54019, type: 3}
-  maxHealth: 10
+  maxHealth: 50
   moveSpeed: 1
   castSpeed: 1
   armor: 0

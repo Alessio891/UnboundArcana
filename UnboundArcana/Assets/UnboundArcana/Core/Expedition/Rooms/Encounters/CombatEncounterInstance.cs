@@ -21,6 +21,7 @@ namespace UnboundArcana.Core.Rooms
 
 		public override void Start()
 		{
+			base.Start();
 			Debug.Log(
 		$"Starting combat encounter in room {room.Definition.RoomId}");
 

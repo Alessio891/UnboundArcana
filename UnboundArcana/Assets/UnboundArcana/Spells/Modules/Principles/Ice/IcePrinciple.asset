@@ -13,7 +13,13 @@ MonoBehaviour:
   m_Name: IcePrinciple
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.Ice.IceModuleDefinition
   category: 1
+  rarity: 0
   icon: {fileID: 5361114426108692022, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
+  moduleName: 
+  moduleDescription: 
+  complexity: 1
+  instability: 1
   damage: 5
   projectileSprite: {fileID: -6433197586683392462, guid: 9c62626eb5e00634da78f64e24c779a6, type: 3}
   chilledStatus: {fileID: 11400000, guid: 37f02cc1f278ca947bbe3c8b8a08d20d, type: 2}
+  contorller: {fileID: 9100000, guid: 8dd7c0d0429f506499c18fb1b83712d5, type: 2}
