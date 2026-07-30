@@ -5,7 +5,6 @@ using UnboundArcana.Spells.Runtime.Views;
 using System.Collections;
 using UnboundArcana.Core.Events;
 using UnboundArcana.Core.Stats;
-using UnityEditor.PackageManager;
 using UnboundArcana.Core.Combat;
 
 namespace UnboundArcana.Spells.Behaviors.Projectile
@@ -75,6 +74,11 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 					context.Direction
 				)
 			);
+		}
+
+		public override void Destroy()
+		{
+			spell.Events.Unsubscribe<HitEvent>(OnHit);
 		}
 
 	}

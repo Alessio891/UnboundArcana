@@ -10,7 +10,6 @@ namespace UnboundArcana.Spells.Modules.Fire
 	public class FireModule : SpellModule
 	{
 		private readonly FireModuleDefinition definition;
-		private GameEventBus gameEvents;
 		public FireModule(FireModuleDefinition definition)
 		{
 			this.definition = definition;
@@ -19,7 +18,6 @@ namespace UnboundArcana.Spells.Modules.Fire
 		public override void Initialize(SpellInstance spell)
 		{
 			base.Initialize(spell);
-			gameEvents = spell.Runtime.GameEvents;
 			Events.Subscribe<HitEvent>(OnHit);
 			Events.Subscribe<ProjectileSpawnedEvent>(OnProjectileSpawned);
 		}
@@ -56,6 +54,7 @@ namespace UnboundArcana.Spells.Modules.Fire
 		public override void Destroy()
 		{
 			Events.Unsubscribe<HitEvent>(OnHit);
+			Events.Unsubscribe<ProjectileSpawnedEvent>(OnProjectileSpawned);
 		}
 	}
 }

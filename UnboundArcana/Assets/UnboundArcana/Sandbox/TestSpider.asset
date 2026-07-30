@@ -17,5 +17,5 @@ MonoBehaviour:
   moveSpeed: 1
   castSpeed: 1
   armor: 0
-  behavior: {fileID: 11400000, guid: a064b814eea96ae4ebba4487d5383fc5, type: 2}
+  behavior: {fileID: 11400000, guid: 7f8151085979434499fc41209a09f5bc, type: 2}
   initialSpells: []

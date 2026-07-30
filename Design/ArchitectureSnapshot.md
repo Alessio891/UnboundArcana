@@ -2,451 +2,357 @@
 
 Last Updated:
 
-2026-07-12
+2026-07-30
+
+Unity Version:
+
+Unity 6
 
 ---
 
-# Current Vertical Slice
+# Current Architecture
 
-Implemented:
+The project is built around four main runtime areas:
 
-SpellDefinition
+- Spell composition and execution
+- Entity, combat, and status systems
+- Expedition, floor, and room progression
+- Research and run progression
 
-↓
-
-SpellConfiguration
-
-↓
-
-SpellFactory
-
-↓
-
-SpellInstance
-
-↓
-
-CastContext
-
-↓
-
-SpellBehavior
-
-↓
-
-SpellRuntimeObjects
-
-↓
-
-Runtime Events
-
-↓
-
-SpellModules
-
-↓
-
-Game Events
-
-↓
-
-Gameplay Systems
-
-↓
-
-Run Progression
+The UI is currently prototype quality and should not be treated as a stable architectural boundary.
 
 ---
 
-# Current Ownership
+# Assembly Boundaries
 
-SpellRuntimeManager
+## UnboundArcana.Runtime
 
-├── GameEventBus
+Contains gameplay, UI, sandbox, map, player, spell, entity, room, and expedition code.
 
-├── Active SpellInstances
+Explicit dependencies:
 
-└── SpellRuntimeContext
+- Unity Input System
+- Unity UI
+- TextMesh Pro
+- Pixelplacement iTween
 
+Runtime code must not depend on `UnityEditor`.
 
-SpellConfiguration
+## UnboundArcana.Editor
 
-├── SpellBehaviorDefinition
+Contains custom inspectors and room authoring tools.
 
-└── SpellModuleDefinition[]
+This assembly:
 
+- Compiles for the Editor only
+- References `UnboundArcana.Runtime`
+- Owns all `UnityEditor` dependencies
 
-SpellInstance
+## UnboundArcana.Tests.Editor
 
-├── SpellBehavior
+Contains Edit Mode tests for systems that can be tested without scenes or prefabs.
 
-├── SpellModules
+Current coverage:
 
-├── SpellRuntimeObjects
+- `GameEventBus`
+- `StatCollection`
 
-├── SpellEventBus
+## Pixelplacement.iTween
 
-├── SpellRuntimeContext
-
-├── Runtime Stats
-
-└── Optional Behavior Capabilities
-
-
-RewardController
-
-├── Temporary Reward Offer
-
-└── Modifies Player SpellConfiguration
+iTween has its own assembly so the runtime assembly can reference it explicitly.
 
 ---
 
-# Spell Ownership Model
+# Spell Ownership
 
-The player does not own active SpellInstances.
+`SpellDefinition` is authored as a ScriptableObject.
 
-The player owns spell configurations.
+`SpellConfiguration` is a mutable player-owned spell build containing:
+
+- A `SpellBehaviorDefinition`
+- A list of `SpellModuleDefinition`
+- The configured cooldown value
+
+`SpellSlot` owns casting state such as the cooldown timer.
+
+`SpellInstance` represents one temporary execution and is never the persistent player-owned spell.
 
 Flow:
 
-Player Spell Configuration
+```text
+SpellDefinition
+    -> SpellConfiguration
+    -> SpellSlot
+    -> SpellFactory
+    -> SpellInstance
+    -> SpellBehavior
+    -> SpellRuntimeObject
+    -> SpellRuntimeView
+```
 
-↓
-
-SpellFactory
-
-↓
-
-SpellInstance
-
-↓
-
-Runtime Objects
-
-
-SpellConfigurations represent editable spell builds.
-
-SpellInstances represent temporary gameplay execution.
+Changing a `SpellConfiguration` affects future casts only.
 
 ---
 
-# Spell Casting Flow
+# Spell Casting Lifecycle
 
-Current:
+The casting source creates a `SpellInstance` from the selected slot and supplies a `CastContext`.
 
-Casting Source
-
-↓
-
-SpellConfiguration
-
-Contains:
-
-- Selected behavior
-- Selected modules
-
-↓
-
-SpellFactory.Create()
-
-↓
-
-SpellInstance
-
-↓
-
-CastContext
-
-Contains:
+The context contains:
 
 - Owner
 - Position
 - Direction
 
-↓
-
-SpellInstance.Cast(context)
-
-↓
-
-CastEvent
-
-Contains:
-
-- SpellInstance
-- CastContext
-
-↓
-
-SpellBehavior.Cast(context)
-
-↓
-
-SpellRuntimeObjects
-
----
-
-# Runtime Spell Lifecycle
-
-A SpellInstance exists only during execution.
-
 Lifecycle:
 
+```text
 Create
+    -> Initialize behavior and modules
+    -> Optional cast time
+    -> Cast
+    -> Register with SpellRuntimeManager
+    -> Runtime objects execute
+    -> Runtime objects finish
+    -> SpellFinishedEvent
+    -> SpellRuntimeManager teardown
+```
 
-↓
+Spell behaviors are divided by capability:
 
-Initialize
+- Autonomous behaviors release the caster after cast completion.
+- Behaviors implementing `IContinuousSpellBehavior` retain external control until `End`.
 
-↓
+`BeamBehavior` currently implements continuous control.
 
-Cast
-
-↓
-
-Runtime Objects Active
-
-↓
-
-Runtime Objects Complete
-
-↓
-
-Spell Finished
-
-↓
-
-SpellRuntimeManager Removes Instance
-
-SpellRuntimeManager owns active runtime spell instances.
+Cooldown state belongs to `SpellSlot`, not `SpellConfiguration` or `SpellInstance`.
 
 ---
 
-# Runtime Stats
+# Spell Runtime Responsibilities
 
-Stats are represented by:
+## SpellBehavior
 
-SpellStatCollection
+Defines the fundamental identity and existence of a spell.
 
-The collection is owned by the SpellInstance runtime.
+Current behaviors:
 
-Stats are composed from spell components.
+- Projectile
+- Aura
+- Beam
 
-Flow:
+Behaviors:
 
-SpellInstance
+- Create runtime objects
+- Interpret cast lifecycle commands
+- Do not know which modules are installed
 
-↓
+## SpellModule
 
-SpellStatCollection
+Extends a spell through:
 
-↑
+- Spell events
+- Runtime object modifiers
+- Stat contributions
 
-Behavior
+Modules are initialized and destroyed with their owning `SpellInstance`.
 
-↑
+Event subscriptions must be removed during teardown.
 
-Modules
+## SpellRuntimeObject
 
----
+Owns gameplay state such as:
 
-# Behaviors
+- Position and direction
+- Lifetime
+- Hit history
+- Runtime modifiers
 
-Implemented:
+Current runtime objects:
 
-- ProjectileBehavior
-- AuraBehavior
-- BeamBehavior
+- `ProjectileRuntimeObject`
+- `ExplosionRuntimeObject`
+- `AuraRuntimeObject`
+- `BeamRuntimeObject`
 
----
+Destruction is idempotent and publishes `RuntimeObjectDestroyedEvent` once.
 
-# Modules
+## SpellRuntimeView
 
-Implemented:
+`SpellRuntimeView` is the common base for Unity GameObject representations.
 
-- FireModule
-- ExplosionModule
-- ForkModule
-- SplitOnDestroyModule
-- CastSpellOnDestroyModule
-- SizeModifierModule
+Current views:
 
----
+- `ProjectileView`
+- `ExplosionView`
+- `AuraView`
+- `BeamView`
 
-# Runtime Object Pattern
+The runtime object depends only on `SpellRuntimeView`, never on a concrete view type.
 
-Runtime Object
-
-↓
-
-View
-
-Runtime objects:
-
-- Maintain gameplay state
-- Query effective stats
-- Control lifetime
-
-Views:
-
-- Represent Unity objects only
+The default view lifecycle destroys the GameObject immediately. `ProjectileView` overrides this to play its ending animation before destruction.
 
 ---
 
-# Combat Integration
+# Stats
 
-Validated:
+`StatCollection` and `SpellStatCollection` compose values from:
 
-Player
+- Base values
+- Flat modifiers
+- Percentage modifiers
+- Multipliers
 
-↓
+Behavior definitions and module definitions contribute spell stats during factory creation.
 
-Cast Spell
+Run modifiers are applied to the newly created `SpellInstance`.
 
-↓
-
-Spell Runtime Objects
-
-↓
-
-Hit Event
-
-↓
-
-Spell Modules
-
-↓
-
-Damage Event
-
-↓
-
-Damage System
-
-↓
-
-Damage Receiver
-
-↓
-
-Enemy Death
-
-Combat systems remain separated from spell execution.
-
-The spell system creates gameplay events.
-
-Gameplay systems consume those events.
+Modifiers can be removed by their source.
 
 ---
 
-# Session 4 Progression Prototype
+# Events and Combat
 
-Implemented:
+The architecture uses three event scopes:
 
-## Enemy Waves
+- `GameEventBus` for global gameplay communication
+- `EntityEventBus` for events owned by one entity
+- `SpellEventBus` for events owned by one spell execution
 
-EnemyWaveSpawner now manages encounter progression.
+Subscriptions tied to MonoBehaviour availability use `OnEnable` and `OnDisable`.
+
+Spell modules and behaviors remove their listeners during spell teardown.
+
+Combat flow:
+
+```text
+Spell runtime object
+    -> HitEvent
+    -> Spell modules and behavior
+    -> DamageEvent
+    -> DamageSystem
+    -> IDamageable
+    -> Entity events
+```
+
+Combat systems consume events and do not depend directly on spell implementations.
+
+---
+
+# Expedition Runtime
+
+`ExpeditionRuntimeController` owns the high-level expedition state and flow.
 
 Responsibilities:
 
-- Spawn wave enemies
-- Detect encounter completion
-- Publish EncounterCompletedEvent
-- Wait for reward selection
-- Begin the next wave
+- Start the expedition
+- Generate and advance floors
+- Generate and transition rooms
+- React to room and research events
+- Coordinate expedition states
+- Activate completed research
+
+Detailed player operations are delegated to `ExpeditionPlayerCoordinator`.
+
+`ExpeditionPlayerCoordinator` owns:
+
+- Player spawning
+- Movement between room start markers
+- Input enable and disable
+- Camera follow and snapping
+- Player reveal presentation
+
+Research reward pickup creation is delegated to `ResearchRewardSpawner`.
+
+`ResearchRewardSpawner` owns:
+
+- Reward selection from available research
+- Spawn position selection
+- Pickup creation and animation
+- Cleanup of unselected pickups
+
+These collaborators are regular C# classes created by `ExpeditionRuntimeController`. They are not MonoBehaviours and do not need to be added to scene GameObjects.
 
 ---
 
-## Reward Controller
+# Rooms and Authoring
 
-RewardController manages temporary run progression.
+`RoomSection` is a runtime component containing:
 
-Responsibilities:
+- Section identifier
+- Connectors
+- Footprint
+- Markers
+- Grid reference
+- Prop renderer references
+- Spatial queries
 
-- Listen for EncounterCompletedEvent
-- Generate a temporary reward offer
-- Apply the selected module to the player's SpellConfiguration
-- Publish RewardSelectedEvent
+`RoomSection` contains no `UnityEditor` dependency.
 
-RewardController does not interact with SpellInstances directly.
+Room authoring operations live in `RoomSectionEditor` and the existing Editor tooling.
 
----
+Editor-only operations include:
 
-## Reward Flow
+- Section setup
+- Tilemap creation
+- Tilemap normalization
+- Grid alignment
+- Marker refresh
+- Prop gathering
+- Footprint gizmos
 
-Validated:
-
-Wave Complete
-
-↓
-
-EncounterCompletedEvent
-
-↓
-
-RewardController
-
-↓
-
-Player chooses module
-
-↓
-
-SpellConfiguration updated
-
-↓
-
-RewardSelectedEvent
-
-↓
-
-Next Wave
+The runtime prop collection is exposed as read-only.
 
 ---
 
-# Proven Design Principles
+# Input
 
-✓ No individual spell classes
+The project uses the Unity Input System.
 
-✓ Behaviors own existence
+`UnboundArcanaControls` is generated from:
 
-✓ Modules react through events
+`Assets/UnboundArcana/Input/UnboundArcanaControls.inputactions`
 
-✓ Modules do not communicate directly
+The generated wrapper is kept inside the Runtime assembly boundary:
 
-✓ Runtime objects own gameplay state
+`Assets/UnboundArcana/Input/UnboundArcanaControls.cs`
 
-✓ ScriptableObjects contain configuration only
+---
 
-✓ Views only represent runtime objects
+# Validated Principles
 
-✓ Stats are composed from behavior and module contributions
-
-✓ Player spell configuration is separated from runtime execution
-
-✓ Runtime spell instances are disposable
-
-✓ Combat systems consume game events instead of depending on spells
-
-✓ Spell progression modifies SpellConfiguration rather than active runtime spells
-
-✓ Reward progression integrates without modifying the spell runtime architecture
+- ScriptableObjects contain authored configuration.
+- Runtime state belongs to disposable runtime instances.
+- Player spell builds and active spell executions are separate.
+- Behaviors define spell identity.
+- Modules extend behaviors without replacing them.
+- Runtime objects own gameplay state.
+- Views represent runtime objects without owning gameplay rules.
+- Combat consumes spell-generated events.
+- Runtime and Editor code are separated by assembly boundaries.
+- Event subscriptions have explicit lifecycle ownership.
+- Pure systems should receive Edit Mode test coverage.
 
 ---
 
 # Current Limitations
 
-Current:
+- UI remains placeholder and is not architecturally stable.
+- Duplicate module rules are not fully defined.
+- Module compatibility and exclusion rules are limited.
+- Reward selection is still mostly random.
+- Reward rarity and weighting require further design.
+- Enemy behaviors and combat objectives remain prototype quality.
+- Some runtime systems still access global managers directly.
+- Test coverage currently targets only the event bus and stat collection.
+- Sandbox systems remain inside the Runtime assembly and may later deserve their own boundary.
 
-- Duplicate module behavior is not yet defined
-- Reward generation is random only
-- Reward rarity does not exist
-- Enemy system is still a prototype
-- No run UI exists
+---
 
-Future:
+# Recommended Next Architectural Work
 
-- Explicit duplicate module rules
-- Reward weighting
-- Reward categories
-- Advanced progression experiments
+- Expand tests around spell lifecycle, cooldowns, and module teardown.
+- Add validation for spell definitions and prefab/view requirements.
+- Decide explicit duplicate and compatibility rules for modules.
+- Reduce direct singleton access where systems need isolated tests.
+- Split prototype UI and sandbox code into separate assemblies when they become stable enough to justify the boundary.

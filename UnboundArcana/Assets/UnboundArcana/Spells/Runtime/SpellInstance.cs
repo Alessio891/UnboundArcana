@@ -14,7 +14,6 @@ namespace UnboundArcana.Spells.Runtime
 		private readonly List<SpellRuntimeObject> runtimeObjects = new();
 
 		private float castTimer;
-		private CastContext pendingCastContext;
 
 		public GameObject Owner { get; private set; }
 		public SpellEventBus Events { get; } = new();
@@ -25,6 +24,7 @@ namespace UnboundArcana.Spells.Runtime
 		public bool HasBeenCast { get; private set; }
 		public bool IsCasting { get; private set; }
 		public bool IsFinished { get; private set; }
+		public bool RequiresContinuousControl => behavior is IContinuousSpellBehavior;
 
 		public SpellInstance(
 			SpellRuntimeContext runtime,
@@ -62,6 +62,11 @@ namespace UnboundArcana.Spells.Runtime
 		public void BeginCast(
 			CastContext context)
 		{
+			if (HasBeenCast || IsCasting || IsFinished)
+			{
+				return;
+			}
+
 			float castTime =
 				Stats.Get(
 					StatKeys.Spell.CastTime
@@ -75,7 +80,6 @@ namespace UnboundArcana.Spells.Runtime
 
 			IsCasting = true;
 			castTimer = castTime;
-			pendingCastContext = context;
 		}
 
 
@@ -96,8 +100,6 @@ namespace UnboundArcana.Spells.Runtime
 				Cast(
 					context
 				);
-
-				pendingCastContext = null;
 			}
 		}
 
@@ -147,14 +149,23 @@ namespace UnboundArcana.Spells.Runtime
 		public void UpdateCast(
 			CastContext context)
 		{
+			if (!HasBeenCast || IsFinished || !RequiresContinuousControl)
+			{
+				return;
+			}
+
 			behavior.UpdateCast(context);
-			
 		}
 
 
 		public void Cast(
 			CastContext context)
 		{
+			if (HasBeenCast || IsCasting || IsFinished)
+			{
+				return;
+			}
+
 			HasBeenCast = true;
 			Runtime.RuntimeManager.Register(this);
 
@@ -168,19 +179,30 @@ namespace UnboundArcana.Spells.Runtime
 
 		public void End()
 		{
-			if (IsCasting)
+			if (IsFinished)
 			{
-				IsCasting = false;
-				pendingCastContext = null;
 				return;
 			}
 
-			behavior.End();
+			if (IsCasting)
+			{
+				IsCasting = false;
+				IsFinished = true;
+				Destroy();
+				return;
+			}
+
+			if (HasBeenCast && RequiresContinuousControl)
+			{
+				behavior.End();
+			}
 		}
 
 
 		public void Destroy()
 		{
+			behavior.Destroy();
+
 			foreach (SpellModule module in modules)
 			{
 				module.Destroy();

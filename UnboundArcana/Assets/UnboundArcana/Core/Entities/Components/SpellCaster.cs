@@ -24,22 +24,20 @@ namespace UnboundArcana.Core.Entities
 			Configuration = configuration;
 		}
 
-		public void StartCooldown(
-			float duration)
+		public void StartCooldown()
 		{
-			cooldownTimer = duration;
+			cooldownTimer = Configuration.Cooldown;
 		}
 
 		public void Tick(
 			float deltaTime)
 		{
-			Configuration.TickCooldown(deltaTime);
 			if (cooldownTimer <= 0f)
 			{
 				return;
 			}
 
-			cooldownTimer -= deltaTime;
+			cooldownTimer = Mathf.Max(0f, cooldownTimer - deltaTime);
 		}
 	}
 
@@ -90,7 +88,6 @@ namespace UnboundArcana.Core.Entities
 		public void Tick(
 			float deltaTime)
 		{
-			Debug.Log($"Ticking {slots.Count} slots");
 			foreach (SpellSlot slot in slots)
 			{
 				slot.Tick(deltaTime);
@@ -113,10 +110,6 @@ namespace UnboundArcana.Core.Entities
 
 		private Vector3 aimDirection;
 
-		private void Awake()
-		{
-		}
-
 		public void InitializeLoadout(
 			List<SpellDefinition> spells)
 		{
@@ -135,23 +128,33 @@ namespace UnboundArcana.Core.Entities
 				return;
 			}
 
-			if (gameObject.tag == "Player") 
-				spellLoadout.Tick(Time.deltaTime);
+			spellLoadout.Tick(Time.deltaTime);
 
 			if (activeSpell == null)
 			{
 				return;
 			}
+
 			var ctx = new CastContext(
-					gameObject,
-					transform.position,
-					aimDirection
-				);
+				gameObject,
+				transform.position,
+				aimDirection
+			);
+
 			if (activeSpell.IsCasting)
 			{
 				activeSpell.TickCast(Time.deltaTime, ctx);
 			}
-			activeSpell.UpdateCast(ctx);
+
+			if (activeSpell.HasBeenCast && activeSpell.RequiresContinuousControl)
+			{
+				activeSpell.UpdateCast(ctx);
+			}
+
+			if (!activeSpell.IsCasting && !activeSpell.RequiresContinuousControl)
+			{
+				activeSpell = null;
+			}
 		}
 
 		public void SetAimDirection(
@@ -162,33 +165,34 @@ namespace UnboundArcana.Core.Entities
 
 		public void BeginCast()
 		{
-			
-
-			SpellConfiguration configuration =
-				spellLoadout.GetCurrentSpell().Configuration;
-
-			if (configuration == null)
+			if (spellLoadout == null || activeSpell != null)
 			{
 				return;
 			}
-			Debug.Log("Valid configuration");
-			if (!configuration.CanCast())
+
+			SpellSlot slot = spellLoadout.GetCurrentSpell();
+
+			if (slot == null || !slot.CanCast)
 			{
 				return;
 			}
-			Debug.Log("Can cast");
+
+			SpellConfiguration configuration = slot.Configuration;
 
 			if (configuration.behavior == null)
 			{
 				return;
 			}
-			Debug.Log("Has behavior");
 
-			configuration.StartCooldown();
+			SpellInstance spell = CreateSpellInstance(configuration);
 
-			activeSpell = CreateSpellInstance(configuration);
+			if (spell == null)
+			{
+				return;
+			}
 
-			//RuntimeManager.Register(activeSpell);
+			activeSpell = spell;
+			slot.StartCooldown();
 
 			activeSpell.BeginCast(
 				new CastContext(
@@ -197,7 +201,11 @@ namespace UnboundArcana.Core.Entities
 					aimDirection
 				)
 			);
-			Debug.Log("Cast started");
+
+			if (!activeSpell.IsCasting && !activeSpell.RequiresContinuousControl)
+			{
+				activeSpell = null;
+			}
 		}
 
 		public void EndCast()

@@ -9,11 +9,12 @@ namespace UnboundArcana.Core.Entities.AI
 	public class ChasingEnemyDefinition
 		: AIBehaviorDefinition
 	{
-		[SerializeField] private float stoppingRange = 0.1f;
-		[SerializeField] private float attackCooldown = 0.8f;
+		[SerializeField] private float stoppingRange = 0.45f;
+		[SerializeField] private float resumeChaseRange = 0.65f;
+		[SerializeField] private float recoveryDuration = 0.25f;
 		public float StoppingRange => stoppingRange;
-		public float AttackCooldown => attackCooldown;
-
+		public float ResumeChaseRange => Mathf.Max(resumeChaseRange, stoppingRange);
+		public float RecoveryDuration => recoveryDuration;
 
 		public override AIBehavior CreateBehavior()
 		{
@@ -23,12 +24,14 @@ namespace UnboundArcana.Core.Entities.AI
 
 	public class ChasingEnemyBehavior : AIBehavior
 	{
-		private Entity target;
-		ChasingEnemyDefinition definition;
-		float attackTimer = 0f;
-		MeleeAttacker attacker;
-		public ChasingEnemyBehavior(ChasingEnemyDefinition def) {
-			this.definition = def;
+		private readonly ChasingEnemyDefinition definition;
+		private MeleeAttacker attacker;
+		private float recoveryTimer;
+		private bool holdingAttackRange;
+
+		public ChasingEnemyBehavior(ChasingEnemyDefinition definition)
+		{
+			this.definition = definition;
 		}
 
 		protected override void OnInitialize()
@@ -36,55 +39,53 @@ namespace UnboundArcana.Core.Entities.AI
 			attacker = Controller.GetComponent<MeleeAttacker>();
 		}
 
-
 		protected override void OnTick()
 		{
-			if (Controller == null) {
-				Debug.Log("controller null");
+			if (!Controller.TryGetPerceivedTargetPosition(out Vector2 targetPosition))
+			{
+				Stop();
 				return;
 			}
-			if (Controller.Target == null) {
-				Debug.Log("Target is null");
-			}
-			if (Controller.Target?.CurrentTarget == null)
+
+			Vector2 direction = targetPosition - (Vector2)Controller.transform.position;
+			float distance = direction.magnitude;
+			Controller.FacingDirection.SetDirection(direction);
+
+			if (attacker != null && attacker.IsAttacking)
 			{
+				Stop();
 				return;
 			}
-			
-			if (attacker) {
-				if (attacker.IsAttacking) {
-					return;
-				}
-			}
 
-			float dist = Vector3.Distance(Controller.Target.CurrentTarget.transform.position, Controller.transform.position);
-			if (dist > definition.StoppingRange)
+			if (recoveryTimer > 0f)
 			{
-				Vector2 direction =
-					Controller.Target.CurrentTarget.transform.position -
-					Controller.transform.position;
-
-
-				Controller.Movement.SetMovementIntent(
-					direction.normalized
-				);
-				Controller.FacingDirection.SetDirection(direction);
-			} else {
-				Controller.Movement.SetMovementIntent(
-						Vector2.zero
-					);
-				if (attackTimer <= 0.0f)
-				{
-					var meleeComponent = Controller.GetComponent<MeleeAttacker>();
-					if (meleeComponent != null)
-					{
-						meleeComponent.PerformMeleeAttack();
-					}
-					attackTimer = definition.AttackCooldown;
-				} else {
-					attackTimer -= Time.deltaTime;
-				}
+				recoveryTimer -= Time.deltaTime;
+				Stop();
+				return;
 			}
+
+			float chaseThreshold = holdingAttackRange ? definition.ResumeChaseRange : definition.StoppingRange;
+
+			if (distance > chaseThreshold)
+			{
+				holdingAttackRange = false;
+				Controller.Movement.SetMovementIntent(direction.normalized);
+				return;
+			}
+
+			holdingAttackRange = true;
+			Stop();
+
+			if (Controller.TargetVisible && attacker != null)
+			{
+				attacker.PerformMeleeAttack();
+				recoveryTimer = definition.RecoveryDuration;
+			}
+		}
+
+		private void Stop()
+		{
+			Controller.Movement.SetMovementIntent(Vector2.zero);
 		}
 	}
 }

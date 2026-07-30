@@ -33,9 +33,18 @@ public class ReserachExperimentUI : MonoBehaviour
 	private CanvasGroup canvasGroup;
 	private void Awake()
 	{
-		GameRuntimeManager.Instance.Events.Subscribe<ResearchExperimentStationEvent>(OnStationUsed);
 		canvasGroup = GetComponent<CanvasGroup>();
 		Close();
+	}
+
+	private void OnEnable()
+	{
+		GameRuntimeManager.Instance.Events.Subscribe<ResearchExperimentStationEvent>(OnStationUsed);
+	}
+
+	private void OnDisable()
+	{
+		GameRuntimeManager.Instance.Events.Unsubscribe<ResearchExperimentStationEvent>(OnStationUsed);
 	}
 
 	void GenerateDebugRewards()

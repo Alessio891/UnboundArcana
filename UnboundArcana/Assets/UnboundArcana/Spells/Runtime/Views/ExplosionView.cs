@@ -3,7 +3,7 @@ using UnboundArcana.Spells.Runtime.Objects;
 
 namespace UnboundArcana.Spells.Runtime.Views
 {
-	public class ExplosionView : MonoBehaviour
+	public class ExplosionView : SpellRuntimeView
 	{
 		private ExplosionRuntimeObject runtimeObject;
 		public AnimationClip explosionClip;
@@ -12,7 +12,7 @@ namespace UnboundArcana.Spells.Runtime.Views
 		{
 			this.runtimeObject = runtimeObject;
 
-			runtimeObject.SetView(gameObject);
+			runtimeObject.SetView(this);
 			Animator animator = GetComponentInChildren<Animator>();
 
 			AnimationClip clip = animator.runtimeAnimatorController.animationClips[0];

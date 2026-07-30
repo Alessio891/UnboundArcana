@@ -5,7 +5,7 @@ using UnboundArcana.Spells.Runtime.Views;
 
 namespace UnboundArcana.Spells.Behaviors.Beam
 {
-	public class BeamBehavior : SpellBehavior
+	public class BeamBehavior : SpellBehavior, IContinuousSpellBehavior
 	{
 		private BeamBehaviorDefinition definition;
 		private BeamRuntimeObject beam;

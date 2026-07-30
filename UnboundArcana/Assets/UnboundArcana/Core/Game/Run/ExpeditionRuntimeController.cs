@@ -1,14 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnboundArcana.Core.Camera;
 using UnboundArcana.Core.Entities;
 using UnboundArcana.Core.Entities.Events;
 using UnboundArcana.Core.Events;
 using UnboundArcana.Core.Research;
 using UnboundArcana.Core.Rooms;
 using UnboundArcana.Core.Runtime;
-using UnboundArcana.Player;
-using UnboundArcana.Spells.Modules;
 using UnityEngine;
 
 namespace UnboundArcana.Core.Expedition
@@ -30,9 +27,6 @@ namespace UnboundArcana.Core.Expedition
 		private Transform roomParent;
 
 
-		[SerializeField]
-		private List<SpellModuleDefinition> availableRewardModules = new();
-
 		private readonly ResearchSystem researchSystem = new();
 
 
@@ -42,21 +36,13 @@ namespace UnboundArcana.Core.Expedition
 		[SerializeField]
 		private ResearchPickup researchPickupPrefab;
 
-		private readonly List<ResearchPickup> currentSpawnedResearches = new();
-
-
 		[SerializeField]
 		private int rewardCount = 3;
 
+		private ExpeditionPlayerCoordinator playerCoordinator;
+		private ResearchRewardSpawner rewardSpawner;
 
-		private Entity player;
-		public Entity Player => player;
-
-
-		private readonly List<SpellModuleDefinition> currentRewards = new();
-
-		public IReadOnlyList<SpellModuleDefinition> CurrentRewards =>
-			currentRewards;
+		public Entity Player => playerCoordinator?.Player;
 
 
 		private RoomInstance currentRoom;
@@ -83,6 +69,8 @@ namespace UnboundArcana.Core.Expedition
 			}
 
 			instance = this;
+			playerCoordinator = new ExpeditionPlayerCoordinator();
+			rewardSpawner = new ResearchRewardSpawner(availableResearch, researchPickupPrefab, rewardCount);
 		}
 
 
@@ -133,17 +121,8 @@ namespace UnboundArcana.Core.Expedition
 		private void OnResearchCollected(
 			ResearchCollectedEvent evt)
 		{
-			player.GetComponent<PlayerInput>()
-				.SetInputEnabled(false);
-
-
-			foreach (var r in currentSpawnedResearches)
-			{
-				Destroy(r.gameObject);
-			}
-
-
-			currentSpawnedResearches.Clear();
+			playerCoordinator.SetInputEnabled(false);
+			rewardSpawner.Clear();
 
 
 			GameSession.Instance.Player.AddResearch(
@@ -229,8 +208,7 @@ namespace UnboundArcana.Core.Expedition
 			currentRoom = nextRoom;
 
 
-			MovePlayerToRoom(
-				nextRoom);
+			playerCoordinator.MoveToRoom(nextRoom);
 
 
 			SetState(
@@ -251,31 +229,6 @@ namespace UnboundArcana.Core.Expedition
 			return GameRuntimeManager.Instance.Rooms.GenerateRoom(
 				definition,
 				roomParent);
-		}
-
-
-		private void MovePlayerToRoom(
-			RoomInstance room)
-		{
-			List<RoomMarker> markers =
-				new(room.GetMarkers(
-					RoomMarkerType.PlayerStart));
-
-
-			if (markers.Count == 0)
-			{
-				Debug.LogWarning(
-					"No PlayerStart marker found.");
-
-				return;
-			}
-
-
-			player.transform.position =
-				markers[0].transform.position;
-
-
-			MainCameraManager.Instance.SnapToTarget();
 		}
 
 
@@ -334,11 +287,7 @@ namespace UnboundArcana.Core.Expedition
 			GameRuntimeManager.Instance.Rooms.StartRoom();
 
 
-			SpawnPlayer(
-				room);
-
-
-			if (player == null)
+			if (!playerCoordinator.Spawn(room))
 			{
 				SetState(
 					ExpeditionState.Failed);
@@ -347,14 +296,8 @@ namespace UnboundArcana.Core.Expedition
 			}
 
 
-			player.GetComponentInChildren<SpriteRenderer>()
-				.material.SetFloat(
-					"_Progress",
-					0.0f);
-
-
-			player.GetComponent<PlayerInput>()
-				.SetInputEnabled(false);
+			playerCoordinator.SetRevealProgress(0f);
+			playerCoordinator.SetInputEnabled(false);
 		}
 
 
@@ -366,44 +309,6 @@ namespace UnboundArcana.Core.Expedition
 
 			GameSession.Instance.CreatePlayer(
 				playerDefinition);
-		}
-
-
-		private void SpawnPlayer(
-			RoomInstance room)
-		{
-			List<RoomMarker> markers =
-				new(room.GetMarkers(
-					RoomMarkerType.PlayerStart));
-
-
-			if (markers.Count == 0)
-			{
-				Debug.LogWarning(
-					"No PlayerStart marker found.");
-
-				return;
-			}
-
-
-			Vector3 position =
-				markers[0].transform.position;
-
-
-			player =
-				GameRuntimeManager.Instance.PlayerSpawner.Spawn(
-					GameSession.Instance.Player,
-					position,
-					null);
-
-
-			if (player != null)
-			{
-				MovePlayerToRoom(room);
-
-				MainCameraManager.Instance.SetFollowTarget(
-					player.transform);
-			}
 		}
 
 
@@ -425,24 +330,7 @@ namespace UnboundArcana.Core.Expedition
 		{
 			if (isFirstRoom)
 			{
-				float value = 0.0f;
-
-				while (true)
-				{
-					player.GetComponentInChildren<SpriteRenderer>()
-						.material.SetFloat(
-							"_Progress",
-							value);
-
-					value += Time.deltaTime * 1.5f;
-
-
-					if (value >= 1.0f)
-						break;
-
-
-					yield return null;
-				}
+				yield return playerCoordinator.Reveal(1.5f);
 
 
 				GameRuntimeManager.Instance.Events.Publish(
@@ -462,8 +350,7 @@ namespace UnboundArcana.Core.Expedition
 				ExpeditionState.RoomActive);
 
 
-			player.GetComponent<PlayerInput>()
-				.SetInputEnabled(true);
+			playerCoordinator.SetInputEnabled(true);
 			GameRuntimeManager.Instance.Events.Publish(new BehaviorActivationEvent());
 		}
 
@@ -490,150 +377,10 @@ namespace UnboundArcana.Core.Expedition
 
 		private IEnumerator SpawnResearchRewards()
 		{
-			foreach (var r in currentSpawnedResearches)
-			{
-				Destroy(r.gameObject);
-			}
-
-
-			currentSpawnedResearches.Clear();
-
-
-			RoomSection section =
-				currentRoom.GetSectionAtWorldPosition(
-					player.transform.position);
-
-
-			if (section == null)
-			{
-				Debug.LogWarning(
-					"No section found for research reward");
-
-				yield break;
-			}
-
-
-			RoomMarker marker =
-				section.GetComponentInChildren<RoomMarker>();
-
-
-			if (marker == null)
-			{
-				Debug.LogWarning(
-					"No research reward marker found");
-
-				yield break;
-			}
-
-
-			player.GetComponent<PlayerInput>()
-				.SetInputEnabled(false);
-
-
-			for (int i = 0; i < rewardCount; i++)
-			{
-				ResearchDefinition definition =
-					availableResearch[
-						Random.Range(
-							0,
-							availableResearch.Count)];
-
-
-				Vector3 spawnPos =
-					marker.transform.position;
-
-
-				int safeGuard = 0;
-
-
-				while (true)
-				{
-					Vector2 rndOffset =
-						Random.onUnitCircle * 1.2f;
-
-
-					Vector3 offset =
-						new Vector3(
-							rndOffset.x,
-							rndOffset.y,
-							0);
-
-
-					spawnPos =
-						marker.transform.position +
-						offset;
-
-
-					if (section.ContainsWorldPosition(spawnPos))
-						break;
-
-
-					safeGuard++;
-
-
-					if (safeGuard > 100)
-						break;
-				}
-
-
-				ResearchPickup pickup =
-					Instantiate(
-						researchPickupPrefab,
-						spawnPos,
-						Quaternion.identity);
-
-
-				pickup.Initialize(
-					definition);
-
-
-				currentSpawnedResearches.Add(
-					pickup);
-
-
-				pickup.transform.localScale =
-					Vector3.zero;
-
-
-				yield return new WaitForSeconds(0.2f);
-
-
-				iTween.ScaleTo(
-					pickup.gameObject,
-					iTween.Hash(
-						"scale",
-						Vector3.one,
-						"time",
-						0.7f,
-						"easeType",
-						"easeOutElastic"));
-
-
-				yield return new WaitForSeconds(0.5f);
-			}
-
-
-			yield return new WaitForSeconds(1.0f);
-
-
-			MainCameraManager.Instance.SetFollowTarget(
-				player.transform);
-
-
-			player.GetComponent<PlayerInput>()
-				.SetInputEnabled(true);
-		}
-
-
-		private void GenerateRewards()
-		{
-			currentRewards.Clear();
-
-			currentRewards.AddRange(
-				GameRuntimeManager.Instance.Rewards
-					.GenerateModuleRewards(
-						availableRewardModules,
-						rewardCount));
+			playerCoordinator.SetInputEnabled(false);
+			yield return rewardSpawner.Spawn(currentRoom, Player);
+			playerCoordinator.FollowPlayer();
+			playerCoordinator.SetInputEnabled(true);
 		}
 
 

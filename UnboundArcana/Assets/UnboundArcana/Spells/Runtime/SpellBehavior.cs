@@ -1,5 +1,9 @@
 namespace UnboundArcana.Spells.Runtime
 {
+	public interface IContinuousSpellBehavior
+	{
+	}
+
 	public abstract class SpellBehavior
 	{
 		protected SpellInstance spell;
@@ -15,6 +19,10 @@ namespace UnboundArcana.Spells.Runtime
 		{
 		}
 		public virtual void UpdateCast(CastContext context)
+		{
+		}
+
+		public virtual void Destroy()
 		{
 		}
 	}

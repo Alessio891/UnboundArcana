@@ -30,13 +30,23 @@ namespace UnboundArcana.Sandbox
 		public SpellRuntimeManager Runtime;
 		public GameEventBus GameEvents => Runtime?.GameEvents;
 
+		private void OnEnable()
+		{
+			GameEvents?.Subscribe<RewardSelectedEvent>(
+				OnRewardSelected
+			);
+		}
+
+		private void OnDisable()
+		{
+			GameEvents?.Unsubscribe<RewardSelectedEvent>(
+				OnRewardSelected
+			);
+		}
+
 		private void Start()
 		{
 			StartWave();
-
-			Runtime.GameEvents.Subscribe<RewardSelectedEvent>(
-				OnRewardSelected
-			);
 		}
 
 		private void Update()

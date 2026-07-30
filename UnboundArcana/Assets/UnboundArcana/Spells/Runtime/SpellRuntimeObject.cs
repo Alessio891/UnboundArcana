@@ -8,7 +8,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 	public abstract class SpellRuntimeObject
 	{
 		protected SpellInstance spell;
-		protected GameObject view;
+		protected SpellRuntimeView view;
 
 		protected readonly List<IRuntimeObjectModifier> modifiers = new();
 
@@ -47,6 +47,11 @@ namespace UnboundArcana.Spells.Runtime.Objects
 
 		public virtual void Destroy()
 		{
+			if (!IsAlive)
+			{
+				return;
+			}
+
 			IsAlive = false;
 
 			foreach (IRuntimeObjectModifier modifier in modifiers)
@@ -60,12 +65,11 @@ namespace UnboundArcana.Spells.Runtime.Objects
 
 			if (view != null)
 			{
-				view.GetComponent<ProjectileView>().DestroyView();
-				//Object.Destroy(view);
+				view.DestroyView();
 			}
 		}
 
-		public void SetView(GameObject view)
+		public void SetView(SpellRuntimeView view)
 		{
 			this.view = view;
 		}

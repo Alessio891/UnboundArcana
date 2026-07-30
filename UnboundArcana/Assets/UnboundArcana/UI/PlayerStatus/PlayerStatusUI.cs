@@ -13,22 +13,44 @@ public class PlayerStatusUI : MonoBehaviour
 	private void OnEnable()
 	{
 		GameRuntimeManager.Instance.Events.Subscribe<PlayerSpawnedEvent>(OnPlayerSpawned);
+
+		if (entity != null)
+		{
+			entity.Events.Subscribe<EntityDamagedEvent>(OnPlayerDamaged);
+		}
 	}
 	private void OnDisable()
 	{
 		GameRuntimeManager.Instance.Events.Unsubscribe<PlayerSpawnedEvent>(OnPlayerSpawned);
+
+		if (entity != null)
+		{
+			entity.Events.Unsubscribe<EntityDamagedEvent>(OnPlayerDamaged);
+		}
 	}
 
 	private void OnPlayerSpawned(PlayerSpawnedEvent @event)
 	{
+		if (entity != null)
+		{
+			entity.Events.Unsubscribe<EntityDamagedEvent>(OnPlayerDamaged);
+		}
+
 		entity = @event.player;
-		Debug.Log("Player Spawned, binding UI");
-		entity.Events.Subscribe<EntityDamagedEvent>(OnPlayerDamaged);
+
+		if (entity != null)
+		{
+			entity.Events.Subscribe<EntityDamagedEvent>(OnPlayerDamaged);
+		}
 	}
 
 	private void OnPlayerDamaged(EntityDamagedEvent @event)
 	{
-		Debug.Log("Updating player health bar");
+		if (entity == null)
+		{
+			return;
+		}
+
 		var health = entity.GetComponent<EntityHealth>();
 		float current = health.currentHealth;
 		float max = entity.Stats.Get(StatKeys.Entity.MaxHealth);

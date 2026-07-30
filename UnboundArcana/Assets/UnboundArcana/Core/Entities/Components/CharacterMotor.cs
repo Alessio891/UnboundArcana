@@ -13,6 +13,9 @@ namespace UnboundArcana.Core.Entities
 
 		private Vector2 moveInput;
 		private Vector2 velocity;
+		private float speedMultiplier = 1f;
+		private float acceleration = float.PositiveInfinity;
+		private float deceleration = float.PositiveInfinity;
 
 		private bool movingToPosition = false;
 		private Vector3 targetMoveToPosition;
@@ -37,6 +40,23 @@ namespace UnboundArcana.Core.Entities
 			moveInput = Vector2.ClampMagnitude(input, 1f);
 		}
 
+		public void SetSpeedMultiplier(float multiplier)
+		{
+			speedMultiplier = Mathf.Max(0f, multiplier);
+		}
+
+		public void SetMovementSmoothing(float accelerationRate, float decelerationRate)
+		{
+			acceleration = accelerationRate > 0f ? accelerationRate : float.PositiveInfinity;
+			deceleration = decelerationRate > 0f ? decelerationRate : float.PositiveInfinity;
+		}
+
+		public void StopImmediately()
+		{
+			moveInput = Vector2.zero;
+			velocity = Vector2.zero;
+		}
+
 		private void Update()
 		{
 			if (movingToPosition)
@@ -58,8 +78,9 @@ namespace UnboundArcana.Core.Entities
 			float moveSpeed = entity.Stats.Get(
 				StatKeys.Entity.MoveSpeed);
 
-			velocity =
-				moveInput * moveSpeed;
+			Vector2 desiredVelocity = moveInput * moveSpeed * speedMultiplier;
+			float changeRate = moveInput.sqrMagnitude > 0f ? acceleration : deceleration;
+			velocity = Vector2.MoveTowards(velocity, desiredVelocity, changeRate * Time.fixedDeltaTime);
 
 			Vector2 targetPosition =
 				rb.position +

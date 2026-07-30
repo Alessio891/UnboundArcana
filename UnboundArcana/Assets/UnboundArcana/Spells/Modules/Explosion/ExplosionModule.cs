@@ -4,7 +4,6 @@ using UnboundArcana.Spells.Runtime;
 using UnboundArcana.Spells.Runtime.Objects;
 using UnboundArcana.Spells.Runtime.Views;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace UnboundArcana.Spells.Modules.Explosion
 {

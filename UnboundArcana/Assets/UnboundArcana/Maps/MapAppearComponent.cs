@@ -1,7 +1,5 @@
 using System;
-using Unity.Mathematics;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 
 public class MapAppearComponent : MonoBehaviour

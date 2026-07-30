@@ -30,6 +30,7 @@ namespace UnboundArcana.Player
 		{
 			playerInput.CastStarted -= OnCastStarted;
 			playerInput.CastEnded -= OnCastEnded;
+			playerInput.InteractStarted -= OnInteract;
 		}
 
 		private void Update()

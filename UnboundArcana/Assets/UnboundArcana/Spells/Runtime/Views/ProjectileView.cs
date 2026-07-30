@@ -4,14 +4,14 @@ using System.Collections;
 
 namespace UnboundArcana.Spells.Runtime.Views
 {
-	public class ProjectileView : MonoBehaviour
+	public class ProjectileView : SpellRuntimeView
 	{
 		private ProjectileRuntimeObject runtimeObject;
 
 		public void Initialize(ProjectileRuntimeObject runtimeObject)
 		{
 			this.runtimeObject = runtimeObject;
-			runtimeObject.SetView(gameObject);
+			runtimeObject.SetView(this);
 		}
 
 		private void OnTriggerEnter2D(Collider2D collision)
@@ -19,7 +19,7 @@ namespace UnboundArcana.Spells.Runtime.Views
 			runtimeObject?.Hit(collision.gameObject);
 		}
 
-		public void DestroyView() {
+		public override void DestroyView() {
 			GetComponentInChildren<Animator>()?.SetTrigger("End");
 			StartCoroutine(waitAndDestroy());
 		}

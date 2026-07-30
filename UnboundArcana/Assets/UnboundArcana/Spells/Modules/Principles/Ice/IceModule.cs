@@ -8,7 +8,6 @@ namespace UnboundArcana.Spells.Modules.Ice
 	public class IceModule : SpellModule
 	{
 		private readonly IceModuleDefinition definition;
-		private GameEventBus gameEvents;
 		public IceModule(
 			IceModuleDefinition definition)
 		{
@@ -17,7 +16,6 @@ namespace UnboundArcana.Spells.Modules.Ice
 		public override void Initialize(SpellInstance spell)
 		{
 			base.Initialize(spell);
-			gameEvents = spell.Runtime.GameEvents;
 			Events.Subscribe<HitEvent>(OnHit);
 			Events.Subscribe<ProjectileSpawnedEvent>(OnProjectileSpawned);
 		}
@@ -54,6 +52,7 @@ namespace UnboundArcana.Spells.Modules.Ice
 		public override void Destroy()
 		{
 			Events.Unsubscribe<HitEvent>(OnHit);
+			Events.Unsubscribe<ProjectileSpawnedEvent>(OnProjectileSpawned);
 		}
 	}
 }

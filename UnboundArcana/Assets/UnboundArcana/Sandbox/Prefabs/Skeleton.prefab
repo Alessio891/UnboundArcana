@@ -397,6 +397,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.AI.AIController
   behaviorDefinition: {fileID: 11400000, guid: a064b814eea96ae4ebba4487d5383fc5, type: 2}
+  targetMemoryDuration: 3
+  movementAcceleration: 8
+  movementDeceleration: 12
 --- !u!114 &5619972741730461047
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -29,6 +29,10 @@ namespace UnboundArcana.Core.Runtime
 		private void OnSpellFinished(
 			SpellFinishedEvent eventData)
 		{
+			eventData.Spell.Events.Unsubscribe<SpellFinishedEvent>(
+				OnSpellFinished
+			);
+
 			spells.Remove(eventData.Spell);
 
 			eventData.Spell.Destroy();
