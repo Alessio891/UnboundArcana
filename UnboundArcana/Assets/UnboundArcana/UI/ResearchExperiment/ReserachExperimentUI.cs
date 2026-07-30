@@ -125,7 +125,7 @@ public class ReserachExperimentUI : MonoBehaviour
 		if (!isOpen)
 		{
 			Open();
-			SetSpellConfiguration(evt.Entity.GetComponent<SpellCaster>().SpellLoadout.GetCurrentSpell());
+			SetSpellConfiguration(evt.Entity.GetComponent<SpellCaster>().SpellLoadout.GetCurrentSpell().Configuration);
 			GenerateDebugRewards();
 		}
 	}

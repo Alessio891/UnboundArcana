@@ -647,8 +647,7 @@ namespace UnboundArcana.Core.Expedition
 			State = state;
 
 
-			Debug.Log(
-				$"Expedition state: {State}");
+			//Debug.Log($"Expedition state: {State}");
 		}
 	}
 }

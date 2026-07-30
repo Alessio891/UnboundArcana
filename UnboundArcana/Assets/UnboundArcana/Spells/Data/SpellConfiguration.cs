@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+
 using UnboundArcana.Spells.Behaviors;
 using UnboundArcana.Spells.Modules;
+using UnityEngine;
 
 namespace UnboundArcana.Spells.Data
 {
@@ -8,6 +10,9 @@ namespace UnboundArcana.Spells.Data
 	{
 		public SpellBehaviorDefinition behavior;
 		public List<SpellModuleDefinition> modules = new();
+
+		public float Cooldown = 0.25f;
+		private float cooldownTimer;
 
 		public SpellConfiguration(
 			SpellDefinition definition)
@@ -18,9 +23,32 @@ namespace UnboundArcana.Spells.Data
 			{
 				modules.AddRange(definition.modules);
 			}
+
+			Cooldown = definition.cooldown;
 		}
 
-		public void SetBehavior(SpellBehaviorDefinition behavior) {
+		public void TickCooldown(float deltaTime)
+		{
+			if (cooldownTimer > 0)
+			{
+				cooldownTimer -= deltaTime;
+			}
+		}
+
+		public bool CanCast()
+		{
+			return cooldownTimer <= 0;
+		}
+
+		public void StartCooldown()
+		{
+			cooldownTimer = Cooldown;
+			Debug.Log($"Starting CD of {Cooldown}");
+		}
+
+		public void SetBehavior(
+			SpellBehaviorDefinition behavior)
+		{
 			this.behavior = behavior;
 		}
 

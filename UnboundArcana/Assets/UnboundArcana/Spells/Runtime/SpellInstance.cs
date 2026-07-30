@@ -13,13 +13,19 @@ namespace UnboundArcana.Spells.Runtime
 
 		private readonly List<SpellRuntimeObject> runtimeObjects = new();
 
+		private float castTimer;
+		private CastContext pendingCastContext;
+
 		public GameObject Owner { get; private set; }
 		public SpellEventBus Events { get; } = new();
 		public SpellRuntimeContext Runtime { get; }
 		public ISpellSpawner Spawner { get; private set; }
 		public SpellStatCollection Stats { get; } = new();
+
 		public bool HasBeenCast { get; private set; }
+		public bool IsCasting { get; private set; }
 		public bool IsFinished { get; private set; }
+
 		public SpellInstance(
 			SpellRuntimeContext runtime,
 			GameObject owner)
@@ -27,6 +33,7 @@ namespace UnboundArcana.Spells.Runtime
 			Runtime = runtime;
 			Owner = owner;
 		}
+
 
 		public void Initialize()
 		{
@@ -37,9 +44,6 @@ namespace UnboundArcana.Spells.Runtime
 				Spawner = spawner;
 			}
 
-			//Stats.AddBase(StatId.Size, 1, this);
-			//Stats.AddBase(StatId.Damage, 1);
-			Stats.AddBase(StatKeys.Spell.Cooldown, 2, this);
 			foreach (SpellModule module in modules)
 			{
 				module.Initialize(this);
@@ -54,7 +58,52 @@ namespace UnboundArcana.Spells.Runtime
 			}
 		}
 
-		public void RegisterRuntimeObject(SpellRuntimeObject runtimeObject)
+
+		public void BeginCast(
+			CastContext context)
+		{
+			float castTime =
+				Stats.Get(
+					StatKeys.Spell.CastTime
+				);
+
+			if (castTime <= 0f)
+			{
+				Cast(context);
+				return;
+			}
+
+			IsCasting = true;
+			castTimer = castTime;
+			pendingCastContext = context;
+		}
+
+
+		public void TickCast(
+			float deltaTime, CastContext context)
+		{
+			if (!IsCasting)
+			{
+				return;
+			}
+
+			castTimer -= deltaTime;
+
+			if (castTimer <= 0f)
+			{
+				IsCasting = false;
+
+				Cast(
+					context
+				);
+
+				pendingCastContext = null;
+			}
+		}
+
+
+		public void RegisterRuntimeObject(
+			SpellRuntimeObject runtimeObject)
 		{
 			runtimeObject.Initialize(this);
 			runtimeObjects.Add(runtimeObject);
@@ -64,11 +113,15 @@ namespace UnboundArcana.Spells.Runtime
 			);
 		}
 
-		public void Tick(float deltaTime)
+
+		public void Tick(
+			float deltaTime)
 		{
+			
 			for (int i = runtimeObjects.Count - 1; i >= 0; i--)
 			{
-				SpellRuntimeObject runtimeObject = runtimeObjects[i];
+				SpellRuntimeObject runtimeObject =
+					runtimeObjects[i];
 
 				runtimeObject.Tick(deltaTime);
 
@@ -77,6 +130,7 @@ namespace UnboundArcana.Spells.Runtime
 					runtimeObjects.RemoveAt(i);
 				}
 			}
+
 			if (HasBeenCast &&
 				runtimeObjects.Count == 0 &&
 				!IsFinished)
@@ -89,14 +143,20 @@ namespace UnboundArcana.Spells.Runtime
 			}
 		}
 
-		public void UpdateCast(CastContext context)
+
+		public void UpdateCast(
+			CastContext context)
 		{
 			behavior.UpdateCast(context);
+			
 		}
 
-		public void Cast(CastContext context)
+
+		public void Cast(
+			CastContext context)
 		{
 			HasBeenCast = true;
+			Runtime.RuntimeManager.Register(this);
 
 			Events.Publish(
 				new CastEvent(this, context)
@@ -104,10 +164,20 @@ namespace UnboundArcana.Spells.Runtime
 
 			behavior.Cast(context);
 		}
+
+
 		public void End()
 		{
+			if (IsCasting)
+			{
+				IsCasting = false;
+				pendingCastContext = null;
+				return;
+			}
+
 			behavior.End();
 		}
+
 
 		public void Destroy()
 		{

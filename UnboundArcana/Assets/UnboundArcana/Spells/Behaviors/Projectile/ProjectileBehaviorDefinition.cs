@@ -26,6 +26,12 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 			StatCollection stats)
 		{
 			stats.AddBase(
+				StatKeys.Spell.CastTime,
+				castTime,
+				this
+			);
+
+			stats.AddBase(
 				StatKeys.Spell.Speed,
 				speed,
 				this

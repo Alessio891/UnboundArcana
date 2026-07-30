@@ -1,4 +1,3 @@
-using UnboundArcana.Core.Stats;
 using UnboundArcana.Spells.Behaviors;
 using UnboundArcana.Spells.Modules;
 using UnityEngine;
@@ -10,5 +9,8 @@ namespace UnboundArcana.Spells.Data
 	{
 		public SpellBehaviorDefinition behavior;
 		public SpellModuleDefinition[] modules;
+
+		[SerializeField]
+		public float cooldown = 0.25f;
 	}
 }

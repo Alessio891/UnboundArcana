@@ -8,49 +8,101 @@ using System.Collections.Generic;
 
 namespace UnboundArcana.Core.Entities
 {
+	public class SpellSlot
+	{
+		public SpellConfiguration Configuration { get; }
+
+		private float cooldownTimer;
+		public float CooldownTimer => cooldownTimer;
+
+		public bool CanCast =>
+			cooldownTimer <= 0f;
+
+		public SpellSlot(
+			SpellConfiguration configuration)
+		{
+			Configuration = configuration;
+		}
+
+		public void StartCooldown(
+			float duration)
+		{
+			cooldownTimer = duration;
+		}
+
+		public void Tick(
+			float deltaTime)
+		{
+			Configuration.TickCooldown(deltaTime);
+			if (cooldownTimer <= 0f)
+			{
+				return;
+			}
+
+			cooldownTimer -= deltaTime;
+		}
+	}
+
 	public class SpellLoadout
 	{
-		public List<SpellConfiguration> Spellconfigurations = new();
+		private readonly List<SpellSlot> slots = new();
 
 		public int CurrentSpell = 0;
 
-		public void AddSpell(SpellConfiguration config)
+		public IReadOnlyList<SpellSlot> Slots =>
+			slots;
+
+		public void AddSpell(
+			SpellConfiguration configuration)
 		{
-			if (Spellconfigurations.Contains(config))
+			if (configuration == null)
+			{
 				return;
+			}
 
-			Spellconfigurations.Add(config);
+			slots.Add(
+				new SpellSlot(configuration)
+			);
 		}
 
-		public void AddSpell(SpellDefinition definition)
+		public void AddSpell(
+			SpellDefinition definition)
 		{
-			SpellConfiguration newConfig =
-				new SpellConfiguration(definition);
-
-			Spellconfigurations.Add(newConfig);
+			AddSpell(
+				new SpellConfiguration(definition)
+			);
 		}
 
-		public SpellConfiguration GetCurrentSpell()
+		public SpellSlot GetCurrentSpell()
 		{
 			if (CurrentSpell < 0 ||
-				CurrentSpell >= Spellconfigurations.Count)
+				CurrentSpell >= slots.Count)
 			{
 				Debug.LogError(
-					$"Requested spell {CurrentSpell} in loadout with {Spellconfigurations.Count} spells.");
+					$"Requested spell {CurrentSpell} in loadout with {slots.Count} spells.");
 
 				return null;
 			}
 
-			return Spellconfigurations[CurrentSpell];
+			return slots[CurrentSpell];
+		}
+
+		public void Tick(
+			float deltaTime)
+		{
+			Debug.Log($"Ticking {slots.Count} slots");
+			foreach (SpellSlot slot in slots)
+			{
+				slot.Tick(deltaTime);
+			}
 		}
 	}
+
 
 	public class SpellCaster : MonoBehaviour
 	{
 		public SpellRuntimeManager RuntimeManager =>
 			GameRuntimeManager.Instance.SpellRuntimeManager;
-
-		public SpellDefinition SpellDefinition;
 
 		private SpellInstance activeSpell;
 
@@ -60,11 +112,6 @@ namespace UnboundArcana.Core.Entities
 			spellLoadout;
 
 		private Vector3 aimDirection;
-
-		[SerializeField]
-		private float castCooldown = 0.25f;
-
-		private float castTimer;
 
 		private void Awake()
 		{
@@ -77,29 +124,34 @@ namespace UnboundArcana.Core.Entities
 
 			foreach (var definition in spells)
 			{
-				Debug.Log(
-					$"Adding spell {definition.name} to entity {name} at start");
-
 				spellLoadout.AddSpell(definition);
 			}
 		}
 
 		private void Update()
 		{
-			castTimer -= Time.deltaTime;
+			if (spellLoadout == null)
+			{
+				return;
+			}
+
+			if (gameObject.tag == "Player") 
+				spellLoadout.Tick(Time.deltaTime);
 
 			if (activeSpell == null)
 			{
 				return;
 			}
-
-			activeSpell.UpdateCast(
-				new CastContext(
+			var ctx = new CastContext(
 					gameObject,
 					transform.position,
 					aimDirection
-				)
-			);
+				);
+			if (activeSpell.IsCasting)
+			{
+				activeSpell.TickCast(Time.deltaTime, ctx);
+			}
+			activeSpell.UpdateCast(ctx);
 		}
 
 		public void SetAimDirection(
@@ -110,30 +162,42 @@ namespace UnboundArcana.Core.Entities
 
 		public void BeginCast()
 		{
-			if (castTimer > 0f)
+			
+
+			SpellConfiguration configuration =
+				spellLoadout.GetCurrentSpell().Configuration;
+
+			if (configuration == null)
 			{
 				return;
 			}
-
-			if (spellLoadout.GetCurrentSpell().behavior == null)
-				return;
-
-			castTimer = castCooldown;
-
-			activeSpell = CreateSpellInstance();
-
-			if (RuntimeManager)
+			Debug.Log("Valid configuration");
+			if (!configuration.CanCast())
 			{
-				RuntimeManager.Register(activeSpell);
+				return;
 			}
+			Debug.Log("Can cast");
 
-			activeSpell.Cast(
+			if (configuration.behavior == null)
+			{
+				return;
+			}
+			Debug.Log("Has behavior");
+
+			configuration.StartCooldown();
+
+			activeSpell = CreateSpellInstance(configuration);
+
+			//RuntimeManager.Register(activeSpell);
+
+			activeSpell.BeginCast(
 				new CastContext(
 					gameObject,
 					transform.position,
 					aimDirection
 				)
 			);
+			Debug.Log("Cast started");
 		}
 
 		public void EndCast()
@@ -147,11 +211,12 @@ namespace UnboundArcana.Core.Entities
 			activeSpell = null;
 		}
 
-		private SpellInstance CreateSpellInstance()
+		private SpellInstance CreateSpellInstance(
+			SpellConfiguration configuration)
 		{
 			SpellInstance instance =
 				SpellFactory.Create(
-					spellLoadout.GetCurrentSpell(),
+					configuration,
 					new SpellRuntimeContext(
 						RuntimeManager,
 						RuntimeManager.GameEvents),
@@ -170,7 +235,9 @@ namespace UnboundArcana.Core.Entities
 				GameSession.Instance?.Player;
 
 			if (player == null)
+			{
 				return;
+			}
 
 			foreach (RunModifier modifier in player.Modifiers)
 			{
@@ -180,13 +247,12 @@ namespace UnboundArcana.Core.Entities
 				{
 					continue;
 				}
-				Debug.Log("Applying run modifier");
+
 				instance.Stats.AddModifier(
 					new StatModifier(
 						stat,
 						modifier.Value,
-						ConvertOperation(
-							modifier.Operation),
+						ConvertOperation(modifier.Operation),
 						modifier
 					)
 				);

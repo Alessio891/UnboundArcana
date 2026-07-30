@@ -8,6 +8,7 @@ namespace UnboundArcana.Spells.Behaviors
 	{
 		[SerializeField] private Sprite icon;
 		public Sprite Icon => icon;
+		[SerializeField] protected float castTime = 0.0f;
 
 		public abstract SpellBehavior CreateRuntime();
 

@@ -60,7 +60,7 @@ public class InitialCorePickerUI : MonoBehaviour
 
 	public void PickBehavior(SpellBehaviorDefinition behavior) {
 		var spellConfig = ExpeditionController.Instance.Player.GetComponent<SpellCaster>().SpellLoadout.GetCurrentSpell();
-		GameRuntimeManager.Instance.SpellModification.TrySetBehavior(spellConfig, behavior);
+		GameRuntimeManager.Instance.SpellModification.TrySetBehavior(spellConfig.Configuration, behavior);
 		Close();
 		pickingChoice = false;
 	}

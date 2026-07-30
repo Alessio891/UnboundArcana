@@ -24,6 +24,8 @@ namespace UnboundArcana.Player
 		public event Action CastEnded;
 		public event Action InteractStarted;
 
+		bool isCasting = false;
+
 		private void Awake()
 		{
 			controls = new UnboundArcanaControls();
@@ -43,6 +45,9 @@ namespace UnboundArcana.Player
 				if (inputEnabled) { controls.Gameplay.Enable(); }
 				else { controls.Gameplay.Disable(); }
 			}
+			if (isCasting) {
+				CastStarted?.Invoke();
+			}
 		}
 		private void OnEnable()
 		{
@@ -53,7 +58,7 @@ namespace UnboundArcana.Player
 
 			controls.Gameplay.Cast.performed += OnCastStarted;
 			controls.Gameplay.Cast.canceled += OnCastEnded;
-
+			
 			controls.Gameplay.Interaction.performed += OnInteractStarted;
 		}
 
@@ -64,6 +69,7 @@ namespace UnboundArcana.Player
 
 			controls.Gameplay.Cast.performed -= OnCastStarted;
 			controls.Gameplay.Cast.canceled -= OnCastEnded;
+			
 			controls.Gameplay.Interaction.performed -= OnInteractStarted;
 			controls.Gameplay.Disable();
 		}
@@ -85,11 +91,13 @@ namespace UnboundArcana.Player
 		private void OnCastStarted(InputAction.CallbackContext context)
 		{
 			CastStarted?.Invoke();
+			isCasting = true;
 		}
 
 		private void OnCastEnded(InputAction.CallbackContext context)
 		{
 			CastEnded?.Invoke();
+			isCasting = false;
 		}
 	}
 }
