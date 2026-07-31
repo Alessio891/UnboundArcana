@@ -105,3 +105,5 @@ UnboundArcana/[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 
 # Auto-generated cache in Assets folder
 UnboundArcana/[Aa]ssets/[Ss]ceneDependencyCache*
+.agents
+AGENTS.md

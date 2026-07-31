@@ -379,6 +379,14 @@ namespace UnboundArcana.Core.Expedition
 		{
 			playerCoordinator.SetInputEnabled(false);
 			yield return rewardSpawner.Spawn(currentRoom, Player);
+
+			if (!rewardSpawner.HasSpawnedRewards)
+			{
+				Debug.LogError("Research rewards could not be spawned. Advancing to the next room to avoid blocking the expedition.");
+				yield return AdvanceToNextRoom();
+				yield break;
+			}
+
 			playerCoordinator.FollowPlayer();
 			playerCoordinator.SetInputEnabled(true);
 		}
