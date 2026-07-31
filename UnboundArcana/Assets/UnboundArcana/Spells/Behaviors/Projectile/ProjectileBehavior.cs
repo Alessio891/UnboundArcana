@@ -41,12 +41,11 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 
 			projectile.SetInitialState(
 				context,
-				lifetime,
+				spell.Stats.Get(StatKeys.Spell.Duration),
+				definition.diameter,
 				spell.Owner
 			);
 
-			spell.RegisterRuntimeObject(projectile);
-			
 			GameObject instance = Object.Instantiate(
 				definition.projectilePrefab
 			);
@@ -54,6 +53,7 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 			ProjectileView view = instance.GetComponent<ProjectileView>();
 
 			view.Initialize(projectile);
+			spell.RegisterRuntimeObject(projectile);
 			spell.Events.Publish(
 				new ProjectileSpawnedEvent(
 					projectile,
@@ -61,9 +61,6 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 				)
 			);
 
-			float scale = spell.Stats.Get(StatKeys.Spell.Size);
-			if (scale <= 0) scale = 1.0f;
-			view.transform.localScale = new Vector3(scale, scale, scale);
 		}
 
 		public override void Cast(CastContext context)

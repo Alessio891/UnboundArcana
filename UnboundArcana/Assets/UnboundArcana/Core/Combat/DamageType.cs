@@ -6,6 +6,10 @@ namespace UnboundArcana.Core.Combat
 		Fire,
 		Ice,
 		Lightning,
+		Acid,
+		Water,
+		Air,
+		Earth,
 		SpellPhysical
 	}
 }

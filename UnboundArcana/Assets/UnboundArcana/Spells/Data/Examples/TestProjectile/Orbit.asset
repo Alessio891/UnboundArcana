@@ -19,5 +19,5 @@ MonoBehaviour:
   moduleDescription: Projectiles orbit the source of the spell
   complexity: 1
   instability: 1
-  radius: 2
+  radius: 0.6
   angularSpeed: 180

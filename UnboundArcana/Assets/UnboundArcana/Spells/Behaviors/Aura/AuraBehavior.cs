@@ -2,6 +2,7 @@ using UnityEngine;
 using UnboundArcana.Spells.Runtime;
 using UnboundArcana.Spells.Runtime.Objects;
 using UnboundArcana.Spells.Runtime.Views;
+using UnboundArcana.Core.Stats;
 
 namespace UnboundArcana.Spells.Behaviors.Aura
 {
@@ -20,13 +21,12 @@ namespace UnboundArcana.Spells.Behaviors.Aura
 
 			aura.SetInitialState(
 				context.Position,
-				definition.duration,
+				spell.Stats.Get(StatKeys.Spell.Duration),
+				definition.radius,
 				definition.followOwner
 					? spell.Owner.transform
 					: null
 			);
-
-			spell.RegisterRuntimeObject(aura);
 
 			GameObject instance = Object.Instantiate(
 				definition.auraPrefab,
@@ -37,6 +37,7 @@ namespace UnboundArcana.Spells.Behaviors.Aura
 			AuraView view = instance.GetComponent<AuraView>();
 
 			view.Initialize(aura);
+			spell.RegisterRuntimeObject(aura);
 		}
 	}
 }

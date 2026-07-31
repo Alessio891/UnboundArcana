@@ -1,94 +1,79 @@
 # Status System
 
-## Purpose
+Statuses are entity-owned gameplay conditions.
 
-Statuses exist to create interactions between spells.
+They support temporary or persistent effects and interactions, but are not a generic ability framework.
 
-They are not intended to become a generic ability framework.
+## Model
 
+`StatusDefinition`
 
----
+* authored ScriptableObject configuration
 
-# Examples
+`StatusInstance`
 
-Burning:
+* runtime state attached to an entity
 
-- deals damage over time
-- can be consumed by explosions
+Runtime state may include:
 
+* duration
+* stacks
+* source/owner context
+* effect-specific state
 
-Frozen:
+Exact fields depend on the implementation.
 
-- slows movement
-- can be shattered by fire
+## Ownership
 
+Statuses belong to entities, not spells.
 
-Conductive:
+Spells may:
 
-- improves lightning interactions
+* apply statuses
+* react to statuses
+* consume/modify statuses
 
+An `Aura` is a spell Behavior, not an entity status.
 
-Poison:
-
-- accumulates stacks
-- explodes at threshold
-
-
----
-
-# Runtime Design
-
-StatusDefinition:
-
-ScriptableObject
-
-Contains:
-
-- configuration
-- icon
-- duration
-- max stacks
-
-
-StatusInstance:
-
-Runtime object.
-
-Contains:
-
-- current duration
-- current stacks
-- entity reference
-
-
----
-
-# Status Effects
+## Effects
 
 Statuses may:
 
-- subscribe to entity events
-- apply stat modifiers
-- trigger damage
-- spawn visual effects
+* modify stats
+* react to entity events
+* deal damage
+* affect movement/behavior
+* expose state for spell/environment interactions
+* drive presentation
 
+Temporary stat changes should use source-based modifiers so teardown removes them safely.
 
----
+## Design Rules
 
-# Permanent Statuses
+Statuses should create meaningful gameplay state or interactions.
 
-Statuses can also represent permanent effects.
+Prefer:
 
-Example:
+* readable effects
+* deterministic interaction rules
+* reusable entity-level state
 
-A passive item granting:
+Avoid:
 
-+10% movement speed
+* using Status as a generic container for unrelated mechanics
+* hidden interactions that require memorizing recipes
+* duplicating systems already owned by spell runtime or entity components
 
+Cross-spell interactions should emerge from explicit state and capabilities rather than hardcoded module-to-module dependencies.
 
-A permanent status:
+## Lifecycle
 
-- has no expiration
-- applies modifiers permanently
-- can still be removed by source
+Status runtime state must have explicit ownership and teardown.
 
+Expiration/removal must clean up:
+
+* stat modifiers
+* event subscriptions
+* presentation/resources owned by the status
+
+Permanent effects are allowed only when Status is the appropriate semantic owner; permanence alone is not a reason to use the status system.

@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b1b3c8420be4c44a81e4746aa1f1ea1, type: 3}
+  m_Name: WaterPrinciple
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.Principles.ElementalPrincipleDefinition
+  category: 0
+  rarity: 0
+  icon: {fileID: 21300000, guid: 0891b60cf9be38d44886b974cf95c17b, type: 3}
+  moduleName: Water
+  moduleDescription: Applies stacking short-lived movement slow.
+  complexity: 1
+  instability: 1
+  principle: 4
+  damage: 2
+  force: 0
+  arcRange: 0.9
+  arcDamageMultiplier: 0.5
+  status: {fileID: 11400000, guid: 4c4b61d0507643e296ac20cc7a5a16f7, type: 2}
+  projectileSprite: {fileID: 0}
+  projectileController: {fileID: 9100000, guid: af3596e939f407a429c5080e60e22064, type: 2}
+  beamSprite: {fileID: 0}
+  beamController: {fileID: 9100000, guid: 016c10c008186084798cff15ed4ab770, type: 2}
+  auraSprite: {fileID: 0}
+  auraController: {fileID: 9100000, guid: adcc6ec38fbc3e24bb0426bf09290ee5, type: 2}
+  fallbackColor: {r: 0.2, g: 0.65, b: 1, a: 1}

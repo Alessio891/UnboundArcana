@@ -4,6 +4,7 @@ using UnboundArcana.Core.Runtime;
 using UnboundArcana.Core.Stats;
 using UnboundArcana.Spells.Data;
 using UnboundArcana.Spells.Runtime;
+using System;
 using System.Collections.Generic;
 
 namespace UnboundArcana.Core.Entities
@@ -45,7 +46,9 @@ namespace UnboundArcana.Core.Entities
 	{
 		private readonly List<SpellSlot> slots = new();
 
-		public int CurrentSpell = 0;
+		public int CurrentSpell { get; private set; }
+		public event Action<int> CurrentSpellChanged;
+		public event Action SlotsChanged;
 
 		public IReadOnlyList<SpellSlot> Slots =>
 			slots;
@@ -61,6 +64,8 @@ namespace UnboundArcana.Core.Entities
 			slots.Add(
 				new SpellSlot(configuration)
 			);
+
+			SlotsChanged?.Invoke();
 		}
 
 		public void AddSpell(
@@ -83,6 +88,18 @@ namespace UnboundArcana.Core.Entities
 			}
 
 			return slots[CurrentSpell];
+		}
+
+		public bool SelectSpell(int index)
+		{
+			if (index < 0 || index >= slots.Count || index == CurrentSpell)
+			{
+				return false;
+			}
+
+			CurrentSpell = index;
+			CurrentSpellChanged?.Invoke(CurrentSpell);
+			return true;
 		}
 
 		public void Tick(

@@ -19,7 +19,7 @@ MonoBehaviour:
   moduleDescription: Spell creates explosions on hit
   complexity: 1
   instability: 1
-  radius: 2.5
+  radius: 0.75
   damage: 15
   duration: 0.4
   explosionPrefab: {fileID: 499509672386299438, guid: 9963c669d7cc0074ab70eeaf65f83a80, type: 3}

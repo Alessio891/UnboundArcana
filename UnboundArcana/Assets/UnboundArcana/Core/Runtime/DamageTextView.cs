@@ -12,7 +12,7 @@ public class DamageTextView : MonoBehaviour
 	{
 		transform.position = position;
 
-		text.text = Mathf.RoundToInt(damage).ToString();
+		text.text = damage >= 10f || Mathf.Approximately(damage, Mathf.Round(damage)) ? Mathf.RoundToInt(damage).ToString() : damage.ToString("0.0");
 
 		iTween.MoveBy(
 			gameObject,

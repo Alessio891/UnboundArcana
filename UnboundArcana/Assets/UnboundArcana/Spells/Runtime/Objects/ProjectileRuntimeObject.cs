@@ -14,6 +14,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		private Vector3 direction;
 		private float speed = 10f;
 		private float lifetime = 2f;
+		private float baseDiameter = 0.3f;
 		private float elapsedTime;
 		private float scale = 1.0f;
 		private int remainingHits = 1;
@@ -35,9 +36,11 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		public void SetInitialState(
 			SpawnContext context,
 			float lifetime,
+			float baseDiameter,
 			GameObject owner)
 		{
 			this.lifetime = lifetime;
+			this.baseDiameter = baseDiameter;
 			this.spawnContext = context;
 			this.position = context.Position;
 			this.direction = context.Direction;
@@ -65,7 +68,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			if (view != null)
 			{
 				view.transform.position = position;
-				view.transform.localScale = new Vector3(scale, scale, scale);
+				UpdateVisualScale();
 				float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 				view.transform.rotation = Quaternion.Euler(0, 0, angle);
 			}
@@ -102,8 +105,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 						target.GetComponent<Entity>(),
 						owner
 					);
-				NotifyHit(hitEvent);
-				spell.Events.Publish(hitEvent);
+				PublishHit(hitEvent);
 				remainingHits--;
 				if (remainingHits <= 0 && !preventDestroy)
 				{
@@ -154,9 +156,38 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		{
 			this.position = vector3;
 		}
+
+		private void UpdateVisualScale()
+		{
+			SpriteRenderer renderer = view.GetComponentInChildren<SpriteRenderer>();
+			float sizeMultiplier = Mathf.Max(0.01f, scale);
+
+			if (renderer == null || renderer.sprite == null)
+			{
+				view.transform.localScale = Vector3.one * sizeMultiplier;
+				return;
+			}
+
+			Bounds bounds = renderer.sprite.bounds;
+			float visualScale = baseDiameter * sizeMultiplier / Mathf.Max(bounds.size.x, Mathf.Epsilon);
+			view.transform.localScale = Vector3.one * visualScale;
+			renderer.transform.localPosition = -bounds.center;
+
+			CircleCollider2D collider = view.GetComponent<CircleCollider2D>();
+			if (collider != null)
+			{
+				collider.radius = bounds.size.x * 0.5f;
+				collider.offset = Vector2.zero;
+			}
+		}
 		public void ModifySpeed(float value)
 		{
 			speed = value;
+		}
+
+		public void AddSpeed(float value)
+		{
+			speed = Mathf.Max(0f, speed + value);
 		}
 	}
 }

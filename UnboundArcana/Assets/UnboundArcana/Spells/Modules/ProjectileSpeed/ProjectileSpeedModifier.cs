@@ -8,8 +8,6 @@ namespace UnboundArcana.Spells.Modules.ProjectileSpeed
 	public class ProjectileSpeedModifier : IRuntimeObjectModifier
 	{
 		private readonly float acceleration;
-		private float currentAccelleration = 0.0f;
-
 		private ProjectileRuntimeObject projectile;
 
 		public bool ControlsMovement => false;
@@ -33,13 +31,7 @@ namespace UnboundArcana.Spells.Modules.ProjectileSpeed
 			{
 				return;
 			}
-			currentAccelleration += acceleration * deltaTime;
-			float newspeed = projectile.Speed +
-				currentAccelleration;
-			
-			projectile.ModifySpeed(
-				newspeed
-			);
+			projectile.AddSpeed(acceleration * deltaTime);
 		}
 
 		public void OnHit(HitEvent hitEvent)

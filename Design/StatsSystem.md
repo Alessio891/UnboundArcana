@@ -1,102 +1,48 @@
 # Stats System
 
-## Philosophy
+Shared stat model for entities and spells.
 
-Stats are not enums.
+## Keys
 
-They are string identifiers.
+Stats use string identifiers.
 
-Reason:
+Common stats use `StatKeys`; mechanic-specific/internal values may use local string keys.
 
-The game contains many emergent mechanics.
+Do not introduce global enum entries for every possible runtime value.
 
-Not every value deserves a global enum entry.
-
-Example:
-
-Permanent:
-
-move_speed
-
-Dynamic:
-
-freeze_buildup
-
-
----
-
-# Stat Keys
-
-Common stats use constants.
-
-Example:
-
-StatKeys.Entity.MoveSpeed
-
-StatKeys.Spell.Damage
-
-
-Internal mechanics may use strings directly:
-
-"freeze_buildup"
-
-
----
-
-# StatCollection
-
-Shared by:
-
-- spells
-- entities
-
+## StatCollection
 
 Supports:
 
-AddBase()
+* base values
+* modifiers
+* removal by source
+* effective value lookup
 
-AddModifier()
+Modifiers:
 
-RemoveModifiersFromSource()
+```text
+Flat        value += amount
+Percent     value *= 1 + amount
+Multiplier  value *= amount
+```
 
-Get()
+Base values and modifiers have a source.
 
+Removing a source must remove its contributions.
 
----
+## Ownership
 
-# Modifier Operations
+A `StatCollection` belongs to the runtime object/system whose state it represents.
 
-Flat:
+Spell runtime stats belong to `SpellInstance`.
 
-value += amount
+Entity stats belong to the entity runtime.
 
+ScriptableObjects contribute configuration/base values; they do not own mutable runtime stat state.
 
-Percent:
+## Usage
 
-value *= 1 + amount
+Prefer source-based modifiers for temporary effects such as statuses.
 
-
-Multiplier:
-
-value *= amount
-
-
----
-
-# Status Usage
-
-Statuses can modify stats.
-
-Example:
-
-Frozen:
-
-MoveSpeed
-Multiplier
-0.5
-
-
-When the status expires:
-
-RemoveModifiersFromSource(statusInstance)
-
+Do not create parallel stat systems for individual mechanics unless the common model cannot represent the requirement.

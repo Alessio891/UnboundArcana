@@ -9,6 +9,7 @@ namespace UnboundArcana.Spells.Modifiers
 	public class HomingModifier : IRuntimeObjectModifier
 	{
 		private ProjectileRuntimeObject projectile;
+		private readonly Collider2D[] targetBuffer = new Collider2D[32];
 
 		private float strength;
 
@@ -55,21 +56,23 @@ namespace UnboundArcana.Spells.Modifiers
 
 		private GameObject FindTarget()
 		{
-			Collider2D[] hits =
-				Physics2D.OverlapCircleAll(
-					projectile.Position,
-					5f
-				);
+			int hitCount = Physics2D.OverlapCircle(projectile.Position, 1.5f, ContactFilter2D.noFilter, targetBuffer);
+			GameObject closestTarget = null;
+			float closestDistance = float.PositiveInfinity;
 
-			foreach (Collider2D hit in hits)
+			for (int i = 0; i < hitCount; i++)
 			{
-				if (hit.GetComponent<IDamageable>() != null && hit.gameObject.gameObject != projectile.Spell.Owner && !projectile.HitHistory.HasHit(hit.gameObject))
-				{
-					return hit.gameObject;
-				}
+				Collider2D hit = targetBuffer[i];
+				if (hit.GetComponent<IDamageable>() == null || hit.gameObject == projectile.Spell.Owner || projectile.HitHistory.HasHit(hit.gameObject)) { continue; }
+
+				float distance = (hit.transform.position - projectile.Position).sqrMagnitude;
+				if (distance >= closestDistance) { continue; }
+
+				closestDistance = distance;
+				closestTarget = hit.gameObject;
 			}
 
-			return null;
+			return closestTarget;
 		}
 
 		public void Destroy()

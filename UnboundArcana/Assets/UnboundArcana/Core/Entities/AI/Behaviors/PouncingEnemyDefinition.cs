@@ -91,23 +91,23 @@ namespace UnboundArcana.Core.Entities.AI
 
 			if (!Controller.TargetVisible && distance <= definition.RetreatRange)
 			{
-				Controller.Movement.SetMovementIntent(Vector2.zero);
+				Controller.SetMovementIntent(Vector2.zero);
 				return;
 			}
 
 			if (distance > definition.PreferredRange)
 			{
-				Controller.Movement.SetMovementIntent(targetDirection.normalized);
+				Controller.SetMovementIntent(targetDirection.normalized);
 				return;
 			}
 
 			if (distance < definition.RetreatRange)
 			{
-				Controller.Movement.SetMovementIntent(-targetDirection.normalized);
+				Controller.SetMovementIntent(-targetDirection.normalized);
 				return;
 			}
 
-			Controller.Movement.SetMovementIntent(Vector2.zero);
+			Controller.SetMovementIntent(Vector2.zero);
 			lungeDirection = targetDirection.normalized;
 			EnterState(State.Telegraph, definition.TelegraphDuration);
 		}
@@ -121,7 +121,7 @@ namespace UnboundArcana.Core.Entities.AI
 				return;
 			}
 
-			Controller.Movement.SetMovementIntent(Vector2.zero);
+			Controller.SetMovementIntent(Vector2.zero);
 			lungeDirection = targetDirection.normalized;
 
 			if (!TimerFinished())
@@ -135,7 +135,7 @@ namespace UnboundArcana.Core.Entities.AI
 
 		private void TickLunge(float distance)
 		{
-			Controller.Movement.SetMovementIntent(lungeDirection);
+			Controller.SetMovementIntent(lungeDirection, false);
 
 			if (distance <= definition.LandingRange)
 			{
@@ -167,7 +167,7 @@ namespace UnboundArcana.Core.Entities.AI
 		private void TickRecovery(Vector2 targetDirection, float distance)
 		{
 			Controller.Movement.SetSpeedMultiplier(1f);
-			Controller.Movement.SetMovementIntent(distance < definition.RetreatRange ? -targetDirection.normalized : Vector2.zero);
+			Controller.SetMovementIntent(distance < definition.RetreatRange ? -targetDirection.normalized : Vector2.zero);
 
 			if (TimerFinished())
 			{
@@ -189,7 +189,7 @@ namespace UnboundArcana.Core.Entities.AI
 
 		private void ResetMovement()
 		{
-			Controller.Movement.SetMovementIntent(Vector2.zero);
+			Controller.SetMovementIntent(Vector2.zero);
 			Controller.Movement.SetSpeedMultiplier(1f);
 		}
 	}

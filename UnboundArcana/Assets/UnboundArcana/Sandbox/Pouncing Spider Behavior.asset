@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Pouncing Spider Behavior
   m_EditorClassIdentifier: UnboundArcana.Runtime::UnboundArcana.Core.Entities.AI.PouncingEnemyDefinition
   preferredRange: 2.25
-  retreatRange: 0.8
+  retreatRange: 0.2
   telegraphDuration: 0.45
-  lungeDuration: 0.35
+  lungeDuration: 0.6
   lungeSpeedMultiplier: 3
-  landingRange: 0.85
+  landingRange: 0.3
   impactRange: 0.4
   recoveryDuration: 0.9

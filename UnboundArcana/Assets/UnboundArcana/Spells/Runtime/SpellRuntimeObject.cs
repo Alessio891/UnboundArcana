@@ -74,6 +74,31 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			this.view = view;
 		}
 
+		public void SetVisualAppearance(Sprite sprite, RuntimeAnimatorController animatorController, Color fallbackColor)
+		{
+			if (view == null) { return; }
+
+			SpriteRenderer renderer = view.GetComponentInChildren<SpriteRenderer>();
+			Animator animator = view.GetComponentInChildren<Animator>();
+
+			if (renderer != null)
+			{
+				if (sprite != null) { renderer.sprite = sprite; }
+				renderer.color = fallbackColor;
+			}
+
+			if (animator != null && animatorController != null)
+			{
+				animator.runtimeAnimatorController = animatorController;
+			}
+		}
+
+		public void PublishHit(HitEvent hitEvent)
+		{
+			NotifyHit(hitEvent);
+			spell.Events.Publish(hitEvent);
+		}
+
 		public virtual void OnDestroyed()
 		{
 		}

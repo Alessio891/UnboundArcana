@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnboundArcana.Spells.Runtime;
 using UnboundArcana.Core.Stats;
 
@@ -9,7 +10,9 @@ namespace UnboundArcana.Spells.Behaviors.Aura
 	{
 		public GameObject auraPrefab;
 		public float duration = 5f;
-		public float size = 1f;
+		[FormerlySerializedAs("size")]
+		[Tooltip("Base radius in world units. One dungeon tile is 0.3 units.")]
+		public float radius = 0.9f;
 		public bool followOwner = true;
 		public override SpellBehavior CreateRuntime()
 		{
@@ -23,16 +26,18 @@ namespace UnboundArcana.Spells.Behaviors.Aura
 			StatCollection stats)
 		{
 			stats.AddBase(
+				StatKeys.Spell.CastTime,
+				castTime,
+				this
+			);
+
+			stats.AddBase(
 				StatKeys.Spell.Duration,
 				duration,
 				this
 			);
 
-			stats.AddBase(
-				StatKeys.Spell.Size,
-				size,
-				this
-			);
+			stats.AddBase(StatKeys.Spell.Size, 1f, this);
 		}
 	}
 }

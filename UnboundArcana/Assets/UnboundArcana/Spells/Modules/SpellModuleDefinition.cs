@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnboundArcana.Spells.Runtime;
+using UnboundArcana.Spells.Behaviors;
+using UnboundArcana.Spells.Data;
 
 namespace UnboundArcana.Spells.Modules
 {
@@ -33,6 +35,26 @@ namespace UnboundArcana.Spells.Modules
 		public Sprite Icon => icon;
 
 		public SpellModuleType Type => category;
+
+		public virtual bool SupportsBehavior(SpellBehaviorDefinition behavior)
+		{
+			return behavior != null;
+		}
+
+		public virtual bool CanAddTo(SpellConfiguration configuration)
+		{
+			if (configuration == null || !SupportsBehavior(configuration.behavior)) { return false; }
+
+			if (Type == SpellModuleType.Principle)
+			{
+				foreach (SpellModuleDefinition module in configuration.modules)
+				{
+					if (module != null && module.Type == SpellModuleType.Principle) { return false; }
+				}
+			}
+
+			return true;
+		}
 
 		public abstract SpellModule CreateRuntime();
 	}

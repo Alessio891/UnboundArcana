@@ -23,6 +23,7 @@ namespace UnboundArcana.Player
 		public event Action CastStarted;
 		public event Action CastEnded;
 		public event Action InteractStarted;
+		public event Action<int> SpellSelected;
 
 		bool isCasting = false;
 
@@ -60,6 +61,10 @@ namespace UnboundArcana.Player
 			controls.Gameplay.Cast.canceled += OnCastEnded;
 			
 			controls.Gameplay.Interaction.performed += OnInteractStarted;
+			controls.Gameplay.SelectSpell1.performed += OnSelectSpell1;
+			controls.Gameplay.SelectSpell2.performed += OnSelectSpell2;
+			controls.Gameplay.SelectSpell3.performed += OnSelectSpell3;
+			controls.Gameplay.SelectSpell4.performed += OnSelectSpell4;
 		}
 
 		private void OnDisable()
@@ -71,7 +76,27 @@ namespace UnboundArcana.Player
 			controls.Gameplay.Cast.canceled -= OnCastEnded;
 			
 			controls.Gameplay.Interaction.performed -= OnInteractStarted;
+			controls.Gameplay.SelectSpell1.performed -= OnSelectSpell1;
+			controls.Gameplay.SelectSpell2.performed -= OnSelectSpell2;
+			controls.Gameplay.SelectSpell3.performed -= OnSelectSpell3;
+			controls.Gameplay.SelectSpell4.performed -= OnSelectSpell4;
 			controls.Gameplay.Disable();
+		}
+		private void OnSelectSpell1(InputAction.CallbackContext context)
+		{
+			SpellSelected?.Invoke(0);
+		}
+		private void OnSelectSpell2(InputAction.CallbackContext context)
+		{
+			SpellSelected?.Invoke(1);
+		}
+		private void OnSelectSpell3(InputAction.CallbackContext context)
+		{
+			SpellSelected?.Invoke(2);
+		}
+		private void OnSelectSpell4(InputAction.CallbackContext context)
+		{
+			SpellSelected?.Invoke(3);
 		}
 		private void OnInteractStarted(
 			InputAction.CallbackContext context)

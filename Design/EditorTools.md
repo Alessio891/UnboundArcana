@@ -1,67 +1,37 @@
 # Editor Tools
 
-## Gameplay Asset Browser
+Editor tooling lives in `UnboundArcana.Editor`.
 
-Location:
+Runtime code must not depend on `UnityEditor`.
 
-Tools > Unbound Arcana > Gameplay Asset Browser
+## Gameplay Assets
 
+Tools exist for browsing and creating gameplay ScriptableObjects and paired runtime/configuration types.
 
-Purpose:
+Use existing asset tooling before introducing parallel creation workflows.
 
-Quickly navigate gameplay ScriptableObjects.
+## Room Authoring
 
-Supported:
+Room-section editor tooling supports operations including:
 
-- Spell Modules
-- Spell Behaviors
-- Statuses
-- Entities
-- AI
+* section setup
+* connectors
+* footprints
+* markers
+* Tilemap setup/normalization
+* grid alignment
+* prop/reference gathering
+* authoring visualization
 
+`RoomSection` remains Runtime-safe.
 
-Features:
+Authoring operations belong in Editor code, not runtime components.
 
-- search
-- category filtering
-- asset preview
-- embedded inspector
-- select asset in project
+## Principles
 
+* Editor tools assist authoring; runtime components remain authoritative runtime data.
+* Prefer existing Unity inspectors where sufficient.
+* Keep destructive/editor-only operations outside Runtime.
+* Do not add runtime complexity solely to simplify an editor workflow when an Editor-only solution is possible.
 
----
-
-# Design Philosophy
-
-The tool intentionally reuses Unity inspectors.
-
-It is not a replacement editor.
-
-It improves navigation and discovery.
-
-
----
-
-# Asset Creation Tools
-
-There is also an editor generator tool.
-
-Purpose:
-
-Create paired runtime/configuration classes.
-
-Examples:
-
-Module:
-
-ModuleDefinition
-Module
-
-
-Behavior:
-
-BehaviorDefinition
-Behavior
-
-
-The tool can also create ScriptableObject assets after compilation.
+For implementation details inspect the relevant Editor classes; this document is only an ownership/workflow guide.

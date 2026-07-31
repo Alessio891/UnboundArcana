@@ -11,6 +11,10 @@ namespace UnboundArcana.Spells.Modules.Fire
 		public BurningStatusDefinition burningStatus;
 		public Sprite projectileSprite;
 		public RuntimeAnimatorController controller;
+		public Sprite beamSprite;
+		public RuntimeAnimatorController beamController;
+		public Sprite auraSprite;
+		public RuntimeAnimatorController auraController;
 		public override SpellModule CreateRuntime()
 		{
 			return new FireModule(this);

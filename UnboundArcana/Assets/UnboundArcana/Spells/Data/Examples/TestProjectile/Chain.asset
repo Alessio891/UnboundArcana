@@ -19,5 +19,5 @@ MonoBehaviour:
   moduleDescription: Projectiles chain to the nearest target on hit
   complexity: 1
   instability: 1
-  range: 5
+  range: 1.5
   maxChains: 15

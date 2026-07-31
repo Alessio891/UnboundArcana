@@ -22,11 +22,13 @@ namespace UnboundArcana.Spells.Modules.AuraDamage
 		public AuraDamageModifier(
 			SpellInstance spell,
 			float damage,
+			float startupDelay,
 			float interval)
 		{
 			this.spell = spell;
 			this.damage = damage;
 			this.interval = interval;
+			this.timer = interval - startupDelay;
 		}
 
 		public void Initialize(
@@ -54,7 +56,7 @@ namespace UnboundArcana.Spells.Modules.AuraDamage
 
 			Collider2D[] hits = Physics2D.OverlapCircleAll(
 				aura.Position,
-				spell.Stats.Get(StatKeys.Spell.Size)
+				aura.Radius
 			);
 
 			foreach (Collider2D hit in hits)
@@ -67,14 +69,10 @@ namespace UnboundArcana.Spells.Modules.AuraDamage
 					continue;
 				}
 
-				spell.Runtime.GameEvents.Publish(
-					new DamageEvent(
-						spell.Owner,
-						hit.GetComponent<Entity>(),
-						damage,
-						DamageType.Fire
-					)
-				);
+				Entity target = hit.GetComponent<Entity>();
+				HitEvent hitEvent = new HitEvent(aura, target.transform.position, target, spell.Owner);
+				aura.PublishHit(hitEvent);
+				spell.Runtime.GameEvents.Publish(new DamageEvent(spell.Owner, target, damage, DamageType.SpellPhysical));
 			}
 		}
 

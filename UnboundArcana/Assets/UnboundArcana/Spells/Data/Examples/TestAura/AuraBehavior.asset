@@ -15,5 +15,5 @@ MonoBehaviour:
   icon: {fileID: 8719262700846709511, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
   auraPrefab: {fileID: 5858550927639837238, guid: 7a8780ca85a66a143acac8985bd8bdc2, type: 3}
   duration: 2
-  size: 3
+  radius: 0.9
   followOwner: 1

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6af1ccc22838f9a4eaec9f71d89cd4ee, type: 3}
   m_Name: FrozenStatus
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.Statuses.FrozenStatusDefinition
-  duration: 5
+  duration: 1.25
   maxStacks: 1

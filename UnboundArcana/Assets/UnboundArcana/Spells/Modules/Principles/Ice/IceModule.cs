@@ -2,6 +2,8 @@ using UnboundArcana.Core.Entities;
 using UnboundArcana.Core.Events;
 using UnboundArcana.Core.Stats;
 using UnboundArcana.Spells.Runtime;
+using UnboundArcana.Spells.Runtime.Objects;
+using UnityEngine;
 
 namespace UnboundArcana.Spells.Modules.Ice
 {
@@ -17,28 +19,31 @@ namespace UnboundArcana.Spells.Modules.Ice
 		{
 			base.Initialize(spell);
 			Events.Subscribe<HitEvent>(OnHit);
-			Events.Subscribe<ProjectileSpawnedEvent>(OnProjectileSpawned);
+			Events.Subscribe<RuntimeObjectSpawnedEvent>(OnRuntimeObjectSpawned);
 		}
 
-		private void OnProjectileSpawned(ProjectileSpawnedEvent e)
+		private void OnRuntimeObjectSpawned(RuntimeObjectSpawnedEvent eventData)
 		{
-
-			if (definition.projectileSprite)
+			switch (eventData.RuntimeObject)
 			{
-				e.Projectile.SetProjectileSprite(definition.projectileSprite);
-				e.Projectile.SetProjectileAnimator(definition.contorller);
-			}
-			else
-			{
-				e.Projectile.SetProjectileColor(UnityEngine.Color.red);
+				case ProjectileRuntimeObject:
+					eventData.RuntimeObject.SetVisualAppearance(definition.projectileSprite, definition.controller, Color.white);
+					break;
+				case BeamRuntimeObject:
+					eventData.RuntimeObject.SetVisualAppearance(definition.beamSprite, definition.beamController, new Color(0.4f, 0.8f, 1f));
+					break;
+				case AuraRuntimeObject:
+					eventData.RuntimeObject.SetVisualAppearance(definition.auraSprite, definition.auraController, new Color(0.4f, 0.8f, 1f));
+					break;
 			}
 		}
 
 		private void OnHit(HitEvent hitEvent)
 		{
-			
-			hitEvent.Target.Status.Apply(definition.chilledStatus, hitEvent.Owner.GetComponent<Entity>());
-			
+			if (definition.chilledStatus == null) { return; }
+
+			Entity source = hitEvent.Owner.GetComponent<Entity>();
+			hitEvent.Target.Status.Apply(definition.chilledStatus, source);
 		}
 		public override void ApplyStats(
 			StatCollection stats)
@@ -52,7 +57,7 @@ namespace UnboundArcana.Spells.Modules.Ice
 		public override void Destroy()
 		{
 			Events.Unsubscribe<HitEvent>(OnHit);
-			Events.Unsubscribe<ProjectileSpawnedEvent>(OnProjectileSpawned);
+			Events.Unsubscribe<RuntimeObjectSpawnedEvent>(OnRuntimeObjectSpawned);
 		}
 	}
 }

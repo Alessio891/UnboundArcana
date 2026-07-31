@@ -2,6 +2,9 @@ using UnityEngine;
 using UnboundArcana.Spells.Runtime;
 using UnboundArcana.Spells.Runtime.Objects;
 using UnboundArcana.Spells.Runtime.Views;
+using UnboundArcana.Core.Combat;
+using UnboundArcana.Core.Events;
+using UnboundArcana.Core.Stats;
 
 namespace UnboundArcana.Spells.Behaviors.Beam
 {
@@ -15,16 +18,24 @@ namespace UnboundArcana.Spells.Behaviors.Beam
 			this.definition = definition;
 		}
 
+		public override void Initialize(SpellInstance spell)
+		{
+			base.Initialize(spell);
+			spell.Events.Subscribe<HitEvent>(OnHit);
+		}
+
 		public override void Cast(CastContext context)
 		{
 			beam = new BeamRuntimeObject();
 
 			beam.SetInitialState(
 				context.Position,
-				context.Direction
+				context.Direction,
+				definition.range,
+				definition.width * spell.Stats.Get(StatKeys.Spell.Size),
+				definition.startupDelay,
+				definition.damageInterval
 			);
-
-			spell.RegisterRuntimeObject(beam);
 
 			GameObject instance = Object.Instantiate(
 				definition.beamPrefab,
@@ -42,6 +53,7 @@ namespace UnboundArcana.Spells.Behaviors.Beam
 			BeamView view = instance.GetComponent<BeamView>();
 
 			view.Initialize(beam);
+			spell.RegisterRuntimeObject(beam);
 		}
 
 		public override void End()
@@ -59,6 +71,16 @@ namespace UnboundArcana.Spells.Behaviors.Beam
 				beam.SetPosition(context.Position);
 				beam.SetDirection(context.Direction);
 			}
+		}
+
+		private void OnHit(HitEvent hitEvent)
+		{
+			spell.Runtime.GameEvents.Publish(new DamageEvent(spell.Owner, hitEvent.Target, spell.Stats.Get(StatKeys.Spell.Damage), DamageType.SpellPhysical));
+		}
+
+		public override void Destroy()
+		{
+			spell.Events.Unsubscribe<HitEvent>(OnHit);
 		}
 	}
 }

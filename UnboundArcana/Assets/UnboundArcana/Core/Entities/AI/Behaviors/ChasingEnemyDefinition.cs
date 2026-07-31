@@ -69,7 +69,7 @@ namespace UnboundArcana.Core.Entities.AI
 			if (distance > chaseThreshold)
 			{
 				holdingAttackRange = false;
-				Controller.Movement.SetMovementIntent(direction.normalized);
+				Controller.SetMovementIntent(direction.normalized);
 				return;
 			}
 
@@ -85,7 +85,7 @@ namespace UnboundArcana.Core.Entities.AI
 
 		private void Stop()
 		{
-			Controller.Movement.SetMovementIntent(Vector2.zero);
+			Controller.SetMovementIntent(Vector2.zero);
 		}
 	}
 }

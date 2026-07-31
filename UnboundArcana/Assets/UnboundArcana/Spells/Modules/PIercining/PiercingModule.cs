@@ -29,7 +29,7 @@ namespace UnboundArcana.Spells.Modules.Piercing
 		{
 			eventData.Projectile.AddModifier(
 				new PiercingModifier(
-					definition.additionalHits
+					definition.additionalHits + 1
 				)
 			);
 		}

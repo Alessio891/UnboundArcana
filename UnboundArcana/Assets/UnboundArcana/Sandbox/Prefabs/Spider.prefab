@@ -400,6 +400,9 @@ MonoBehaviour:
   targetMemoryDuration: 3
   movementAcceleration: 8
   movementDeceleration: 12
+  obstacleLookAhead: 0.8
+  obstacleRadius: 0.2
+  obstacleAvoidanceStrength: 1.25
 --- !u!114 &8368540157316073849
 MonoBehaviour:
   m_ObjectHideFlags: 0

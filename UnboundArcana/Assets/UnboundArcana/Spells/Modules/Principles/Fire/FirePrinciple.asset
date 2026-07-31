@@ -23,3 +23,7 @@ MonoBehaviour:
   burningStatus: {fileID: 11400000, guid: cc94984b3662a104ebff2b5d61728d9a, type: 2}
   projectileSprite: {fileID: -3911757156971958152, guid: e5db1759026142f4199a1db87314fe30, type: 3}
   controller: {fileID: 9100000, guid: ebd52208beb72f74f8c6cfb5bc2e8b39, type: 2}
+  beamSprite: {fileID: 6789524314458676217, guid: 7854251af2d89c54ab95fdeee357e903, type: 3}
+  beamController: {fileID: 9100000, guid: 5ff06c738a5150541a92c49ed1d07a7e, type: 2}
+  auraSprite: {fileID: 5863976860721452081, guid: f28621e4ba2a4aa4f9d65567b02b4bfb, type: 3}
+  auraController: {fileID: 9100000, guid: 99259debbb33fda4b9e5b03490733e4d, type: 2}

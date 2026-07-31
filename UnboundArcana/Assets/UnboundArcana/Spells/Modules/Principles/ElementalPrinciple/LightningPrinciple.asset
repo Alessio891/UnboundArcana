@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b1b3c8420be4c44a81e4746aa1f1ea1, type: 3}
+  m_Name: LightningPrinciple
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.Principles.ElementalPrincipleDefinition
+  category: 0
+  rarity: 0
+  icon: {fileID: 21300000, guid: 625374e8e72502446854823b374901b5, type: 3}
+  moduleName: Lightning
+  moduleDescription: Arcs part of the impact damage to a nearby enemy.
+  complexity: 1
+  instability: 1
+  principle: 3
+  damage: 2
+  force: 0
+  arcRange: 0.9
+  arcDamageMultiplier: 0.5
+  status: {fileID: 0}
+  projectileSprite: {fileID: 0}
+  projectileController: {fileID: 9100000, guid: 41ddd7bac92a868419bb9e4aa9b716ef, type: 2}
+  beamSprite: {fileID: 0}
+  beamController: {fileID: 9100000, guid: 41ddd7bac92a868419bb9e4aa9b716ef, type: 2}
+  auraSprite: {fileID: 0}
+  auraController: {fileID: 9100000, guid: 39eb5a1f46c186d4d95d72e94531873e, type: 2}
+  auraVisualOffset: {x: 0, y: 0.45}
+  fallbackColor: {r: 0.7, g: 0.85, b: 1, a: 1}

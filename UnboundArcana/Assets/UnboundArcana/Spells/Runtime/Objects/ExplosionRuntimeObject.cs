@@ -3,6 +3,7 @@ using UnboundArcana.Core.Entities;
 using UnboundArcana.Core.Events;
 using UnboundArcana.Core.Stats;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace UnboundArcana.Spells.Runtime.Objects
 {
@@ -12,10 +13,12 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		private bool exploded;
 		private float lifetime;
 		private float duration;
+		private float radius;
+		private float damage;
 		public Vector3 Position => position;
 		public float Duration => duration;
 
-		public float Radius => spell.Stats.Get(StatKeys.Spell.Size);
+		public float Radius => radius * spell.Stats.Get(StatKeys.Spell.Size);
 
 		public ExplosionRuntimeObject(
 			Vector3 position,
@@ -24,6 +27,8 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			float duration)
 		{
 			this.position = position;
+			this.radius = radius;
+			this.damage = damage;
 			this.duration = duration;
 			
 			lifetime = duration;
@@ -41,9 +46,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			lifetime -= deltaTime;
 
 			if (view) {
-				float scale = spell.Stats.Get(StatKeys.Spell.Size);
-				view.transform.position = position;
-				view.transform.localScale = new Vector3(scale, scale, scale);
+				UpdateView(view.transform);
 			}
 
 			if (lifetime <= 0)
@@ -57,6 +60,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 				position,
 				Radius
 			);
+			HashSet<Entity> damagedTargets = new();
 
 			foreach (Collider2D hit in hits)
 			{
@@ -64,14 +68,16 @@ namespace UnboundArcana.Spells.Runtime.Objects
 				{
 					continue;
 				}
-				if (hit.GetComponent<Entity>() == null) continue;
+				Entity target = hit.GetComponent<Entity>();
+				if (target == null || !damagedTargets.Add(target)) continue;
 
+				PublishHit(new HitEvent(this, target.transform.position, target, spell.Owner));
 				spell.Runtime.GameEvents.Publish(
 					new DamageEvent(
 						spell.Owner,
-						hit.GetComponent<Entity>(),
-						spell.Stats.Get(StatKeys.Spell.Damage),
-						DamageType.Fire
+						target,
+						damage,
+						DamageType.SpellPhysical
 					)
 				);
 			}
@@ -86,6 +92,23 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			exploded = true;
 
 			DealDamage();
+		}
+
+		public override void UpdateView(Transform transform)
+		{
+			SpriteRenderer renderer = transform.GetComponentInChildren<SpriteRenderer>();
+
+			if (renderer == null || renderer.sprite == null)
+			{
+				transform.position = position;
+				transform.localScale = Vector3.one * Radius * 2f;
+				return;
+			}
+
+			Bounds bounds = renderer.sprite.bounds;
+			float uniformScale = Radius * 2f / Mathf.Max(bounds.size.x, Mathf.Epsilon);
+			transform.position = position - bounds.center * uniformScale;
+			transform.localScale = Vector3.one * uniformScale;
 		}
 	}
 }

@@ -18,7 +18,15 @@ namespace UnboundArcana.Spells.Services
 		public bool TrySetBehavior(
 			SpellConfiguration configuraiton,
 			SpellBehaviorDefinition behavior
-		) {
+		)
+		{
+			if (configuraiton == null || behavior == null) { return false; }
+
+			foreach (SpellModuleDefinition module in configuraiton.modules)
+			{
+				if (!module.SupportsBehavior(behavior)) { return false; }
+			}
+
 			configuraiton.SetBehavior( behavior );
 			return true;
 		}
@@ -50,6 +58,7 @@ namespace UnboundArcana.Spells.Services
 		{
 			return configuration != null &&
 				module != null &&
+				module.CanAddTo(configuration) &&
 				!configuration.HasModule(module);
 		}
 

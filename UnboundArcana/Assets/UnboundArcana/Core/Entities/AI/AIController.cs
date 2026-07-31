@@ -4,6 +4,7 @@ using UnboundArcana.Core.Rooms;
 using System;
 using UnboundArcana.Core.Events;
 using UnboundArcana.Core.Expedition;
+using UnityEngine.Tilemaps;
 
 namespace UnboundArcana.Core.Entities.AI
 {
@@ -25,11 +26,16 @@ namespace UnboundArcana.Core.Entities.AI
 		[SerializeField] private float targetMemoryDuration = 3f;
 		[SerializeField] private float movementAcceleration = 8f;
 		[SerializeField] private float movementDeceleration = 12f;
+		[SerializeField] private float obstacleLookAhead = 0.8f;
+		[SerializeField] private float obstacleRadius = 0.2f;
+		[SerializeField] private float obstacleAvoidanceStrength = 1.25f;
 
 		private bool behaviorActive;
 		private bool targetVisible;
 		private float targetMemoryTimer;
 		private Vector2 lastKnownTargetPosition;
+		private readonly RaycastHit2D[] physicsHits = new RaycastHit2D[16];
+		private ContactFilter2D physicsQueryFilter;
 
 		public bool TargetVisible => targetVisible;
 
@@ -38,6 +44,8 @@ namespace UnboundArcana.Core.Entities.AI
 			base.Awake();
 
 			sensor = GetComponentInChildren<EntitySensor>();
+			physicsQueryFilter = new ContactFilter2D();
+			physicsQueryFilter.useTriggers = false;
 			Movement.SetMovementSmoothing(movementAcceleration, movementDeceleration);
 			behavior = behaviorDefinition.CreateBehavior();
 			behavior.Initialize(this);
@@ -72,7 +80,7 @@ namespace UnboundArcana.Core.Entities.AI
 			}
 
 			Targeting.SetTarget(entity);
-			targetVisible = true;
+			targetVisible = HasLineOfSight(entity.transform.position);
 			targetMemoryTimer = targetMemoryDuration;
 			lastKnownTargetPosition = entity.transform.position;
 		}
@@ -113,6 +121,17 @@ namespace UnboundArcana.Core.Entities.AI
 			return true;
 		}
 
+		public void SetMovementIntent(Vector2 desiredDirection, bool avoidObstacles = true)
+		{
+			if (!avoidObstacles || desiredDirection.sqrMagnitude <= 0f)
+			{
+				Movement.SetMovementIntent(desiredDirection);
+				return;
+			}
+
+			Movement.SetMovementIntent(CalculateAvoidedDirection(desiredDirection.normalized));
+		}
+
 		private void UpdatePerception()
 		{
 			Entity target = Targeting.CurrentTarget;
@@ -123,19 +142,83 @@ namespace UnboundArcana.Core.Entities.AI
 				return;
 			}
 
-			if (targetVisible)
+			bool canSeeTarget = sensor.IsDetected(target) && HasLineOfSight(target.transform.position);
+
+			if (canSeeTarget)
 			{
+				targetVisible = true;
 				lastKnownTargetPosition = target.transform.position;
 				targetMemoryTimer = targetMemoryDuration;
 				return;
 			}
 
+			targetVisible = false;
 			targetMemoryTimer -= Time.deltaTime;
 
 			if (targetMemoryTimer <= 0f)
 			{
 				Targeting.ClearTarget();
 			}
+		}
+
+		private Vector2 CalculateAvoidedDirection(Vector2 desiredDirection)
+		{
+			int hitCount = Physics2D.CircleCast(transform.position, obstacleRadius, desiredDirection, physicsQueryFilter, physicsHits, obstacleLookAhead);
+			RaycastHit2D closestHit = default;
+			bool foundObstacle = false;
+
+			for (int i = 0; i < hitCount; i++)
+			{
+				RaycastHit2D hit = physicsHits[i];
+
+				if (!(hit.collider is TilemapCollider2D) || hit.distance <= 0.01f)
+				{
+					continue;
+				}
+
+				if (!foundObstacle || hit.distance < closestHit.distance)
+				{
+					closestHit = hit;
+					foundObstacle = true;
+				}
+			}
+
+			if (!foundObstacle)
+			{
+				return desiredDirection;
+			}
+
+			Vector2 normal = closestHit.normal.normalized;
+			Vector2 tangentA = new Vector2(-normal.y, normal.x);
+			Vector2 tangentB = -tangentA;
+			Vector2 tangent = Vector2.Dot(tangentA, desiredDirection) >= Vector2.Dot(tangentB, desiredDirection) ? tangentA : tangentB;
+			float proximity = 1f - Mathf.Clamp01(closestHit.distance / obstacleLookAhead);
+			Vector2 avoidance = tangent * obstacleAvoidanceStrength + normal * proximity;
+			return (desiredDirection + avoidance * proximity).normalized;
+		}
+
+		private bool HasLineOfSight(Vector2 targetPosition)
+		{
+			Vector2 origin = transform.position;
+			Vector2 direction = targetPosition - origin;
+			float distance = direction.magnitude;
+
+			if (distance <= 0f)
+			{
+				return true;
+			}
+
+			int hitCount = Physics2D.Raycast(origin, direction.normalized, physicsQueryFilter, physicsHits, distance);
+
+			for (int i = 0; i < hitCount; i++)
+			{
+				if (physicsHits[i].collider is TilemapCollider2D)
+				{
+					return false;
+				}
+			}
+
+			return true;
 		}
 	}
 }

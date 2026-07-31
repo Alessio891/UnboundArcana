@@ -10,6 +10,7 @@ public class ChainModifier : IRuntimeObjectModifier
 	private ProjectileRuntimeObject projectile;
 	private int remainingChains;
 	private readonly float range;
+	private readonly Collider2D[] targetBuffer = new Collider2D[32];
 
 	public bool ControlsMovement => false;
 
@@ -23,19 +24,20 @@ public class ChainModifier : IRuntimeObjectModifier
 	private Entity FindTarget(
 			Entity previousTarget)
 	{
-		Collider2D[] hits =
-			Physics2D.OverlapCircleAll(
-				projectile.Position,
-				range
-			);
+		int hitCount = Physics2D.OverlapCircle(projectile.Position, range, ContactFilter2D.noFilter, targetBuffer);
+		Entity closestTarget = null;
+		float closestDistance = float.PositiveInfinity;
 
-		foreach (Collider2D hit in hits)
+		for (int i = 0; i < hitCount; i++)
 		{
-			if (hit.gameObject == previousTarget)
+			Collider2D hit = targetBuffer[i];
+			Entity candidate = hit.GetComponent<Entity>();
+
+			if (candidate == previousTarget)
 			{
 				continue;
 			}
-			if (hit.GetComponent<Entity>() == null) continue;
+			if (candidate == null) continue;
 			if (hit.GetComponent<IDamageable>() == null)
 			{
 				continue;
@@ -49,10 +51,14 @@ public class ChainModifier : IRuntimeObjectModifier
 				continue;
 			}
 
-			return hit.GetComponent<Entity>();
+			float distance = (candidate.transform.position - projectile.Position).sqrMagnitude;
+			if (distance >= closestDistance) { continue; }
+
+			closestDistance = distance;
+			closestTarget = candidate;
 		}
 
-		return null;
+		return closestTarget;
 	}
 
 	public void OnHit(HitEvent hitEvent)

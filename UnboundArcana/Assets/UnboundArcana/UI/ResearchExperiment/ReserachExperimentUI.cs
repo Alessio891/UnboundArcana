@@ -51,9 +51,8 @@ public class ReserachExperimentUI : MonoBehaviour
 	{
 		foreach (Transform t in rewardList.transform) { Destroy(t.gameObject); }
 
-		var rewards = GameRuntimeManager.Instance.ModuleReward.RollModules(
-			GameDatabase.Instance.Spells.modules, 3
-		);
+		List<SpellModuleDefinition> compatibleModules = GameDatabase.Instance.Spells.modules.FindAll(module => GameRuntimeManager.Instance.SpellModification.CanAddModule(spellConfiguration, module));
+		var rewards = GameRuntimeManager.Instance.ModuleReward.RollModules(compatibleModules, 3);
 
 		foreach (var module in rewards)
 		{

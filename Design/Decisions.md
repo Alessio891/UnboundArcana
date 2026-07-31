@@ -1,425 +1,165 @@
-# Decision: Spell Runtime Lifecycle Ownership
+# Decisions
 
-Date:
+Compact record of intentional project decisions.
 
-2026-07-12
+Consult when reconsidering an established architectural or design boundary.
 
-## Context
+Current code defines implementation. `GameVision.md` defines desired player experience. This file records decisions likely to be reconsidered later.
 
-Originally SpellInstances were treated as reusable runtime versions of a spell.
+## Spell Execution Ownership — 2026-07-12
 
-This created a problem:
+`SpellConfiguration` owns persistent composition.
 
-Player-owned spell configuration and runtime gameplay state were mixed together.
+`SpellInstance` represents one execution and is created per cast.
 
-A spell configuration can change over time.
+Reason: prevent runtime state leaking between casts and keep configuration changes limited to future executions.
 
-A runtime spell must represent one execution.
+## Behaviors Define Spell Identity — 2026-07-13
 
-## Decision
+A Behavior defines the fundamental way a spell exists.
 
-SpellConfigurations own spell composition.
+Modules extend that identity; they do not replace it.
 
-SpellInstances represent temporary execution.
+Reason: keep composition understandable and prevent proliferation of specialized spell types.
 
-Flow:
+## Capability-Based Module Extension — 2026-07-13
 
-SpellConfiguration
+Modules should target runtime capabilities rather than concrete runtime object types when the mechanic is genuinely reusable.
 
-↓
+Concrete coupling is acceptable for genuinely type-specific mechanics.
 
-SpellFactory
+Reason: enable reuse without speculative abstraction.
 
-↓
+## Runtime Object Extension Is General — 2026-07-13
 
-SpellInstance
+Runtime-object modification is not a projectile-only extension point.
 
-↓
+Projectile, Aura, Beam and future Behaviors may expose appropriate capabilities.
 
-Runtime Objects
+## Aura Terminology — 2026-07-13
 
+`Aura` refers to a spell Behavior creating a persistent area/runtime object.
 
-SpellInstances are created per cast.
+Entity buffs/debuffs belong to the Status system.
 
-## Consequences
+## No Predefined Synergy System — 2026-07-13
 
-Positive:
+Do not create a general system of hardcoded module recipes/synergies.
 
-- Runtime state cannot leak between casts.
-- Spell modifications affect future casts only.
-- Multiple independent casts are possible.
-- Player ownership is separated from gameplay execution.
+Prefer emergent results from Behaviors, Modules, runtime interactions and explicit gameplay state.
 
-Negative:
+Compatibility rules may constrain invalid combinations without defining optimal recipes.
 
-- More runtime allocation occurs.
-- Persistent spell behaviors require explicit lifecycle handling.
+## Tags Only When Needed — 2026-07-13
 
+Do not introduce a broad tag framework until real module/content diversity produces concrete compatibility or classification problems.
 
----
+Solve demonstrated requirements, not hypothetical ones.
 
-# Decision: Behaviors Own Spell Identity
+## MVP Spell Prototype Complete — 2026-07-13
 
-Date:
+Spell architecture and player-driven spell modification were sufficiently validated.
 
-2026-07-13
+Development focus moved from proving spell architecture to building the actual game experience.
 
-## Context
+## Three Core Pillars — 2026-07-31
 
-During module expansion, a question emerged:
+Development priorities are centered on:
 
-Should modules create new gameplay concepts, or should behaviors define the fundamental type of spell?
+1. Spell Creation and Research
+2. Combat
+3. Tower Expedition
 
-Examples:
+Other gameplay, content and meta systems should primarily support these pillars.
 
-- Projectile
-- Beam
-- Aura
+Reason: prevent secondary systems from consuming scope without strengthening the core experience.
 
-Some possible future mechanics could technically be implemented either as behaviors or modules.
+## Research Is a Core System — 2026-07-31
 
-## Decision
+Research must become more than a themed random-upgrade screen.
 
-Behaviors define the fundamental identity of a spell.
+Desired model combines:
 
-Modules enhance existing behaviors.
+* stochastic/contextual Discovery
+* intentional Experimentation
 
-Examples:
+Randomness produces opportunities; Research provides agency over how discoveries develop.
 
-ProjectileBehavior:
+Exact mechanics remain open.
 
-Creates projectile runtime objects.
+## Combat Must Work Without Build Complexity — 2026-07-31
 
-Modules can modify:
+Baseline movement, casting, impact and enemy interaction should be satisfying before complex spell combinations are considered.
 
-- Movement
-- Targeting
-- Splitting
-- On-hit behavior
-- Destruction behavior
+Spell progression amplifies a strong combat foundation; it must not compensate for weak fundamentals.
 
-AuraBehavior:
+## Player Skill and Build Both Matter — 2026-07-31
 
-Creates aura runtime objects.
+Neither mechanical execution nor build quality should fully dominate.
 
-Modules can modify:
+Strong execution may compensate for a weaker build and a strong build may compensate for weaker execution.
 
-- Radius
-- Duration
-- Interactions
-- Effects
+Both remain meaningful throughout a run.
 
-Modules should not replace behaviors.
+## Powerful Emergent Builds Are Valid — 2026-07-31
 
-## Consequences
+Runs may produce exceptionally powerful or effectively "broken" builds.
 
-Positive:
+This is desirable when power emerges from combinations, investment, opportunity or tradeoffs.
 
-- Spell composition remains understandable.
-- Player choices remain focused around modifying existing spell identities.
-- The number of fundamental spell systems remains controlled.
-- Avoids creating hundreds of specialized behaviors.
+Do not normalize every build to equivalent output.
 
-Negative:
+Prevent repeatable universal dominant strategies rather than exceptional run-specific power.
 
-- Some complex mechanics require deciding whether they belong to behavior or module.
-- Future behavior boundaries must be designed carefully.
+## Tower Challenges Test Builds — 2026-07-31
 
+Enemy roles, encounter composition, objectives and Guardians should expose different properties of player builds.
 
----
+Long-term direction includes objective variety beyond eliminating all enemies.
 
-# Decision: Modules Should Prefer Capability-Based Modification
+Avoid hard counters that invalidate legitimate experiments.
 
-Date:
+## Tower Routing Uses Occasional Strategic Choice — 2026-07-31
 
-2026-07-13
+Tower progression focuses on rooms and route decisions rather than open-dungeon exploration.
 
-## Context
+Do not require a routing decision after every room.
 
-Initial module ideas were often implemented around specific runtime objects.
+Prefer occasional meaningful junctions that influence risk, research opportunities, domains or anomalies without constantly interrupting gameplay flow.
 
-Example:
+## Run Mechanical Power Resets — 2026-07-31
 
-Projectile modifier.
+Death or run completion ends the current mechanical build/progression.
 
-This raised a concern:
+Do not use persistent numerical power to remove roguelike consequences.
 
-Would the architecture become locked into projectiles?
+Permanent progression may record knowledge, expand possibilities or unlock cosmetics, but should not make repeated runs easier through automatic stat growth.
 
-Not all spells are projectiles.
+## Knowledge Is Player Mastery — 2026-07-31
 
-Future spells may include:
+Understanding the spell system is an important form of progression.
 
-- Auras
-- Beams
-- Persistent areas
-- Other runtime objects
+Experienced players should better predict and pursue builds.
 
-## Decision
+New players must still be able to discover powerful interactions accidentally.
 
-Modules should modify runtime objects based on capabilities rather than specific object types whenever possible.
+A future Codex may record discovered information without replacing player understanding.
 
-Examples:
+## Cosmetic Persistence Is Allowed — 2026-07-31
 
-A movement modifier should affect objects that expose movement capability.
+Permanent cosmetic rewards may survive runs.
 
-A targeting modifier should affect objects that expose targeting capability.
+Examples include skins, pets and visual effects.
 
-A lifetime modifier should affect objects with a lifetime.
+They must not affect gameplay power.
 
-The module should not assume that every spell is a projectile.
+## Decision Policy
 
-## Consequences
+Add an entry when a decision:
 
-Positive:
+* affects architectural ownership
+* rejects a plausible alternative likely to return
+* constrains future system design
+* protects a core game-design principle
 
-- More generic architecture.
-- Easier future expansion.
-- Avoids projectile-specific dead ends.
-
-Negative:
-
-- Requires clearer runtime object contracts.
-- Capability interfaces must be designed carefully.
-
-
----
-
-# Decision: Runtime Object Modifiers Are Not Limited To Projectiles
-
-Date:
-
-2026-07-13
-
-## Context
-
-The first implementation examples involved projectile modifiers:
-
-- Homing
-- Chain
-- Speed modification
-
-The concern was that this could create a projectile-only architecture.
-
-## Decision
-
-Runtime object modification is considered a general extension point.
-
-Projectile modifiers are only the first application.
-
-Future examples:
-
-Projectile:
-
-- Homing
-- Split
-- Chain
-- Movement changes
-
-Aura:
-
-- Size changes
-- Duration changes
-- Environmental interactions
-
-Beam:
-
-- Width changes
-- Duration changes
-- Targeting changes
-
-## Consequences
-
-Positive:
-
-- Keeps the module system flexible.
-- Allows emergent combinations.
-
-Negative:
-
-- Requires avoiding unnecessary abstraction before use cases exist.
-
-
----
-
-# Decision: Aura Is A Behavior Concept, Not A Status Concept
-
-Date:
-
-2026-07-13
-
-## Context
-
-A possible implementation was discussed:
-
-Creating a module that applies an aura to targets.
-
-The term "Aura" created ambiguity because it could mean:
-
-- A spell surrounding the player.
-- A status effect applied to an entity.
-
-## Decision
-
-Aura currently refers to a spell behavior.
-
-An AuraBehavior creates a persistent runtime object associated with the caster or world.
-
-It is not a buff/debuff system.
-
-Future status effects should be designed separately.
-
-## Consequences
-
-Positive:
-
-- Keeps terminology clear.
-- Avoids prematurely creating a status effect framework.
-- Preserves the distinction between spell objects and entity effects.
-
-Negative:
-
-- Some future mechanics may require interaction between aura objects and status systems.
-
-
----
-
-# Decision: Avoid Early Synergy Systems
-
-Date:
-
-2026-07-13
-
-## Context
-
-During MVP review, module synergy systems were considered.
-
-A concern was raised:
-
-Explicit synergy systems could conflict with player-driven spell creation.
-
-Example:
-
-Fire + Ice automatically creating a special combination.
-
-This could shift the game toward predefined recipes.
-
-## Decision
-
-Do not introduce explicit synergy systems at this stage.
-
-Emergent combinations should come from:
-
-- Behaviors
-- Modules
-- Runtime interactions
-- Player choices
-
-Future compatibility rules may exist, but they should not replace player experimentation.
-
-## Consequences
-
-Positive:
-
-- Maintains player-driven builds.
-- Reduces design complexity.
-- Avoids hidden recipes becoming mandatory.
-
-Negative:
-
-- Some combinations may require additional guidance for players.
-- Build readability may become a challenge.
-
-
----
-
-# Decision: Tags Should Be Introduced After More Module Diversity
-
-Date:
-
-2026-07-13
-
-## Context
-
-Gameplay tags were discussed as a possible solution for:
-
-- Module compatibility
-- Restrictions
-- Build rules
-- Runtime targeting
-
-Example:
-
-"Movement Modifier"
-
-Allowing only one movement modifier.
-
-## Decision
-
-Do not introduce tags before enough module diversity exists.
-
-The current system should first establish:
-
-- More module variety
-- Clear module categories
-- Real examples of conflicts
-
-Tags should solve actual design problems, not create restrictions prematurely.
-
-## Consequences
-
-Positive:
-
-- Avoids unnecessary complexity.
-- Allows tags to emerge from real requirements.
-
-Negative:
-
-- Some temporary module rules may remain manual until then.
-
-
----
-
-# Decision: MVP Scope Completion
-
-Date:
-
-2026-07-13
-
-## Context
-
-The first playable prototype successfully validated:
-
-1. Spell architecture integration into gameplay.
-2. Player-driven spell modification as a gameplay mechanic.
-
-The remaining problems are no longer architectural validation problems.
-
-They are game design problems.
-
-## Decision
-
-The MVP milestone is considered complete.
-
-The next phase focuses on transforming the validated prototype into a complete game direction.
-
-Main areas:
-
-- Gameplay loop
-- Progression
-- Presentation
-- Build rules
-- Content design
-- Player experience
-
-## Consequences
-
-Positive:
-
-- Stops expanding prototype systems indefinitely.
-- Allows deeper design work.
-- Prevents adding content without purpose.
-
-Negative:
-
-- More design decisions are now required before implementation.
+Do not record ordinary implementation choices.

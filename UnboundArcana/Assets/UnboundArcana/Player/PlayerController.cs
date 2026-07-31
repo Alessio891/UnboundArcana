@@ -24,6 +24,7 @@ namespace UnboundArcana.Player
 			playerInput.CastStarted += OnCastStarted;
 			playerInput.CastEnded += OnCastEnded;
 			playerInput.InteractStarted += OnInteract;
+			playerInput.SpellSelected += OnSpellSelected;
 		}
 
 		private void OnDisable()
@@ -31,6 +32,7 @@ namespace UnboundArcana.Player
 			playerInput.CastStarted -= OnCastStarted;
 			playerInput.CastEnded -= OnCastEnded;
 			playerInput.InteractStarted -= OnInteract;
+			playerInput.SpellSelected -= OnSpellSelected;
 		}
 
 		private void Update()
@@ -70,6 +72,11 @@ namespace UnboundArcana.Player
 		private void OnCastEnded()
 		{
 			SpellCaster.EndCast();
+		}
+
+		private void OnSpellSelected(int index)
+		{
+			SpellCaster.SpellLoadout?.SelectSpell(index);
 		}
 	}
 }

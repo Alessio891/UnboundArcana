@@ -35,7 +35,7 @@ namespace UnboundArcana.Core.Entities.AI
 		{
 			if (!Controller.TryGetPerceivedTargetPosition(out Vector2 targetPosition))
 			{
-				Controller.Movement.SetMovementIntent(Vector2.zero);
+				Controller.SetMovementIntent(Vector2.zero);
 				return;
 			}
 
@@ -47,7 +47,7 @@ namespace UnboundArcana.Core.Entities.AI
 
 			if (!Controller.TargetVisible)
 			{
-				Controller.Movement.SetMovementIntent(distance > 0.1f ? direction : Vector2.zero);
+				Controller.SetMovementIntent(distance > 0.1f ? direction : Vector2.zero);
 				return;
 			}
 
@@ -55,19 +55,19 @@ namespace UnboundArcana.Core.Entities.AI
 
 			if (distance < definition.MinimumRange)
 			{
-				Controller.Movement.SetMovementIntent(-direction);
+				Controller.SetMovementIntent(-direction);
 				return;
 			}
 
 			if (distance > definition.MaximumRange)
 			{
-				Controller.Movement.SetMovementIntent(direction);
+				Controller.SetMovementIntent(direction);
 				return;
 			}
 
 			Vector2 tangent = new Vector2(-direction.y, direction.x) * orbitSign;
 			float radialCorrection = Mathf.Clamp((distance - definition.PreferredRange) / definition.PreferredRange, -0.5f, 0.5f);
-			Controller.Movement.SetMovementIntent((tangent - direction * radialCorrection).normalized);
+			Controller.SetMovementIntent((tangent - direction * radialCorrection).normalized);
 			Controller.Caster.BeginCast();
 		}
 

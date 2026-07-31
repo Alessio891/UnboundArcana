@@ -25,7 +25,6 @@ namespace UnboundArcana.Spells.Modules.Explosion
 
 		private void OnHit(HitEvent hitEvent)
 		{
-			Debug.Log($"EXPLOSION CREATED AT {hitEvent.Position}");
 			ExplosionRuntimeObject explosion =
 				new(
 					hitEvent.Position,
@@ -34,7 +33,6 @@ namespace UnboundArcana.Spells.Modules.Explosion
 					definition.duration
 				);
 
-			//explosion.SetExplosionScale(definition.radius);
 			GameObject instance = Object.Instantiate(
 				definition.explosionPrefab,
 				hitEvent.Position,
@@ -50,21 +48,6 @@ namespace UnboundArcana.Spells.Modules.Explosion
 		public override void Destroy()
 		{
 			Events.Unsubscribe<HitEvent>(OnHit);
-		}
-		public override void ApplyStats(
-			StatCollection stats)
-		{
-			stats.AddBase(
-				StatKeys.Spell.Size,
-				definition.radius,
-				this
-			);
-
-			stats.AddBase(
-				StatKeys.Spell.Duration,
-				definition.duration,
-				this
-			);
 		}
 	}
 }

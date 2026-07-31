@@ -3,6 +3,7 @@ using UnboundArcana.Core.Entities;
 using UnboundArcana.Core.Events;
 using UnboundArcana.Core.Stats;
 using UnboundArcana.Spells.Runtime;
+using UnboundArcana.Spells.Runtime.Objects;
 using UnityEngine;
 
 namespace UnboundArcana.Spells.Modules.Fire
@@ -19,27 +20,31 @@ namespace UnboundArcana.Spells.Modules.Fire
 		{
 			base.Initialize(spell);
 			Events.Subscribe<HitEvent>(OnHit);
-			Events.Subscribe<ProjectileSpawnedEvent>(OnProjectileSpawned);
+			Events.Subscribe<RuntimeObjectSpawnedEvent>(OnRuntimeObjectSpawned);
 		}
 
-		private void OnProjectileSpawned(ProjectileSpawnedEvent e) {
-			
-			if (definition.projectileSprite)
+		private void OnRuntimeObjectSpawned(RuntimeObjectSpawnedEvent eventData)
+		{
+			switch (eventData.RuntimeObject)
 			{
-				e.Projectile.SetProjectileSprite(definition.projectileSprite);
-				e.Projectile.SetProjectileAnimator(definition.controller);
-			}
-			else
-			{
-				e.Projectile.SetProjectileColor(UnityEngine.Color.red);
+				case ProjectileRuntimeObject:
+					eventData.RuntimeObject.SetVisualAppearance(definition.projectileSprite, definition.controller, Color.white);
+					break;
+				case BeamRuntimeObject:
+					eventData.RuntimeObject.SetVisualAppearance(definition.beamSprite, definition.beamController, new Color(1f, 0.35f, 0.1f));
+					break;
+				case AuraRuntimeObject:
+					eventData.RuntimeObject.SetVisualAppearance(definition.auraSprite, definition.auraController, new Color(1f, 0.35f, 0.1f));
+					break;
 			}
 		}
 
 		private void OnHit(HitEvent hitEvent)
 		{
-			if (!hitEvent.Target.Status.Has(definition.burningStatus))
+			if (definition.burningStatus != null && !hitEvent.Target.Status.Has(definition.burningStatus))
 			{
-				hitEvent.Target.Status.Apply(definition.burningStatus, hitEvent.Owner.GetComponent<Entity>());
+				Entity source = hitEvent.Owner.GetComponent<Entity>();
+				hitEvent.Target.Status.Apply(definition.burningStatus, source);
 			}
 		}
 		public override void ApplyStats(
@@ -54,7 +59,7 @@ namespace UnboundArcana.Spells.Modules.Fire
 		public override void Destroy()
 		{
 			Events.Unsubscribe<HitEvent>(OnHit);
-			Events.Unsubscribe<ProjectileSpawnedEvent>(OnProjectileSpawned);
+			Events.Unsubscribe<RuntimeObjectSpawnedEvent>(OnRuntimeObjectSpawned);
 		}
 	}
 }

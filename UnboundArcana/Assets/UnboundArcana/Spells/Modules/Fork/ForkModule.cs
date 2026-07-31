@@ -31,7 +31,9 @@ namespace UnboundArcana.Spells.Modules.Fork
 
 			for (int i = 0; i < definition.additionalProjectiles; i++)
 			{
-				float offset = definition.angle * (i + 1);
+				int pairIndex = i / 2 + 1;
+				float side = i % 2 == 0 ? -1f : 1f;
+				float offset = definition.angle * pairIndex * side;
 
 				Vector3 direction = Quaternion.Euler(
 					0,

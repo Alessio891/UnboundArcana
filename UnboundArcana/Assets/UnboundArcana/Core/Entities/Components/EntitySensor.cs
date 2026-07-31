@@ -13,6 +13,10 @@ namespace UnboundArcana.Core.Entities
 
 		public IReadOnlyCollection<Entity> DetectedEntities => detectedEntities;
 
+		public bool IsDetected(Entity entity)
+		{
+			return entity != null && detectedEntities.Contains(entity);
+		}
 
 		private void OnTriggerEnter2D(Collider2D other)
 		{

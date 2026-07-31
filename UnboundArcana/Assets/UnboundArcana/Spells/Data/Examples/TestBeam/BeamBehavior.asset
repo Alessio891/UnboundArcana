@@ -13,3 +13,8 @@ MonoBehaviour:
   m_Name: BeamBehavior
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Behaviors.Beam.BeamBehaviorDefinition
   beamPrefab: {fileID: 4251352121846814612, guid: a1c53dde447c00d4186903df5b5726b7, type: 3}
+  range: 1.8
+  width: 0.3
+  damage: 2
+  startupDelay: 0.1
+  damageInterval: 0.2

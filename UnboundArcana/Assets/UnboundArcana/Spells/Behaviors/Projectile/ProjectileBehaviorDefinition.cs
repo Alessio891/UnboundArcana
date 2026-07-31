@@ -11,6 +11,8 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 		public float lifetime = 1.0f;
 		public float speed = 1.0f;
 		public float baseDamage = 1.0f;
+		[Tooltip("Visual diameter and collision diameter in world units. One dungeon tile is 0.3 units.")]
+		public float diameter = 0.3f;
 
 		public override SpellBehavior CreateRuntime()
 		{

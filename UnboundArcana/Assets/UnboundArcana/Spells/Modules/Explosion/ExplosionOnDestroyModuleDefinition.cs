@@ -8,7 +8,8 @@ namespace UnboundArcana.Spells.Modules.ExplosionOnDestroy
 	public class ExplosionOnDestroyModuleDefinition : SpellModuleDefinition
 	{
 		public GameObject explosionPrefab;
-		public float radius = 2f;
+		[Tooltip("Radius in world units. One dungeon tile is 0.3 units.")]
+		public float radius = 0.6f;
 		public float damage = 10f;
 		public float duration = 0.5f;
 

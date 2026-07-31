@@ -35,14 +35,12 @@ namespace UnboundArcana.Spells.Modules.Pulse
 			}
 
 			timer += deltaTime;
-			Debug.Log($"Pulse timer {timer}");
 			if (timer < interval)
 			{
 				return;
 			}
 
 			timer -= interval;
-			Debug.Log("Dealing expl damage");
 			explosion.DealDamage();
 		}
 

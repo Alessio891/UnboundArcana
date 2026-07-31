@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca8f57d4ae1003142b662f2951959e4e, type: 3}
   m_Name: ChilledEffect
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.Statuses.ChilledStatusDefinition
-  duration: 5
+  duration: 3
   maxStacks: 5
   frozenStatus: {fileID: 11400000, guid: 136fb55179a5fc2428ce371f9ee6cb98, type: 2}
+  slowPerStack: 0.08
+  stacksToFreeze: 5

@@ -36,6 +36,7 @@ namespace UnboundArcana.Spells.Modules.AuraDamage
 				new AuraDamageModifier(
 					spell,
 					definition.damage,
+					definition.startupDelay,
 					definition.interval
 				)
 			);

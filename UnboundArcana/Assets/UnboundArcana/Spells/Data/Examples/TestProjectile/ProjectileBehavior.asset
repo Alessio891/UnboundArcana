@@ -17,3 +17,4 @@ MonoBehaviour:
   lifetime: 1
   speed: 2.5
   baseDamage: 10
+  diameter: 0.3

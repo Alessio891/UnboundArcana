@@ -5,7 +5,6 @@ namespace UnboundArcana.Core.Entities.Statuses
 {
 	public class ChilledStatus : StatusInstance
 	{
-		float originalSpeed = 0.0f;
 		public ChilledStatus(
 			StatusDefinition definition)
 			: base(definition)
@@ -14,31 +13,39 @@ namespace UnboundArcana.Core.Entities.Statuses
 		public override void AddStack()
 		{
 			base.AddStack();
-			if (Stacks >= 5) {
+			ApplySlow();
+
+			ChilledStatusDefinition definition = Definition as ChilledStatusDefinition;
+
+			if (definition.frozenStatus != null && Stacks >= definition.stacksToFreeze)
+			{
 				RemainingDuration = 0.0f;
-				target.Status.Apply((Definition as ChilledStatusDefinition).frozenStatus, source);
+				target.Status.Apply(definition.frozenStatus, source);
 			}
-			
 		}
 		public override void Initialize(Entity target, Entity source)
 		{
 			base.Initialize(target, source);
 
-			StatModifier modifier = new StatModifier(StatKeys.Entity.MoveSpeed, 0.7f, ModifierOperation.Multiplier, this);
-			
-			target.Stats.AddModifier(modifier);
+			ApplySlow();
 		}
 		public override bool CanApply(Entity target)
 		{
-			ChilledStatusDefinition defin = (ChilledStatusDefinition)Definition;
-			bool canApplyChill = !target.Status.Has(defin.frozenStatus);
-			Debug.Log($"Can apply chill {canApplyChill} (does not have {defin.frozenStatus.name} status)");
-			return canApplyChill;
+			ChilledStatusDefinition definition = (ChilledStatusDefinition)Definition;
+			return definition.frozenStatus == null || !target.Status.Has(definition.frozenStatus);
 		}
 		public override void OnRemove()
 		{
 			base.OnRemove();
 			target.Stats.RemoveModifiersFromSource(this);
+		}
+
+		private void ApplySlow()
+		{
+			ChilledStatusDefinition definition = (ChilledStatusDefinition)Definition;
+			float multiplier = Mathf.Max(0.1f, 1f - definition.slowPerStack * Stacks);
+			target.Stats.RemoveModifiersFromSource(this);
+			target.Stats.AddModifier(new StatModifier(StatKeys.Entity.MoveSpeed, multiplier, ModifierOperation.Multiplier, this));
 		}
 	}
 }

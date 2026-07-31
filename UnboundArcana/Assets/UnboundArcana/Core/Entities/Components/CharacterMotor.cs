@@ -13,9 +13,11 @@ namespace UnboundArcana.Core.Entities
 
 		private Vector2 moveInput;
 		private Vector2 velocity;
+		private Vector2 externalVelocity;
 		private float speedMultiplier = 1f;
 		private float acceleration = float.PositiveInfinity;
 		private float deceleration = float.PositiveInfinity;
+		private float movementLockTimer;
 
 		private bool movingToPosition = false;
 		private Vector3 targetMoveToPosition;
@@ -57,6 +59,16 @@ namespace UnboundArcana.Core.Entities
 			velocity = Vector2.zero;
 		}
 
+		public void ApplyImpulse(Vector2 impulse)
+		{
+			externalVelocity += impulse;
+		}
+
+		public void ApplyMovementLock(float duration)
+		{
+			movementLockTimer = Mathf.Max(movementLockTimer, duration);
+		}
+
 		private void Update()
 		{
 			if (movingToPosition)
@@ -75,16 +87,18 @@ namespace UnboundArcana.Core.Entities
 
 		private void FixedUpdate()
 		{
+			movementLockTimer = Mathf.Max(0f, movementLockTimer - Time.fixedDeltaTime);
 			float moveSpeed = entity.Stats.Get(
 				StatKeys.Entity.MoveSpeed);
 
-			Vector2 desiredVelocity = moveInput * moveSpeed * speedMultiplier;
+			Vector2 desiredVelocity = movementLockTimer > 0f ? Vector2.zero : moveInput * moveSpeed * speedMultiplier;
 			float changeRate = moveInput.sqrMagnitude > 0f ? acceleration : deceleration;
 			velocity = Vector2.MoveTowards(velocity, desiredVelocity, changeRate * Time.fixedDeltaTime);
+			externalVelocity = Vector2.MoveTowards(externalVelocity, Vector2.zero, 12f * Time.fixedDeltaTime);
 
 			Vector2 targetPosition =
 				rb.position +
-				velocity * Time.fixedDeltaTime;
+				(velocity + externalVelocity) * Time.fixedDeltaTime;
 
 			rb.MovePosition(targetPosition);
 
@@ -95,6 +109,6 @@ namespace UnboundArcana.Core.Entities
 			);
 		}
 
-		public Vector2 Velocity => velocity;
+		public Vector2 Velocity => velocity + externalVelocity;
 	}
 }

@@ -118,6 +118,42 @@ public partial class @UnboundArcanaControls: IInputActionCollection2, IDisposabl
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SelectSpell1"",
+                    ""type"": ""Button"",
+                    ""id"": ""7cb4ba29-aec0-4947-816d-316a4cfbb613"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SelectSpell2"",
+                    ""type"": ""Button"",
+                    ""id"": ""5435fe96-eb40-48b1-b522-e57bb939fe47"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SelectSpell3"",
+                    ""type"": ""Button"",
+                    ""id"": ""d1ce0f84-cadf-46f0-a9dc-c2eadb8e08af"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SelectSpell4"",
+                    ""type"": ""Button"",
+                    ""id"": ""a08df377-aa2e-4cc6-b289-0e10565602ea"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -197,6 +233,50 @@ public partial class @UnboundArcanaControls: IInputActionCollection2, IDisposabl
                     ""action"": ""Interaction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2a516819-cbef-4903-aab9-c9d9cf711c15"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectSpell1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6e6beb24-6854-42f8-bf8f-9a92d437e28d"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectSpell2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cb22a2aa-24ee-459b-98df-85a15175e58a"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectSpell3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f4f107e8-f29a-4669-baa0-72fce82d9993"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectSpell4"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -208,6 +288,10 @@ public partial class @UnboundArcanaControls: IInputActionCollection2, IDisposabl
         m_Gameplay_Cast = m_Gameplay.FindAction("Cast", throwIfNotFound: true);
         m_Gameplay_Move = m_Gameplay.FindAction("Move", throwIfNotFound: true);
         m_Gameplay_Interaction = m_Gameplay.FindAction("Interaction", throwIfNotFound: true);
+        m_Gameplay_SelectSpell1 = m_Gameplay.FindAction("SelectSpell1", throwIfNotFound: true);
+        m_Gameplay_SelectSpell2 = m_Gameplay.FindAction("SelectSpell2", throwIfNotFound: true);
+        m_Gameplay_SelectSpell3 = m_Gameplay.FindAction("SelectSpell3", throwIfNotFound: true);
+        m_Gameplay_SelectSpell4 = m_Gameplay.FindAction("SelectSpell4", throwIfNotFound: true);
     }
 
     ~@UnboundArcanaControls()
@@ -291,6 +375,10 @@ public partial class @UnboundArcanaControls: IInputActionCollection2, IDisposabl
     private readonly InputAction m_Gameplay_Cast;
     private readonly InputAction m_Gameplay_Move;
     private readonly InputAction m_Gameplay_Interaction;
+    private readonly InputAction m_Gameplay_SelectSpell1;
+    private readonly InputAction m_Gameplay_SelectSpell2;
+    private readonly InputAction m_Gameplay_SelectSpell3;
+    private readonly InputAction m_Gameplay_SelectSpell4;
     /// <summary>
     /// Provides access to input actions defined in input action map "Gameplay".
     /// </summary>
@@ -314,6 +402,22 @@ public partial class @UnboundArcanaControls: IInputActionCollection2, IDisposabl
         /// Provides access to the underlying input action "Gameplay/Interaction".
         /// </summary>
         public InputAction @Interaction => m_Wrapper.m_Gameplay_Interaction;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/SelectSpell1".
+        /// </summary>
+        public InputAction @SelectSpell1 => m_Wrapper.m_Gameplay_SelectSpell1;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/SelectSpell2".
+        /// </summary>
+        public InputAction @SelectSpell2 => m_Wrapper.m_Gameplay_SelectSpell2;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/SelectSpell3".
+        /// </summary>
+        public InputAction @SelectSpell3 => m_Wrapper.m_Gameplay_SelectSpell3;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/SelectSpell4".
+        /// </summary>
+        public InputAction @SelectSpell4 => m_Wrapper.m_Gameplay_SelectSpell4;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -349,6 +453,18 @@ public partial class @UnboundArcanaControls: IInputActionCollection2, IDisposabl
             @Interaction.started += instance.OnInteraction;
             @Interaction.performed += instance.OnInteraction;
             @Interaction.canceled += instance.OnInteraction;
+            @SelectSpell1.started += instance.OnSelectSpell1;
+            @SelectSpell1.performed += instance.OnSelectSpell1;
+            @SelectSpell1.canceled += instance.OnSelectSpell1;
+            @SelectSpell2.started += instance.OnSelectSpell2;
+            @SelectSpell2.performed += instance.OnSelectSpell2;
+            @SelectSpell2.canceled += instance.OnSelectSpell2;
+            @SelectSpell3.started += instance.OnSelectSpell3;
+            @SelectSpell3.performed += instance.OnSelectSpell3;
+            @SelectSpell3.canceled += instance.OnSelectSpell3;
+            @SelectSpell4.started += instance.OnSelectSpell4;
+            @SelectSpell4.performed += instance.OnSelectSpell4;
+            @SelectSpell4.canceled += instance.OnSelectSpell4;
         }
 
         /// <summary>
@@ -369,6 +485,18 @@ public partial class @UnboundArcanaControls: IInputActionCollection2, IDisposabl
             @Interaction.started -= instance.OnInteraction;
             @Interaction.performed -= instance.OnInteraction;
             @Interaction.canceled -= instance.OnInteraction;
+            @SelectSpell1.started -= instance.OnSelectSpell1;
+            @SelectSpell1.performed -= instance.OnSelectSpell1;
+            @SelectSpell1.canceled -= instance.OnSelectSpell1;
+            @SelectSpell2.started -= instance.OnSelectSpell2;
+            @SelectSpell2.performed -= instance.OnSelectSpell2;
+            @SelectSpell2.canceled -= instance.OnSelectSpell2;
+            @SelectSpell3.started -= instance.OnSelectSpell3;
+            @SelectSpell3.performed -= instance.OnSelectSpell3;
+            @SelectSpell3.canceled -= instance.OnSelectSpell3;
+            @SelectSpell4.started -= instance.OnSelectSpell4;
+            @SelectSpell4.performed -= instance.OnSelectSpell4;
+            @SelectSpell4.canceled -= instance.OnSelectSpell4;
         }
 
         /// <summary>
@@ -430,5 +558,33 @@ public partial class @UnboundArcanaControls: IInputActionCollection2, IDisposabl
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnInteraction(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SelectSpell1" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectSpell1(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SelectSpell2" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectSpell2(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SelectSpell3" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectSpell3(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SelectSpell4" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectSpell4(InputAction.CallbackContext context);
     }
 }
