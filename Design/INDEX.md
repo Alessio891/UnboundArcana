@@ -23,6 +23,26 @@ Read for:
 
 Usually skip for implementation-only tasks with no gameplay-design impact.
 
+## Research.md
+
+Player-facing Research, Knowledge and run-progression design.
+
+Read for:
+
+* Minor and Major Rewards
+* Knowledge
+* Laboratories
+* spell-evolution pacing
+* Research UI
+* Research MVP scope
+* Research validation
+* future Research expansion boundaries
+
+For Research implementation tasks, also inspect current code.
+
+Read `Architecture.md` or `SpellSystem.md` only when the change affects their ownership or domain rules.
+
+
 ## CurrentState.md
 
 Current milestone, implemented foundations, weaknesses and active priorities.
@@ -159,7 +179,7 @@ Prefer the smallest useful context.
 
 Typical routing:
 
-```text id="z5es6w"
+```text
 Local bug
 -> code
 
@@ -176,13 +196,22 @@ Cross-system feature
 
 Gameplay/design review
 -> GameVision + CurrentState
--> relevant code/system docs only if needed
+-> relevant domain doc if needed
+
+Research design
+-> GameVision + CurrentState + Research
+-> Decisions when reconsidering established boundaries
+
+Research implementation
+-> code + Research
+-> Architecture or SpellSystem only when ownership requires them
 
 Project planning
 -> CurrentState + GameVision
 
 Major system proposal
 -> GameVision + CurrentState + Decisions + ScopeAndRisks
+-> relevant domain doc
 -> Architecture if technically relevant
 
 Editor tooling
@@ -192,3 +221,4 @@ Editor tooling
 Do not load a document only because it exists.
 
 Retrieve additional context only when it can materially affect the task.
+

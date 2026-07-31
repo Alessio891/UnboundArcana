@@ -264,33 +264,46 @@ They should test:
 
 Avoid Guardians that are primarily large HP/DPS checks.
 
-## Research
+## Research and Run Progression
 
-Research should allow meaningful manipulation of spell experiments.
-
-Potential actions include:
-
-* add
-* remove
-* replace
-* transform
-* redirect
-* constrain
-* expand
-
-Exact mechanics remain to be designed.
-
-Research should eventually provide more agency than choosing one random upgrade from a list.
-
-Discovery and Research should coexist:
+Research and run progression operate on two scales:
 
 ```text
-Random / contextual opportunity
--> player recognizes possibility
--> research enables intentional development
+Minor Rewards
+-> evolve expedition conditions
+
+Major Rewards
+-> evolve spell configurations
 ```
 
-Research is one of the systems that should receive disproportionate design and polish effort.
+Minor Rewards are frequent run-level developments.
+
+They should influence combat conditions, survival, Knowledge acquisition or expedition decisions without constantly changing spell composition.
+
+Major Rewards occur less frequently at Laboratory moments and significantly modify a spell experiment.
+
+Knowledge is a temporary expedition resource earned through Tower play.
+
+Its primary role is to increase player agency during Major Research rather than directly purchase baseline power.
+
+The intended relationship is:
+
+```text
+Combat and Tower
+-> Knowledge and run development
+-> Laboratory
+-> intentional spell evolution
+-> further Combat
+```
+
+Randomness determines which opportunities are available.
+
+Knowledge and player decisions influence which opportunities are pursued.
+
+The resulting spell configuration remains deterministic and understandable.
+
+Detailed current mechanics, MVP scope and validation criteria are defined in `Research.md`.
+
 
 ## Run Progression
 

@@ -153,6 +153,67 @@ Examples include skins, pets and visual effects.
 
 They must not affect gameplay power.
 
+## Run Progression Uses Two Scales — 2026-08-01
+
+Run progression distinguishes between:
+
+```text
+Minor Rewards
+-> expedition-level development
+
+Major Rewards
+-> significant spell evolution
+```
+
+Minor Rewards should not constantly modify spell composition.
+
+Major Rewards occur less frequently so the player has time to understand and use the current spell configuration.
+
+Reason: provide progression at multiple rhythms while preserving spell identity and avoiding a spell-editing interruption after every room.
+
+## Minor Rewards Activate Immediately — 2026-08-01
+
+Minor Rewards become active when selected and remain active for the expedition.
+
+The initial design does not use active research slots, passive progress bars or delayed Minor Reward activation.
+
+Reason: passive completion added delayed feedback without introducing enough meaningful player interaction.
+
+## Knowledge Increases Research Agency — 2026-08-01
+
+Knowledge is a temporary expedition resource earned through normal Tower play.
+
+Its primary role is to improve player agency during Major Research, such as revealing additional Major Reward options.
+
+Knowledge should not be required to access the baseline Major Reward and should not primarily purchase direct numerical power.
+
+Reason: connect Combat and Tower progression to spell evolution without turning Knowledge into generic experience or a mandatory power currency.
+
+## Major Research Occurs at Laboratories — 2026-08-01
+
+Significant spell evolution occurs at infrequent Laboratory moments.
+
+Laboratories present Major Reward opportunities and apply the selected modification immediately.
+
+The following combat rooms allow the player to test and understand the changed spell.
+
+Reason: create readable and anticipated spell-evolution moments while preserving combat pacing between modifications.
+
+## Research MVP Parameters Are Provisional — 2026-08-01
+
+The following are prototype parameters rather than permanent design commitments:
+
+* three Minor Reward options
+* one Minor Reward after each standard room
+* three initial Major Reward options
+* one additional option revealed through Knowledge
+* approximately two Laboratories per floor
+* fixed Laboratory placement
+* current reward-pool sizes and Knowledge costs
+
+These values should change according to playtest results without being treated as reversals of the core Research direction.
+
+
 ## Decision Policy
 
 Add an entry when a decision:
