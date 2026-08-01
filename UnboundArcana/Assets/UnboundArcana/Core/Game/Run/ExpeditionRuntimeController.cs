@@ -51,6 +51,7 @@ namespace UnboundArcana.Core.Expedition
 
 
 		public ExpeditionState State { get; private set; }
+		public ExpeditionResult Result { get; private set; }
 
 
 		public static ExpeditionRuntimeController instance;
@@ -114,6 +115,15 @@ namespace UnboundArcana.Core.Expedition
 
 		private void OnEntityDied(EntityDeathEvent @event)
 		{
+			if (Result != null)
+				return;
+
+			if (@event.Entity == Player)
+			{
+				TryEndExpedition(ExpeditionOutcome.Failed, "Expedition player died.");
+				return;
+			}
+
 			GameSession.Instance.Player.AddKnowledge(50);
 		}
 
@@ -121,6 +131,9 @@ namespace UnboundArcana.Core.Expedition
 		private void OnResearchCollected(
 			ResearchCollectedEvent evt)
 		{
+			if (Result != null || State != ExpeditionState.Reward)
+				return;
+
 			playerCoordinator.SetInputEnabled(false);
 			rewardSpawner.Clear();
 
@@ -136,7 +149,7 @@ namespace UnboundArcana.Core.Expedition
 
 		public IEnumerator AdvanceToNextRoom()
 		{
-			if (State != ExpeditionState.Reward)
+			if (Result != null || State != ExpeditionState.Reward)
 			{
 				Debug.LogWarning(
 					"Cannot advance room while expedition is not in Reward state.");
@@ -166,6 +179,9 @@ namespace UnboundArcana.Core.Expedition
 			yield return StartCoroutine(
 				currentRoom.StartDeconstructEffect());
 
+			if (Result != null || State != ExpeditionState.Reward)
+				yield break;
+
 
 			bool hasNextRoom =
 				currentFloor.Advance();
@@ -176,8 +192,7 @@ namespace UnboundArcana.Core.Expedition
 				Debug.Log(
 					"Floor completed.");
 
-				SetState(
-					ExpeditionState.Completed);
+				TryEndExpedition(ExpeditionOutcome.Completed, "Final floor completed.");
 
 				yield break;
 			}
@@ -194,11 +209,13 @@ namespace UnboundArcana.Core.Expedition
 
 			if (nextRoom == null)
 			{
-				Debug.LogError(
-					"Failed to generate next room.");
+				TryEndExpedition(ExpeditionOutcome.Failed, $"Next room generation failed at room index {currentFloor.CurrentRoomIndex}.");
 
 				yield break;
 			}
+
+			if (Result != null)
+				yield break;
 
 
 			researchSystem.ActivateCompletedResearches(
@@ -208,7 +225,11 @@ namespace UnboundArcana.Core.Expedition
 			currentRoom = nextRoom;
 
 
-			playerCoordinator.MoveToRoom(nextRoom);
+			if (!playerCoordinator.MoveToRoom(nextRoom))
+			{
+				TryEndExpedition(ExpeditionOutcome.Failed, $"Player placement failed for room index {currentFloor.CurrentRoomIndex}.");
+				yield break;
+			}
 
 
 			SetState(
@@ -252,8 +273,7 @@ namespace UnboundArcana.Core.Expedition
 
 			if (currentFloor == null)
 			{
-				SetState(
-					ExpeditionState.Failed);
+				TryEndExpedition(ExpeditionOutcome.Failed, "Starting floor generation failed.");
 
 				return;
 			}
@@ -270,8 +290,7 @@ namespace UnboundArcana.Core.Expedition
 
 			if (room == null)
 			{
-				SetState(
-					ExpeditionState.Failed);
+				TryEndExpedition(ExpeditionOutcome.Failed, "Initial room generation failed.");
 
 				return;
 			}
@@ -289,8 +308,7 @@ namespace UnboundArcana.Core.Expedition
 
 			if (!playerCoordinator.Spawn(room))
 			{
-				SetState(
-					ExpeditionState.Failed);
+				TryEndExpedition(ExpeditionOutcome.Failed, "Player spawn failed in the initial room.");
 
 				return;
 			}
@@ -315,7 +333,7 @@ namespace UnboundArcana.Core.Expedition
 		private void OnRoomStarted(
 			RoomStartedEvent evt)
 		{
-			if (State != ExpeditionState.EnteringRoom)
+			if (Result != null || State != ExpeditionState.EnteringRoom || evt.Room != currentRoom)
 				return;
 
 
@@ -345,6 +363,9 @@ namespace UnboundArcana.Core.Expedition
 				isFirstRoom = false;
 			}
 
+			if (Result != null || State != ExpeditionState.EnteringRoom)
+				yield break;
+
 
 			SetState(
 				ExpeditionState.RoomActive);
@@ -358,7 +379,7 @@ namespace UnboundArcana.Core.Expedition
 		private void OnRoomCompleted(
 			RoomCompletedEvent evt)
 		{
-			if (State != ExpeditionState.RoomActive)
+			if (Result != null || State != ExpeditionState.RoomActive || evt.Room != currentRoom)
 				return;
 
 
@@ -380,6 +401,12 @@ namespace UnboundArcana.Core.Expedition
 			playerCoordinator.SetInputEnabled(false);
 			yield return rewardSpawner.Spawn(currentRoom, Player);
 
+			if (Result != null || State != ExpeditionState.Reward)
+			{
+				rewardSpawner.Clear();
+				yield break;
+			}
+
 			if (!rewardSpawner.HasSpawnedRewards)
 			{
 				Debug.LogError("Research rewards could not be spawned. Advancing to the next room to avoid blocking the expedition.");
@@ -389,6 +416,28 @@ namespace UnboundArcana.Core.Expedition
 
 			playerCoordinator.FollowPlayer();
 			playerCoordinator.SetInputEnabled(true);
+		}
+
+
+		private bool TryEndExpedition(ExpeditionOutcome outcome, string reason)
+		{
+			if (Result != null)
+				return false;
+
+			Result = new ExpeditionResult(outcome, reason);
+			SetState(outcome == ExpeditionOutcome.Completed ? ExpeditionState.Completed : ExpeditionState.Failed);
+			StopAllCoroutines();
+			playerCoordinator.SetInputEnabled(false);
+			rewardSpawner.Clear();
+			currentRoom?.StopRoom();
+
+			if (outcome == ExpeditionOutcome.Failed)
+				Debug.LogError($"Expedition failed: {reason}");
+			else
+				Debug.Log($"Expedition completed: {reason}");
+
+			GameRuntimeManager.Instance.Events.Publish(new ExpeditionEndedEvent(Result));
+			return true;
 		}
 
 

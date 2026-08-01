@@ -1,27 +1,16 @@
-using UnityEngine;
+using UnboundArcana.Core.Entities;
 
 public class RunConfiguration
 {
-	private int researcherId = 0;
-	private int towerInstability = 0;
-	private int towerResearchMode = 0;
+	public EntityDefinition PlayerDefinition { get; }
 
-	public int ResearcherId => researcherId;
-	public int TowerInstability => towerInstability;
-	public int TowerResearchMode => towerResearchMode;
-
-	public RunConfiguration(int researcherId, int towerInstability, int towerResearchMode)
+	private RunConfiguration(EntityDefinition playerDefinition)
 	{
-		this.researcherId = researcherId;
-		this.towerInstability = towerInstability;
-		this.towerResearchMode = towerResearchMode;
-	}
-	public RunConfiguration() { }
-
-	public void SetResearcherId(int id) {
-		researcherId = id; 
+		PlayerDefinition = playerDefinition;
 	}
 
-	public void SetTowerInstability(int instab) { towerInstability = instab; }
-	public void SetTowerResearchMode(int mode) { towerResearchMode = mode; }
+	public static RunConfiguration CreateDefault(EntityDefinition playerDefinition)
+	{
+		return new RunConfiguration(playerDefinition);
+	}
 }

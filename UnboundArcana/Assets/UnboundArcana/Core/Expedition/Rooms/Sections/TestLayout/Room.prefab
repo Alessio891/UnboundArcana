@@ -57,6 +57,7 @@ MonoBehaviour:
   - {fileID: 2789164135356192967}
   grid: {fileID: 8255558355653715074}
   gridOffset: {x: 0, y: 0, z: 0}
+  props: []
 --- !u!114 &7048224600665569689
 MonoBehaviour:
   m_ObjectHideFlags: 0

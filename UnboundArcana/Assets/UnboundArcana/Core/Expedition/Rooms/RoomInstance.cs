@@ -98,6 +98,12 @@ namespace UnboundArcana.Core.Rooms
 		{
 			objective?.StopObjective(this);
 		}
+		public void StopRoom()
+		{
+			StopAllCoroutines();
+			behaviour?.StopRoom(this);
+			StopObjective();
+		}
 		public void StartRoom()
 		{
 			StartCoroutine(StartConstructEffect());
@@ -137,9 +143,7 @@ namespace UnboundArcana.Core.Rooms
 			Debug.Log(
 				$"Room completed: {Definition.RoomId}");
 
-			behaviour?.StopRoom(this);
-
-			StopObjective();
+			StopRoom();
 
 			GameRuntimeManager.Instance.Events.Publish(
 				new RoomCompletedEvent(this));

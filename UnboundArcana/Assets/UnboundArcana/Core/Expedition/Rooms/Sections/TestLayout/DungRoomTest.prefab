@@ -8893,7 +8893,7 @@ MonoBehaviour:
   - {fileID: 8258584902858884114}
   grid: {fileID: 9129688927765055599}
   gridOffset: {x: 0, y: 0, z: 0}
-  Props:
+  props:
   - {fileID: 6142026859974144151}
   - {fileID: 3363895210183136442}
   - {fileID: 5331182903535220323}

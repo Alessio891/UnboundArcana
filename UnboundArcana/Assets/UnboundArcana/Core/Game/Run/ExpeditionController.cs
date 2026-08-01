@@ -6,6 +6,7 @@ using UnboundArcana.Core.Runtime;
 using UnboundArcana.Player;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(PlayableDirector))]
 public class ExpeditionController : MonoBehaviour
@@ -16,6 +17,7 @@ public class ExpeditionController : MonoBehaviour
 
 	private static ExpeditionController instance;
 	public static ExpeditionController Instance => instance;
+	private bool transitionStarted;
 
 	[Header("Placeholders?")]
 	[SerializeField] private InitialCorePickerUI corePickerUI;
@@ -84,9 +86,16 @@ public class ExpeditionController : MonoBehaviour
 		GameRuntimeManager.Instance.Events.Publish(new MapConstructionEvent(false));
 		yield return new WaitForSeconds(1.5f);
 		yield return StartCoroutine(ExpeditionController.Instance.tilemapController.FadeOut());
+		CompleteIntro();
+	}
 
+	private void CompleteIntro()
+	{
+		if (transitionStarted)
+			return;
 
-
-
+		transitionStarted = true;
+		player.GetComponent<PlayerInput>().SetInputEnabled(false);
+		SceneManager.LoadScene("TowerExpedition", LoadSceneMode.Single);
 	}
 }

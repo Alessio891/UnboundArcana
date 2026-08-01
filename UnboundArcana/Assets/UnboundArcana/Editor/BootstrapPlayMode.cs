@@ -36,7 +36,11 @@ public static class BootstrapPlayMode
 				{
 					var currentScene = SceneManager.GetActiveScene();
 
-					if (currentScene.path != BootstrapScene)
+					if (currentScene.path == BootstrapScene)
+					{
+						EditorPrefs.DeleteKey(TargetSceneKey);
+					}
+					else
 					{
 						EditorPrefs.SetString(TargetSceneKey, currentScene.path);
 

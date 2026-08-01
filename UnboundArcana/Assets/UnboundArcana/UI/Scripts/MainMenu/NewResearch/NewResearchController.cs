@@ -1,10 +1,13 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using UnboundArcana.Core.Entities;
+using UnboundArcana.Core.Runtime;
+
 public class NewResearchController : MonoBehaviour
 {
-	RunConfiguration RunConfig = new();
-
+	[SerializeField] EntityDefinition defaultPlayerDefinition;
 	[SerializeField] List<ResearcherArchetypeDefinition> archetypes;
 	int selectedArchetype = 0;
 
@@ -19,16 +22,21 @@ public class NewResearchController : MonoBehaviour
 	}
 	public void SelectArchetype(int archetype) {
 		selectedArchetype = archetype;
-		RunConfig.SetResearcherId(selectedArchetype);
 		UpdateArchetypeInfo();
 	}
 
-	public void SelectTowerInstabilty(int selection) {
-		RunConfig.SetTowerInstability(selection);
+	public void BeginNewRun()
+	{
+		if (defaultPlayerDefinition == null)
+		{
+			Debug.LogError("Cannot begin a new run without a default player definition.", this);
+			return;
+		}
+
+		GameSession.Instance.BeginNewRun(RunConfiguration.CreateDefault(defaultPlayerDefinition));
+		SceneManager.LoadScene("Intro", LoadSceneMode.Single);
 	}
-	public void SelectResearchMode(int mode) {
-		RunConfig.SetTowerResearchMode(mode);
-	}
+
 	void UpdateArchetypeInfo() {
 		archetypeArt.sprite = archetypes[selectedArchetype].CharacterArt;
 		archetypeName.text = archetypes[selectedArchetype].Name;

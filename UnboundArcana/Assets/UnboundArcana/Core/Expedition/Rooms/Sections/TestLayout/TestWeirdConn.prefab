@@ -306,7 +306,7 @@ MonoBehaviour:
   - {fileID: 5893420058543012442}
   grid: {fileID: 6189646147965457378}
   gridOffset: {x: 0, y: 0, z: 0}
-  Props: []
+  props: []
 --- !u!114 &3155438301438012479
 MonoBehaviour:
   m_ObjectHideFlags: 0

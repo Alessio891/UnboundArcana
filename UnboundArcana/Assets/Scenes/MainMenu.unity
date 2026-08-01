@@ -1461,9 +1461,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SettingsManager, Assembly-CSharp
-        m_MethodName: Save
+      - m_Target: {fileID: 536495017}
+        m_TargetAssemblyTypeName: NewResearchController, Assembly-CSharp
+        m_MethodName: BeginNewRun
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1726,6 +1726,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 017dc78c0cdb7fd4687b34fdda17f3e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NewResearchController
+  defaultPlayerDefinition: {fileID: 11400000, guid: acd5a0252c9f049488bb832c530a4543, type: 2}
   archetypes:
   - {fileID: 11400000, guid: 17e39f543e10139448fb31909e4b34ac, type: 2}
   - {fileID: 11400000, guid: 220fa5c47f4296e4bb45e183c0d40033, type: 2}
@@ -3917,7 +3918,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1159336102
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5296,7 +5297,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1568298241
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5388,7 +5389,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Start Research
+  m_Text: Start Research (Default Researcher)
 --- !u!222 &1570260012
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5412,7 +5413,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1585497265
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7211,7 +7212,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2100339152
 RectTransform:
   m_ObjectHideFlags: 0

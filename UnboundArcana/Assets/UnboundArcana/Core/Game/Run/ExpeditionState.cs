@@ -11,4 +11,22 @@ namespace UnboundArcana.Core.Expedition
 		Completed,
 		Failed
 	}
+
+	public enum ExpeditionOutcome
+	{
+		Completed,
+		Failed
+	}
+
+	public sealed class ExpeditionResult
+	{
+		public ExpeditionOutcome Outcome { get; }
+		public string Reason { get; }
+
+		public ExpeditionResult(ExpeditionOutcome outcome, string reason)
+		{
+			Outcome = outcome;
+			Reason = reason;
+		}
+	}
 }
