@@ -33,6 +33,8 @@ namespace UnboundArcana.Spells.Modules
 		private float instability = 1.0f;
 
 		public Sprite Icon => icon;
+		public string ModuleName => moduleName;
+		public string ModuleDescription => moduleDescription;
 
 		public SpellModuleType Type => category;
 

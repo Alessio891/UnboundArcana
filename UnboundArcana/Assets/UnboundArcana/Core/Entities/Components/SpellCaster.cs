@@ -126,6 +126,17 @@ namespace UnboundArcana.Core.Entities
 			spellLoadout;
 
 		private Vector3 aimDirection;
+		private bool ignoreNextCooldown;
+
+		public void ArmNextCooldownBypass()
+		{
+			ignoreNextCooldown = true;
+		}
+
+		public void ClearCooldownBypass()
+		{
+			ignoreNextCooldown = false;
+		}
 
 		public void InitializeLoadout(
 			List<SpellDefinition> spells)
@@ -209,7 +220,11 @@ namespace UnboundArcana.Core.Entities
 			}
 
 			activeSpell = spell;
-			slot.StartCooldown();
+
+			if (ignoreNextCooldown)
+				ignoreNextCooldown = false;
+			else
+				slot.StartCooldown();
 
 			activeSpell.BeginCast(
 				new CastContext(

@@ -1,22 +1,22 @@
 using UnboundArcana.Core.Research;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ResearchProgressEntryUI : MonoBehaviour
+public class ResearchProgressEntryUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
 	[SerializeField] private Text progress;
 	[SerializeField] private Image progressBar;
 	public ResearchDefinition definition;
-	public ResearchInstance researchInstance;
 	public void Initialize(ResearchDefinition research) {
-		progress.text = $"{research.DisplayName} 0/{research.RequiredKnowledge}";
+		progress.text = research.DisplayName;
+		progressBar.transform.parent.gameObject.SetActive(false);
 		this.definition = research ;
 	}
-	public void UpdateProgress(ResearchInstance instance) {
-		researchInstance = instance;
-		progress.text = $"{instance.Definition.DisplayName} {instance.Knowledge}/{instance.Definition.RequiredKnowledge}";
-		progressBar.fillAmount = (float)instance.Knowledge / (float)instance.Definition.RequiredKnowledge;
-		//if (instance.Knowledge >= instance.Definition.RequiredKnowledge)
-		//	progress.color = Color.green;
+	public void OnPointerEnter(PointerEventData eventData) {
+		if (definition != null) progress.text = $"<size=11>{definition.Description}</size>";
+	}
+	public void OnPointerExit(PointerEventData eventData) {
+		if (definition != null) progress.text = definition.DisplayName;
 	}
 }

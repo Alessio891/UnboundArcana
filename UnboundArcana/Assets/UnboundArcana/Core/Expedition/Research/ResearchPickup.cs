@@ -41,7 +41,7 @@ public class ResearchPickup : MonoBehaviour, IInteractable
 		this.definition = definition;
 
 		researchTitle.text = definition.DisplayName;
-		researchKnowledge.text = $"0/{definition.RequiredKnowledge}";
+		researchKnowledge.text = string.Empty;
 		researchDescription.text = definition.Description;
 	}
 

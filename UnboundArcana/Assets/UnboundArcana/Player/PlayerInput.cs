@@ -33,10 +33,19 @@ namespace UnboundArcana.Player
 			entity = GetComponent<Entity>();
 		}
 		public void SetInputEnabled(bool enabled) {
+			bool stateChanged = inputEnabled != enabled;
 			inputEnabled = enabled;
+			if (controls != null) {
+				if (enabled) { controls.Gameplay.Enable(); }
+				else { controls.Gameplay.Disable(); }
+			}
 			if (!enabled) {
 				Movement = Vector2.zero;
-				entity.Events.Publish(new PlayerInputStateChangedEvent(InputEnabled));
+				if (isCasting) {
+					isCasting = false;
+					CastEnded?.Invoke();
+				}
+				if (stateChanged) { entity?.Events.Publish(new PlayerInputStateChangedEvent(InputEnabled)); }
 			}
 		}
 		private void Update()
@@ -46,7 +55,7 @@ namespace UnboundArcana.Player
 				if (inputEnabled) { controls.Gameplay.Enable(); }
 				else { controls.Gameplay.Disable(); }
 			}
-			if (isCasting) {
+			if (inputEnabled && isCasting) {
 				CastStarted?.Invoke();
 			}
 		}

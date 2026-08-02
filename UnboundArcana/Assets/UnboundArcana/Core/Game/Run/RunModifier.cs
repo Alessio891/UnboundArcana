@@ -6,7 +6,14 @@ namespace UnboundArcana.Core.Runtime
 		SpellSpeed,
 		SpellSize,
 		SpellDuration,
-		KnowledgeGain
+		KnowledgeGain,
+		MaxHealth,
+		HealthRestoreOnCombatRoomCompleted,
+		KnowledgeOnCombatRoomCompleted,
+		ReactiveWard,
+		DangerousStudy,
+		BloodResearch,
+		ArcaneReserves
 	}
 
 	public enum RunModifierOperation

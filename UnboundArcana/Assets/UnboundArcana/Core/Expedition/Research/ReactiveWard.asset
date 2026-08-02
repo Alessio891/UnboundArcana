@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7180c8ab4b7e37d41bc87c8c8b559379, type: 3}
+  m_Name: Reactive Ward
+  m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Research.ResearchDefinition
+  researchId: reactive_ward
+  displayName: Reactive Ward
+  description: After the first damage taken in a combat room, gain 35% movement speed for 3 seconds.
+  requiredKnowledge: 100
+  modifierStat: 8
+  modifierOperation: 1
+  modifierValue: 0.35

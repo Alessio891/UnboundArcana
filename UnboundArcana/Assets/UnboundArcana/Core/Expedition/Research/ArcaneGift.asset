@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7180c8ab4b7e37d41bc87c8c8b559379, type: 3}
-  m_Name: ArcaneGift
+  m_Name: Arcane Momentum
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Research.ResearchDefinition
-  researchId: arcane_gift
-  displayName: Arcane Gift
-  description: +5% Damage
+  researchId: arcane_momentum
+  displayName: Arcane Momentum
+  description: Restore 25% maximum Health after completing a combat room.
   requiredKnowledge: 100
-  modifierStat: 0
+  modifierStat: 6
   modifierOperation: 1
-  modifierValue: 0.1
+  modifierValue: 0.25

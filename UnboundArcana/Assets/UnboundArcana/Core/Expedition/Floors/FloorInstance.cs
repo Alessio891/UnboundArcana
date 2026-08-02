@@ -40,6 +40,12 @@ namespace UnboundArcana.Core.Expedition
 			return rooms[CurrentRoomIndex];
 		}
 
+		public RoomDefinition GetNextRoom()
+		{
+			int nextIndex = CurrentRoomIndex + 1;
+			return nextIndex < rooms.Count ? rooms[nextIndex] : null;
+		}
+
 
 		public bool Advance()
 		{

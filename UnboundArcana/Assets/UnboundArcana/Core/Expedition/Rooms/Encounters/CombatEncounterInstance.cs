@@ -104,7 +104,10 @@ namespace UnboundArcana.Core.Rooms
 			foreach (Entity entity in spawnedEntities)
 			{
 				if (entity != null)
+				{
+					entity.Events.Unsubscribe<EntityDeathEvent>(OnEntityDeath);
 					Object.Destroy(entity.gameObject);
+				}
 			}
 
 			spawnedEntities.Clear();

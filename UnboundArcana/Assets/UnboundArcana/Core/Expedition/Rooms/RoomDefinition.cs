@@ -10,7 +10,8 @@ namespace UnboundArcana.Core.Rooms
 		Elite,
 		Reward,
 		Event,
-		Boss
+		Boss,
+		Laboratory
 	}
 
 	[CreateAssetMenu(

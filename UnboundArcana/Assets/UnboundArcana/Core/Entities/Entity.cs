@@ -59,6 +59,8 @@ namespace UnboundArcana.Core.Entities
 				definition.armor,
 				this
 			);
+
+			Stats.AddBase(StatKeys.Entity.DamageTakenFromEnemies, 1f, this);
 		}
 	}
 }

@@ -64,6 +64,7 @@ namespace UnboundArcana.Core.Rooms
 				currentRoom;
 
 			currentRoom = null;
+			room.PrepareForDestruction();
 
 			Object.Destroy(
 				room.gameObject);

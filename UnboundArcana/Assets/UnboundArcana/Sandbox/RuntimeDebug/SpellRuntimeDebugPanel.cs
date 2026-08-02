@@ -16,7 +16,7 @@ namespace UnboundArcana.Sandbox.Debugging
 		private Vector2 scroll;
 		private SpellDataCatalog catalog;
 		private SpellCaster caster;
-		private bool visible = true;
+		private bool visible = false;
 
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
 		private static void Create()

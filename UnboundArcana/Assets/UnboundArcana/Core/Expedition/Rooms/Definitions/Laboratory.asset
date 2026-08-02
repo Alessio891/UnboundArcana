@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97990363d68ade14aa09327e6688b5cb, type: 3}
+  m_Name: Laboratory
+  m_EditorClassIdentifier: UnboundArcana.Runtime::UnboundArcana.Core.Rooms.RoomDefinition
+  roomId: laboratory
+  type: 5
+  minSections: 1
+  maxSections: 1
+  availableSections:
+  - {fileID: 5602251021027770122, guid: 776d0bb0d6608ed4eba27e74e418edf7, type: 3}
+  behaviour: {fileID: 0}
+  encounter: {fileID: 0}
+  objective: {fileID: 0}

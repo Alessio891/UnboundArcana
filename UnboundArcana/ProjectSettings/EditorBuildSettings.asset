@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Bootstrap.unity
     guid: f2cfc8decf9461b45bf05be38d842f4d
   - enabled: 1
+    path: Assets/Scenes/Splash.unity
+    guid: fbffedc5a1b61704180399053d048e3d
+  - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: 531839b97e8d669408412011e7d18689
   - enabled: 1

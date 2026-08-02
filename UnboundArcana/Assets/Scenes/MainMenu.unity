@@ -3163,6 +3163,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ResumeResearch
       objectReference: {fileID: 0}
+    - target: {fileID: 961384953471874847, guid: f7e78cb87ac00fd448b09eb541fe9431, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3779179683372633449, guid: f7e78cb87ac00fd448b09eb541fe9431, type: 3}
       propertyPath: m_Text
       value: Resume Research
@@ -5389,7 +5393,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Start Research (Default Researcher)
+  m_Text: Start New Expedition
 --- !u!222 &1570260012
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7621,6 +7625,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NewResearch
       objectReference: {fileID: 0}
+    - target: {fileID: 3779179683372633449, guid: f7e78cb87ac00fd448b09eb541fe9431, type: 3}
+      propertyPath: m_Text
+      value: Start New Expedition
+      objectReference: {fileID: 0}
     - target: {fileID: 4496095744505086047, guid: f7e78cb87ac00fd448b09eb541fe9431, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -7724,10 +7732,18 @@ PrefabInstance:
     - target: {fileID: 8465879883446708964, guid: f7e78cb87ac00fd448b09eb541fe9431, type: 3}
       propertyPath: m_Delegates.Array.data[2].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1255905318}
+      objectReference: {fileID: 536495017}
+    - target: {fileID: 8465879883446708964, guid: f7e78cb87ac00fd448b09eb541fe9431, type: 3}
+      propertyPath: m_Delegates.Array.data[2].callback.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: NewResearchController, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 8465879883446708964, guid: f7e78cb87ac00fd448b09eb541fe9431, type: 3}
       propertyPath: m_Delegates.Array.data[2].callback.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: ChangeMenuState
+      value: BeginNewRun
+      objectReference: {fileID: 0}
+    - target: {fileID: 8465879883446708964, guid: f7e78cb87ac00fd448b09eb541fe9431, type: 3}
+      propertyPath: m_Delegates.Array.data[2].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8465879883446708964, guid: f7e78cb87ac00fd448b09eb541fe9431, type: 3}
       propertyPath: m_Delegates.Array.data[2].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_IntArgument

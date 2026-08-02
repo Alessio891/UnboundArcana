@@ -41,6 +41,9 @@ namespace UnboundArcana.Core.Rooms
 
 			GameRuntimeManager.Instance.Events.Unsubscribe<EncounterCompletedEvent>(
 				OnEncounterCompleted);
+
+			if (this.room == room)
+				this.room = null;
 		}
 	}
 }

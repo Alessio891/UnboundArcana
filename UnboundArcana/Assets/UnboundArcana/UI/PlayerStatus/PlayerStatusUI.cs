@@ -16,7 +16,7 @@ public class PlayerStatusUI : MonoBehaviour
 
 		if (entity != null)
 		{
-			entity.Events.Subscribe<EntityDamagedEvent>(OnPlayerDamaged);
+			entity.Events.Subscribe<EntityHealthChangedEvent>(OnPlayerHealthChanged);
 		}
 	}
 	private void OnDisable()
@@ -25,7 +25,7 @@ public class PlayerStatusUI : MonoBehaviour
 
 		if (entity != null)
 		{
-			entity.Events.Unsubscribe<EntityDamagedEvent>(OnPlayerDamaged);
+			entity.Events.Unsubscribe<EntityHealthChangedEvent>(OnPlayerHealthChanged);
 		}
 	}
 
@@ -33,18 +33,18 @@ public class PlayerStatusUI : MonoBehaviour
 	{
 		if (entity != null)
 		{
-			entity.Events.Unsubscribe<EntityDamagedEvent>(OnPlayerDamaged);
+			entity.Events.Unsubscribe<EntityHealthChangedEvent>(OnPlayerHealthChanged);
 		}
 
 		entity = @event.player;
 
 		if (entity != null)
 		{
-			entity.Events.Subscribe<EntityDamagedEvent>(OnPlayerDamaged);
+			entity.Events.Subscribe<EntityHealthChangedEvent>(OnPlayerHealthChanged);
 		}
 	}
 
-	private void OnPlayerDamaged(EntityDamagedEvent @event)
+	private void OnPlayerHealthChanged(EntityHealthChangedEvent @event)
 	{
 		if (entity == null)
 		{

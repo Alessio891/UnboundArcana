@@ -6,6 +6,8 @@ using UnboundArcana.Core.Events;
 using UnboundArcana.Core.Research;
 using UnboundArcana.Core.Rooms;
 using UnboundArcana.Core.Runtime;
+using UnboundArcana.Core.Stats;
+using UnboundArcana.Player;
 using UnityEngine;
 
 namespace UnboundArcana.Core.Expedition
@@ -17,6 +19,8 @@ namespace UnboundArcana.Core.Expedition
 
 	public class ExpeditionRuntimeController : MonoBehaviour
 	{
+		private const int EnemyKillKnowledge = 50;
+
 		[SerializeField]
 		private EntityDefinition playerDefinition;
 
@@ -25,9 +29,6 @@ namespace UnboundArcana.Core.Expedition
 
 		[SerializeField]
 		private Transform roomParent;
-
-
-		private readonly ResearchSystem researchSystem = new();
 
 
 		[SerializeField]
@@ -41,6 +42,12 @@ namespace UnboundArcana.Core.Expedition
 
 		private ExpeditionPlayerCoordinator playerCoordinator;
 		private ResearchRewardSpawner rewardSpawner;
+		private readonly object reactiveWardSpeedSource = new();
+		private Coroutine reactiveWardRoutine;
+		private bool reactiveWardTriggered;
+		private LaboratoryMajorRewardPresenter laboratoryPresenter;
+		private RoomInstance laboratorySessionRoom;
+		private bool laboratoryCompletionRequested;
 
 		public Entity Player => playerCoordinator?.Player;
 
@@ -72,11 +79,14 @@ namespace UnboundArcana.Core.Expedition
 			instance = this;
 			playerCoordinator = new ExpeditionPlayerCoordinator();
 			rewardSpawner = new ResearchRewardSpawner(availableResearch, researchPickupPrefab, rewardCount);
+			laboratoryPresenter = GetComponent<LaboratoryMajorRewardPresenter>();
+			if (laboratoryPresenter == null) { laboratoryPresenter = gameObject.AddComponent<LaboratoryMajorRewardPresenter>(); }
 		}
 
 
 		private void OnEnable()
 		{
+			if (laboratoryPresenter != null) { laboratoryPresenter.SelectionSucceeded += OnLaboratorySelectionSucceeded; }
 			if (GameRuntimeManager.Instance == null)
 				return;
 
@@ -91,11 +101,15 @@ namespace UnboundArcana.Core.Expedition
 
 			GameRuntimeManager.Instance.Events.Subscribe<EntityDeathEvent>(
 				OnEntityDied);
+
+			GameRuntimeManager.Instance.Events.Subscribe<EntityDamagedEvent>(
+				OnEntityDamaged);
 		}
 
 
 		private void OnDisable()
 		{
+			if (laboratoryPresenter != null) { laboratoryPresenter.SelectionSucceeded -= OnLaboratorySelectionSucceeded; }
 			if (GameRuntimeManager.Instance == null)
 				return;
 
@@ -110,6 +124,23 @@ namespace UnboundArcana.Core.Expedition
 
 			GameRuntimeManager.Instance.Events.Unsubscribe<EntityDeathEvent>(
 				OnEntityDied);
+
+			GameRuntimeManager.Instance.Events.Unsubscribe<EntityDamagedEvent>(
+				OnEntityDamaged);
+		}
+
+		private void OnEntityDamaged(EntityDamagedEvent evt)
+		{
+			if (Result != null || State != ExpeditionState.RoomActive || evt.Entity != Player || evt.Damage.Amount <= 0f || currentRoom?.Definition?.Type != RoomType.Combat || reactiveWardTriggered)
+				return;
+
+			RunModifier modifier = GameSession.Instance.Player.Modifiers.Find(x => x.Stat == RunModifierStat.ReactiveWard);
+
+			if (modifier == null)
+				return;
+
+			reactiveWardTriggered = true;
+			reactiveWardRoutine = StartCoroutine(ApplyReactiveWard(modifier.Value));
 		}
 
 
@@ -124,7 +155,14 @@ namespace UnboundArcana.Core.Expedition
 				return;
 			}
 
-			GameSession.Instance.Player.AddKnowledge(50);
+			PlayerState player = GameSession.Instance.Player;
+			float multiplier = 1f + CountModifiers(RunModifierStat.DangerousStudy);
+			EntityHealth health = Player?.GetComponent<EntityHealth>();
+
+			if (health != null && health.currentHealth < Player.Stats.Get(StatKeys.Entity.MaxHealth) * 0.4f)
+				multiplier += CountModifiers(RunModifierStat.BloodResearch);
+
+			player.AddKnowledge(Mathf.RoundToInt(EnemyKillKnowledge * multiplier));
 		}
 
 
@@ -138,8 +176,8 @@ namespace UnboundArcana.Core.Expedition
 			rewardSpawner.Clear();
 
 
-			GameSession.Instance.Player.AddResearch(
-				evt.Research);
+			RunModifier modifier = GameSession.Instance.Player.AddMinorReward(evt.Research);
+			ApplySelectedMinorReward(modifier);
 
 
 			StartCoroutine(
@@ -182,6 +220,8 @@ namespace UnboundArcana.Core.Expedition
 			if (Result != null || State != ExpeditionState.Reward)
 				yield break;
 
+			ReleaseCurrentRoom();
+
 
 			bool hasNextRoom =
 				currentFloor.Advance();
@@ -214,16 +254,7 @@ namespace UnboundArcana.Core.Expedition
 				yield break;
 			}
 
-			if (Result != null)
-				yield break;
-
-
-			researchSystem.ActivateCompletedResearches(
-				GameSession.Instance.Player);
-
-
 			currentRoom = nextRoom;
-
 
 			if (!playerCoordinator.MoveToRoom(nextRoom))
 			{
@@ -261,6 +292,8 @@ namespace UnboundArcana.Core.Expedition
 
 			SetState(
 				ExpeditionState.Preparing);
+			laboratorySessionRoom = null;
+			laboratoryCompletionRequested = false;
 
 
 			EnsureSession();
@@ -339,6 +372,19 @@ namespace UnboundArcana.Core.Expedition
 
 			currentRoom = evt.Room;
 
+			if (currentRoom.Definition.Type == RoomType.Combat)
+			{
+				reactiveWardTriggered = false;
+				ClearReactiveWardSpeedBonus();
+
+				SpellCaster caster = Player?.GetComponent<SpellCaster>();
+
+				if (CountModifiers(RunModifierStat.ArcaneReserves) > 0)
+					caster?.ArmNextCooldownBypass();
+				else
+					caster?.ClearCooldownBypass();
+			}
+
 			StartCoroutine(
 				RoomStartRoutine());
 		}
@@ -373,6 +419,8 @@ namespace UnboundArcana.Core.Expedition
 
 			playerCoordinator.SetInputEnabled(true);
 			GameRuntimeManager.Instance.Events.Publish(new BehaviorActivationEvent());
+
+			if (currentRoom.Definition.Type == RoomType.Laboratory) { StartLaboratoryReward(); }
 		}
 
 
@@ -382,17 +430,142 @@ namespace UnboundArcana.Core.Expedition
 			if (Result != null || State != ExpeditionState.RoomActive || evt.Room != currentRoom)
 				return;
 
+			Player?.GetComponent<SpellCaster>()?.ClearCooldownBypass();
+
+			if (evt.Room.Definition.Type == RoomType.Combat)
+				ApplyCombatRoomCompletedRewards();
+
 
 			SetState(
 				ExpeditionState.Reward);
 
+			if (currentFloor.CurrentRoomIndex >= currentFloor.Rooms.Count - 1)
+			{
+				StartCoroutine(
+					AdvanceToNextRoom());
+				return;
+			}
+
+			if (evt.Room.Definition.Type == RoomType.Laboratory || currentFloor.GetNextRoom()?.Type == RoomType.Laboratory)
+			{
+				playerCoordinator.SetInputEnabled(false);
+				StartCoroutine(AdvanceToNextRoom());
+				return;
+			}
+
 
 			StartCoroutine(
 				SpawnResearchRewards());
+		}
 
+		private void StartLaboratoryReward()
+		{
+			if (laboratorySessionRoom == currentRoom)
+			{
+				Debug.LogError("The Laboratory Major Reward session was already opened for this expedition.");
+				return;
+			}
 
-			GameRuntimeManager.Instance.Events.Publish(
-				new ExpeditionRewardStartedEvent());
+			laboratorySessionRoom = currentRoom;
+			laboratoryCompletionRequested = false;
+			SpellCaster spellCaster = Player?.GetComponent<SpellCaster>();
+			PlayerInput input = Player?.GetComponent<PlayerInput>();
+			LaboratoryMajorRewardSession session = LaboratoryMajorRewardSession.CreateForPlayer(spellCaster);
+			LaboratoryOfferStatus status = laboratoryPresenter.Open(session, input);
+
+			if (status == LaboratoryOfferStatus.Success) { return; }
+
+			Debug.LogError($"Laboratory Major Reward could not open ({status}): {laboratoryPresenter.FailureMessage} Continuing without a Major Reward to avoid blocking the expedition.");
+			laboratoryCompletionRequested = true;
+			playerCoordinator.SetInputEnabled(false);
+			GameRuntimeManager.Instance.Rooms.CompleteRoom();
+		}
+
+		private void OnLaboratorySelectionSucceeded(LaboratorySelectionResult result)
+		{
+			if (!result.Success || laboratoryCompletionRequested || Result != null || State != ExpeditionState.RoomActive || currentRoom?.Definition?.Type != RoomType.Laboratory) { return; }
+			laboratoryCompletionRequested = true;
+			StartCoroutine(CompleteLaboratoryAfterConfirmation());
+		}
+
+		private IEnumerator CompleteLaboratoryAfterConfirmation()
+		{
+			while (laboratoryPresenter != null && laboratoryPresenter.IsOpen) { yield return null; }
+			if (Result != null || State != ExpeditionState.RoomActive || currentRoom?.Definition?.Type != RoomType.Laboratory) { yield break; }
+			playerCoordinator.SetInputEnabled(false);
+			GameRuntimeManager.Instance.Rooms.CompleteRoom();
+		}
+
+		private void ApplySelectedMinorReward(RunModifier modifier)
+		{
+			if (modifier == null || Player == null)
+				return;
+
+			if (modifier.Stat == RunModifierStat.MaxHealth)
+			{
+				float previousMaxHealth = Player.Stats.Get(StatKeys.Entity.MaxHealth);
+				Player.Stats.AddModifier(new StatModifier(StatKeys.Entity.MaxHealth, modifier.Value, ConvertOperation(modifier.Operation), modifier));
+				float additionalHealth = Player.Stats.Get(StatKeys.Entity.MaxHealth) - previousMaxHealth;
+				Player.GetComponent<EntityHealth>()?.RestoreHealth(additionalHealth);
+			}
+			else if (modifier.Stat == RunModifierStat.DangerousStudy)
+			{
+				Player.Stats.AddModifier(new StatModifier(StatKeys.Entity.DamageTakenFromEnemies, modifier.Value, ModifierOperation.Percent, modifier));
+			}
+		}
+
+		private void ApplyCombatRoomCompletedRewards()
+		{
+			PlayerState player = GameSession.Instance.Player;
+			EntityHealth health = Player?.GetComponent<EntityHealth>();
+			int dangerousStudyCount = CountModifiers(RunModifierStat.DangerousStudy);
+
+			if (dangerousStudyCount > 0)
+				player.AddKnowledge(Mathf.RoundToInt(EnemyKillKnowledge * 0.5f * dangerousStudyCount));
+
+			foreach (RunModifier modifier in player.Modifiers)
+			{
+				if (modifier.Stat == RunModifierStat.HealthRestoreOnCombatRoomCompleted && health != null)
+				{
+					float amount = modifier.Operation == RunModifierOperation.Percent ? Player.Stats.Get(StatKeys.Entity.MaxHealth) * modifier.Value : modifier.Value;
+					health.RestoreHealth(amount);
+				}
+				else if (modifier.Stat == RunModifierStat.KnowledgeOnCombatRoomCompleted)
+				{
+					int amount = Mathf.RoundToInt(modifier.Value);
+					player.AddKnowledge(amount);
+				}
+			}
+		}
+
+		private ModifierOperation ConvertOperation(RunModifierOperation operation)
+		{
+			return operation == RunModifierOperation.Percent ? ModifierOperation.Percent : ModifierOperation.Flat;
+		}
+
+		private int CountModifiers(RunModifierStat stat)
+		{
+			return GameSession.Instance.Player?.Modifiers.FindAll(x => x.Stat == stat).Count ?? 0;
+		}
+
+		private IEnumerator ApplyReactiveWard(float speedBonus)
+		{
+			ClearReactiveWardSpeedBonus();
+			Player.Stats.AddModifier(new StatModifier(StatKeys.Entity.MoveSpeed, speedBonus, ModifierOperation.Percent, reactiveWardSpeedSource));
+			yield return new WaitForSeconds(3f);
+			Player?.Stats.RemoveModifiersFromSource(reactiveWardSpeedSource);
+			reactiveWardRoutine = null;
+		}
+
+		private void ClearReactiveWardSpeedBonus()
+		{
+			if (reactiveWardRoutine != null)
+			{
+				StopCoroutine(reactiveWardRoutine);
+				reactiveWardRoutine = null;
+			}
+
+			Player?.Stats.RemoveModifiersFromSource(reactiveWardSpeedSource);
 		}
 
 
@@ -414,6 +587,8 @@ namespace UnboundArcana.Core.Expedition
 				yield break;
 			}
 
+			GameRuntimeManager.Instance.Events.Publish(new ExpeditionRewardStartedEvent());
+
 			playerCoordinator.FollowPlayer();
 			playerCoordinator.SetInputEnabled(true);
 		}
@@ -429,7 +604,8 @@ namespace UnboundArcana.Core.Expedition
 			StopAllCoroutines();
 			playerCoordinator.SetInputEnabled(false);
 			rewardSpawner.Clear();
-			currentRoom?.StopRoom();
+			ClearExpeditionProgress();
+			ReleaseCurrentRoom();
 
 			if (outcome == ExpeditionOutcome.Failed)
 				Debug.LogError($"Expedition failed: {reason}");
@@ -438,6 +614,46 @@ namespace UnboundArcana.Core.Expedition
 
 			GameRuntimeManager.Instance.Events.Publish(new ExpeditionEndedEvent(Result));
 			return true;
+		}
+
+		private void ClearExpeditionProgress()
+		{
+			PlayerState player = GameSession.Instance.Player;
+			ClearReactiveWardSpeedBonus();
+			reactiveWardTriggered = false;
+			Player?.GetComponent<SpellCaster>()?.ClearCooldownBypass();
+
+			if (player == null)
+				return;
+
+			if (Player != null)
+			{
+				foreach (RunModifier modifier in player.Modifiers)
+					Player.Stats.RemoveModifiersFromSource(modifier);
+			}
+
+			player.ClearExpeditionProgress();
+		}
+
+
+		private void ReleaseCurrentRoom()
+		{
+			RoomInstance room = currentRoom;
+			currentRoom = null;
+
+			if (room == null)
+				return;
+
+			RoomService roomService = GameRuntimeManager.Instance.Rooms;
+
+			if (roomService.CurrentRoom == room)
+			{
+				roomService.ClearCurrentRoom();
+				return;
+			}
+
+			room.PrepareForDestruction();
+			Destroy(room.gameObject);
 		}
 
 

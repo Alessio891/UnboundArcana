@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7180c8ab4b7e37d41bc87c8c8b559379, type: 3}
-  m_Name: ArcaneInsight
+  m_Name: Arcane Endurance
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Research.ResearchDefinition
-  researchId: arcane_insight
-  displayName: Arcane Insight
-  description: Increase Knowledge gained by 10%
+  researchId: arcane_endurance
+  displayName: Arcane Endurance
+  description: Increase maximum Health by 30% and restore the Health gained.
   requiredKnowledge: 100
-  modifierStat: 4
+  modifierStat: 5
   modifierOperation: 1
-  modifierValue: 10
+  modifierValue: 0.3

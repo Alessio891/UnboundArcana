@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7180c8ab4b7e37d41bc87c8c8b559379, type: 3}
-  m_Name: TestResearch
+  m_Name: Field Notes
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Research.ResearchDefinition
-  researchId: arcane_insight
-  displayName: Arcane Insight
-  description: Increase Knowledge gained by 10%
+  researchId: field_notes
+  displayName: Field Notes
+  description: Gain 25 Knowledge after completing a combat room.
   requiredKnowledge: 100
-  modifierStat: 4
-  modifierOperation: 1
-  modifierValue: 10
+  modifierStat: 7
+  modifierOperation: 0
+  modifierValue: 25

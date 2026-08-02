@@ -25,12 +25,9 @@ namespace UnboundArcana.Core.Research
 					continue;
 				}
 
-				RunModifier modifier =
-					research.CreateModifier();
+				if (!player.TryActivateResearch(research))
+					continue;
 
-				player.Modifiers.Add(modifier);
-
-				research.Activate();
 				GameRuntimeManager.Instance.Events.Publish(new ResearchGrantedEvent(research));
 				Debug.Log(
 					$"Activated research '{research.Definition.DisplayName}'");

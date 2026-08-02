@@ -1,0 +1,559 @@
+fileFormatVersion: 2
+guid: 3b1ef481a36a75a43bbc404c867766b2
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4857588144585005946
+    second: logo_monochrome_black_gray_0
+  - first:
+      213: 7920546290413830574
+    second: logo_monochrome_black_gray_1
+  - first:
+      213: 3293251034141159442
+    second: logo_monochrome_black_gray_2
+  - first:
+      213: -3677943609885613520
+    second: logo_monochrome_black_gray_3
+  - first:
+      213: -353867934365972409
+    second: logo_monochrome_black_gray_4
+  - first:
+      213: 5282096631362502438
+    second: logo_monochrome_black_gray_5
+  - first:
+      213: 8967353523242082083
+    second: logo_monochrome_black_gray_6
+  - first:
+      213: 4375649695076159644
+    second: logo_monochrome_black_gray_7
+  - first:
+      213: 4383629419747103707
+    second: logo_monochrome_black_gray_8
+  - first:
+      213: -8671134645451049607
+    second: logo_monochrome_black_gray_9
+  - first:
+      213: -5668258863824293789
+    second: logo_monochrome_black_gray_10
+  - first:
+      213: 6611019271871818
+    second: logo_monochrome_black_gray_11
+  - first:
+      213: 2683663397480943469
+    second: logo_monochrome_black_gray_12
+  - first:
+      213: -5737835091364294361
+    second: logo_monochrome_black_gray_13
+  - first:
+      213: -8887505157317771689
+    second: logo_monochrome_black_gray_14
+  - first:
+      213: -6504375232636445352
+    second: logo_monochrome_black_gray_15
+  - first:
+      213: -778125417087183160
+    second: logo_monochrome_black_gray_16
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: logo_monochrome_black_gray_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 774
+        height: 518
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 684acd0b151669cb0800000000000000
+      internalID: -4857588144585005946
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: logo_monochrome_black_gray_1
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 517
+        width: 678
+        height: 507
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea18723e2ee6bed60800000000000000
+      internalID: 7920546290413830574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: logo_monochrome_black_gray_2
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 622
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 210fb2efd5af3bd20800000000000000
+      internalID: 3293251034141159442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: logo_monochrome_black_gray_3
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 583
+        width: 360
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 032a9dcf5c155fcc0800000000000000
+      internalID: -3677943609885613520
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: logo_monochrome_black_gray_4
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 559
+        width: 84
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74807b21dfec61bf0800000000000000
+      internalID: -353867934365972409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: logo_monochrome_black_gray_5
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 551
+        width: 90
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62f36a586e6cd4940800000000000000
+      internalID: 5282096631362502438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: logo_monochrome_black_gray_6
+      rect:
+        serializedVersion: 2
+        x: 407
+        y: 551
+        width: 53
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32f1130b480727c70800000000000000
+      internalID: 8967353523242082083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: logo_monochrome_black_gray_7
+      rect:
+        serializedVersion: 2
+        x: 455
+        y: 551
+        width: 32
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c909f88e63e69bc30800000000000000
+      internalID: 4375649695076159644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: logo_monochrome_black_gray_8
+      rect:
+        serializedVersion: 2
+        x: 491
+        y: 559
+        width: 91
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd35af65bb7c5dc30800000000000000
+      internalID: 4383629419747103707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: logo_monochrome_black_gray_9
+      rect:
+        serializedVersion: 2
+        x: 700
+        y: 0
+        width: 826
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 975be4a4bf0f9a780800000000000000
+      internalID: -8671134645451049607
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: logo_monochrome_black_gray_10
+      rect:
+        serializedVersion: 2
+        x: 1017
+        y: 583
+        width: 360
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3603bc6589c4651b0800000000000000
+      internalID: -5668258863824293789
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: logo_monochrome_black_gray_11
+      rect:
+        serializedVersion: 2
+        x: 1031
+        y: 559
+        width: 80
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4d9d4fdfac771000800000000000000
+      internalID: 6611019271871818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: logo_monochrome_black_gray_12
+      rect:
+        serializedVersion: 2
+        x: 1117
+        y: 551
+        width: 86
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6fc19f24a94e3520800000000000000
+      internalID: 2683663397480943469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: logo_monochrome_black_gray_13
+      rect:
+        serializedVersion: 2
+        x: 1200
+        y: 551
+        width: 34
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 721d57f726d1f50b0800000000000000
+      internalID: -5737835091364294361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: logo_monochrome_black_gray_14
+      rect:
+        serializedVersion: 2
+        x: 1231
+        y: 551
+        width: 20
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75e3f9eb52d39a480800000000000000
+      internalID: -8887505157317771689
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: logo_monochrome_black_gray_15
+      rect:
+        serializedVersion: 2
+        x: 1250
+        y: 550
+        width: 31
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85d1bd40031dbb5a0800000000000000
+      internalID: -6504375232636445352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: logo_monochrome_black_gray_16
+      rect:
+        serializedVersion: 2
+        x: 1287
+        y: 559
+        width: 90
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c6d0db4e0b8335f0800000000000000
+      internalID: -778125417087183160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      logo_monochrome_black_gray_0: -4857588144585005946
+      logo_monochrome_black_gray_1: 7920546290413830574
+      logo_monochrome_black_gray_10: -5668258863824293789
+      logo_monochrome_black_gray_11: 6611019271871818
+      logo_monochrome_black_gray_12: 2683663397480943469
+      logo_monochrome_black_gray_13: -5737835091364294361
+      logo_monochrome_black_gray_14: -8887505157317771689
+      logo_monochrome_black_gray_15: -6504375232636445352
+      logo_monochrome_black_gray_16: -778125417087183160
+      logo_monochrome_black_gray_2: 3293251034141159442
+      logo_monochrome_black_gray_3: -3677943609885613520
+      logo_monochrome_black_gray_4: -353867934365972409
+      logo_monochrome_black_gray_5: 5282096631362502438
+      logo_monochrome_black_gray_6: 8967353523242082083
+      logo_monochrome_black_gray_7: 4375649695076159644
+      logo_monochrome_black_gray_8: 4383629419747103707
+      logo_monochrome_black_gray_9: -8671134645451049607
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

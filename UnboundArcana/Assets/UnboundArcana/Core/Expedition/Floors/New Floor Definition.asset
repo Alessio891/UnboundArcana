@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: New Floor Definition
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Expedition.FloorDefinition
   floorId: 
-  roomCount: 5
+  roomCount: 4
   availableRooms:
   - {fileID: 11400000, guid: aad98572f68c13545b9eaa9792464779, type: 2}
-  - {fileID: 11400000, guid: aad98572f68c13545b9eaa9792464779, type: 2}
-  - {fileID: 11400000, guid: aad98572f68c13545b9eaa9792464779, type: 2}
   bossRoom: {fileID: 11400000, guid: aad98572f68c13545b9eaa9792464779, type: 2}
+  laboratoryRoom: {fileID: 11400000, guid: bdabac6403fa96b4fbc749c8addd36f4, type: 2}

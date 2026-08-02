@@ -22,6 +22,7 @@ namespace UnboundArcana.Core.Entities
 				entity.Stats.Get(
 					StatKeys.Entity.MaxHealth
 				);
+			PublishHealthChanged();
 		}
 
 		public void TakeDamage(
@@ -29,12 +30,19 @@ namespace UnboundArcana.Core.Entities
 		{
 			if (currentHealth <= 0) return;
 
-			currentHealth -= damage.Amount;
+			float amount = damage.Amount;
+
+			if (damage.Source != null && damage.Source.TryGetComponent<Entity>(out Entity sourceEntity) && sourceEntity != entity)
+				amount *= entity.Stats.Get(StatKeys.Entity.DamageTakenFromEnemies);
+
+			DamageInfo appliedDamage = new(damage.Source, amount, damage.Type);
+			currentHealth -= amount;
 			entity.Events.Publish(
 				new EntityDamagedEvent(
 					entity,
-					damage)
+					appliedDamage)
 			);
+			PublishHealthChanged();
 			
 			if (currentHealth <= 0)
 			{
@@ -43,6 +51,23 @@ namespace UnboundArcana.Core.Entities
 						entity)
 				);
 			}
+		}
+
+		public void RestoreHealth(float amount)
+		{
+			if (amount <= 0f || currentHealth <= 0f)
+				return;
+
+			float previousHealth = currentHealth;
+			currentHealth = Mathf.Min(currentHealth + amount, entity.Stats.Get(StatKeys.Entity.MaxHealth));
+
+			if (!Mathf.Approximately(currentHealth, previousHealth))
+				PublishHealthChanged();
+		}
+
+		private void PublishHealthChanged()
+		{
+			entity.Events.Publish(new EntityHealthChangedEvent(entity));
 		}
 	}
 }

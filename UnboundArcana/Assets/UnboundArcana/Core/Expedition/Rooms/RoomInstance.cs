@@ -18,6 +18,9 @@ namespace UnboundArcana.Core.Rooms
 
 		private RoomBehaviour behaviour;
 		private RoomObjective objective;
+		private bool behaviourStarted;
+		private bool objectiveStarted;
+		private bool isDisposed;
 
 		private bool isCompleted;
 		public bool IsCompleted => isCompleted;
@@ -86,6 +89,10 @@ namespace UnboundArcana.Core.Rooms
 		}
 		public void StartObjective()
 		{
+			if (isDisposed || objectiveStarted)
+				return;
+
+			objectiveStarted = true;
 			objective?.StartObjective(this);
 		}
 
@@ -96,16 +103,38 @@ namespace UnboundArcana.Core.Rooms
 
 		public void StopObjective()
 		{
+			if (!objectiveStarted)
+				return;
+
+			objectiveStarted = false;
 			objective?.StopObjective(this);
 		}
 		public void StopRoom()
 		{
 			StopAllCoroutines();
-			behaviour?.StopRoom(this);
+
+			if (behaviourStarted)
+			{
+				behaviourStarted = false;
+				behaviour?.StopRoom(this);
+			}
+
 			StopObjective();
+		}
+		public void PrepareForDestruction()
+		{
+			if (isDisposed)
+				return;
+
+			isDisposed = true;
+			StopRoom();
+			gameObject.SetActive(false);
 		}
 		public void StartRoom()
 		{
+			if (isDisposed)
+				return;
+
 			StartCoroutine(StartConstructEffect());
 			
 		}
@@ -128,14 +157,21 @@ namespace UnboundArcana.Core.Rooms
 					break;
 				}
 			}
+			if (isDisposed)
+				yield break;
+
+			behaviourStarted = true;
 			behaviour?.StartRoom(this);
+
+			if (isDisposed)
+				yield break;
 
 			GameRuntimeManager.Instance.Events.Publish(
 				new RoomStartedEvent(this));
 		}
 		public void Complete()
 		{
-			if (isCompleted)
+			if (isCompleted || isDisposed)
 				return;
 
 			isCompleted = true;
@@ -175,7 +211,13 @@ namespace UnboundArcana.Core.Rooms
 
 		public void Tick()
 		{
-			behaviour?.Tick(this);
+			if (behaviourStarted && !isDisposed)
+				behaviour?.Tick(this);
+		}
+
+		private void OnDestroy()
+		{
+			StopRoom();
 		}
 
 		public IEnumerable<RoomMarker> GetMarkers(

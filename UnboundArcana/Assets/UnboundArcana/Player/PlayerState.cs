@@ -21,6 +21,8 @@ namespace UnboundArcana.Core.Runtime
 
 		public List<RunModifier> Modifiers { get; } = new();
 
+		public int Knowledge { get; private set; }
+
 		public PlayerState(
 			EntityDefinition definition)
 		{
@@ -28,11 +30,33 @@ namespace UnboundArcana.Core.Runtime
 		}
 		public void AddKnowledge(int amount)
 		{
-			foreach (ResearchInstance research in Researches)
+			float modifiedAmount = amount;
+
+			foreach (RunModifier modifier in Modifiers)
 			{
-				research.AddKnowledge(amount);
+				if (modifier.Stat != RunModifierStat.KnowledgeGain)
+					continue;
+
+				modifiedAmount = modifier.Operation == RunModifierOperation.Flat ? modifiedAmount + modifier.Value : modifiedAmount * (1f + modifier.Value);
 			}
-			GameRuntimeManager.Instance.Events.Publish(new KnowledgeGainedEvent(amount));
+
+			int gained = UnityEngine.Mathf.RoundToInt(modifiedAmount);
+			Knowledge += gained;
+			GameRuntimeManager.Instance.Events.Publish(new KnowledgeGainedEvent(gained));
+		}
+		public RunModifier AddMinorReward(
+			ResearchDefinition definition)
+		{
+			if (definition == null)
+				return null;
+
+			RunModifier modifier = new(
+				definition.ModifierStat,
+				definition.ModifierValue,
+				definition.ModifierOperation,
+				definition);
+			Modifiers.Add(modifier);
+			return modifier;
 		}
 		public void AddResearch(
 			ResearchDefinition definition)
@@ -42,6 +66,22 @@ namespace UnboundArcana.Core.Runtime
 
 			Researches.Add(
 				new ResearchInstance(definition));
+		}
+
+		public bool TryActivateResearch(ResearchInstance research)
+		{
+			if (research == null || !Researches.Contains(research) || !research.TryActivate(out RunModifier modifier))
+				return false;
+
+			Modifiers.Add(modifier);
+			return true;
+		}
+
+		public void ClearExpeditionProgress()
+		{
+			Knowledge = 0;
+			Researches.Clear();
+			Modifiers.Clear();
 		}
 	}
 }

@@ -19,6 +19,8 @@ namespace UnboundArcana.Core.Expedition
 
 		[SerializeField]
 		private RoomDefinition bossRoom;
+		[SerializeField]
+		private RoomDefinition laboratoryRoom;
 
 
 		public string FloorId => floorId;
@@ -31,5 +33,8 @@ namespace UnboundArcana.Core.Expedition
 
 		public RoomDefinition BossRoom =>
 			bossRoom;
+
+		public RoomDefinition LaboratoryRoom =>
+			laboratoryRoom;
 	}
 }

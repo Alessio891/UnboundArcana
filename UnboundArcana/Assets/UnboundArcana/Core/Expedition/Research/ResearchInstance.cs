@@ -44,21 +44,21 @@ namespace UnboundArcana.Core.Research
 			}
 		}
 
-		public RunModifier CreateModifier()
+		public bool TryActivate(out RunModifier modifier)
 		{
-			return new RunModifier(
+			modifier = null;
+
+			if (!IsCompleted || IsActivated)
+				return false;
+
+			modifier = new RunModifier(
 				Definition.ModifierStat,
 				Definition.ModifierValue,
 				Definition.ModifierOperation,
 				this);
-		}
-
-		public void Activate()
-		{
-			if (!IsCompleted || IsActivated)
-				return;
 
 			IsActivated = true;
+			return true;
 		}
 	}
 }
