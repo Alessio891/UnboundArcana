@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 7757870790227884726}
   - component: {fileID: 7765601298741930628}
   - component: {fileID: 2209316100345623776}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: InteractionSensor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -197,7 +197,7 @@ GameObject:
   - component: {fileID: 2203434255946893346}
   - component: {fileID: 2362571101286823444}
   - component: {fileID: 1925786299042417515}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Spider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -221,8 +221,8 @@ Transform:
   - {fileID: 7757870790227884726}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!70 &1428189538855368763
-CapsuleCollider2D:
+--- !u!58 &1428189538855368763
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -256,8 +256,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0.01, y: 0.06}
-  m_Size: {x: 0.25, y: 0.24}
-  m_Direction: 0
+  m_Radius: 0.12
 --- !u!50 &1574076894150190343
 Rigidbody2D:
   serializedVersion: 5

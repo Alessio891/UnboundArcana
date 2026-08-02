@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c18db34a73b4a398ce48a2b934625d1, type: 3}
+  m_Name: Skeleton Melee Behavior
+  m_EditorClassIdentifier: UnboundArcana.Runtime::UnboundArcana.Core.Entities.AI.SkeletonMeleeDefinition
+  attackRange: 0.6
+  resumeChaseRange: 0.75
+  pursuitPredictionTime: 0.35
+  maximumPursuitLead: 0.65
+  attackAdvanceDuration: 0.22
+  attackAdvanceSpeedMultiplier: 1.35
+  recoveryDuration: 0.35

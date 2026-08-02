@@ -2,9 +2,7 @@ using UnityEngine;
 using UnboundArcana.Core.Events;
 using UnboundArcana.Core.Combat;
 using UnboundArcana.Core.Stats;
-using System;
 using UnboundArcana.Core.Entities;
-using UnityEngine.Tilemaps;
 
 namespace UnboundArcana.Spells.Runtime.Objects
 {
@@ -112,7 +110,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 					Destroy();
 				}
 			}
-			else if (target.GetComponent<TilemapCollider2D>() != null)
+			else if (target.layer == LayerMask.NameToLayer("World"))
 			{
 				remainingHits = 0;
 				Destroy();
@@ -176,7 +174,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			CircleCollider2D collider = view.GetComponent<CircleCollider2D>();
 			if (collider != null)
 			{
-				collider.radius = bounds.size.x * 0.5f;
+				collider.radius = bounds.size.x / 3f;
 				collider.offset = Vector2.zero;
 			}
 		}

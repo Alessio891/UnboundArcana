@@ -21,6 +21,4 @@ MonoBehaviour:
   meleeAttackCooldown: 1.5
   behavior: {fileID: 0}
   initialSpells:
-  - {fileID: 11400000, guid: d3ca8725aa714f499d76de6870bb64b6, type: 2}
-  - {fileID: 11400000, guid: b1b56d682d0f4d39873486148f3c6f02, type: 2}
-  - {fileID: 11400000, guid: 9e7a63d2895347b4bf4a02035f088d06, type: 2}
+  - {fileID: 11400000, guid: 67ebb923e85a9ba42b24adb27a86ca36, type: 2}

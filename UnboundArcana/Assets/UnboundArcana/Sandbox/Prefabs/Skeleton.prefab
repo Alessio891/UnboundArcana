@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 5086687756031749475}
   - component: {fileID: 8283954845786816984}
   - component: {fileID: 4921896236639721875}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: InteractionSensor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -197,7 +197,7 @@ GameObject:
   - component: {fileID: 49282230752463826}
   - component: {fileID: 546944413147759557}
   - component: {fileID: 210441179060674744}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Skeleton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -221,8 +221,8 @@ Transform:
   - {fileID: 5086687756031749475}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!70 &552077667276560063
-CapsuleCollider2D:
+--- !u!58 &552077667276560063
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -256,8 +256,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0.01, y: 0}
-  m_Size: {x: 0.25, y: 0.39}
-  m_Direction: 0
+  m_Radius: 0.12
 --- !u!50 &7326309165642843775
 Rigidbody2D:
   serializedVersion: 5
@@ -396,7 +395,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e80ccf76010aebe49a864db11a19a89d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.AI.AIController
-  behaviorDefinition: {fileID: 11400000, guid: a064b814eea96ae4ebba4487d5383fc5, type: 2}
+  behaviorDefinition: {fileID: 11400000, guid: 74881ef17ce849d693ffbb225a9472be, type: 2}
   targetMemoryDuration: 3
   movementAcceleration: 8
   movementDeceleration: 12

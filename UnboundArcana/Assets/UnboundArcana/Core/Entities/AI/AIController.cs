@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnboundArcana.Core.Entities;
+using UnboundArcana.Core.Entities.Events;
 using UnboundArcana.Core.Rooms;
 using System;
 using UnboundArcana.Core.Events;
@@ -55,6 +56,7 @@ namespace UnboundArcana.Core.Entities.AI
 		{
 			sensor.EntityDetected += OnEntityDetected;
 			sensor.EntityLost += OnEntityLost;
+			Entity.Events.Subscribe<EntityDamagedEvent>(OnEntityDamaged);
 			GameRuntimeManager.Instance.Events.Subscribe<BehaviorActivationEvent>(OnEncounterStarted);
 		}
 
@@ -62,6 +64,7 @@ namespace UnboundArcana.Core.Entities.AI
 		{
 			sensor.EntityDetected -= OnEntityDetected;
 			sensor.EntityLost -= OnEntityLost;
+			Entity.Events.Unsubscribe<EntityDamagedEvent>(OnEntityDamaged);
 			GameRuntimeManager.Instance.Events.Unsubscribe<BehaviorActivationEvent>(OnEncounterStarted);
 			Movement.SetMovementIntent(Vector2.zero);
 			Movement.SetSpeedMultiplier(1f);
@@ -70,6 +73,23 @@ namespace UnboundArcana.Core.Entities.AI
 		private void OnEncounterStarted(BehaviorActivationEvent @event)
 		{
 			behaviorActive = true;
+		}
+
+		private void OnEntityDamaged(EntityDamagedEvent @event)
+		{
+			GameObject source = @event.Damage.Source;
+			Entity attacker = source != null ? source.GetComponentInParent<Entity>() : null;
+
+			if (attacker == null || !attacker.CompareTag("Player"))
+			{
+				return;
+			}
+
+			behaviorActive = true;
+			Targeting.SetTarget(attacker);
+			targetVisible = HasLineOfSight(attacker.transform.position);
+			targetMemoryTimer = targetMemoryDuration;
+			lastKnownTargetPosition = attacker.transform.position;
 		}
 
 		private void OnEntityDetected(Entity entity)

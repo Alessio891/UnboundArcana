@@ -265,7 +265,7 @@ GameObject:
   - component: {fileID: 4445244858950807883}
   - component: {fileID: 4150277400661762160}
   - component: {fileID: 3583724472626557886}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: InteractionSensor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -631,7 +631,7 @@ GameObject:
   - component: {fileID: 4281801362645751531}
   - component: {fileID: 3370357527389532930}
   - component: {fileID: 3693804293439821582}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SpellTester
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -656,8 +656,8 @@ Transform:
   - {fileID: 1987949939364272884}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!70 &4401261293862142485
-CapsuleCollider2D:
+--- !u!58 &4401261293862142485
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -691,8 +691,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0.01, y: 0}
-  m_Size: {x: 0.22, y: 0.2}
-  m_Direction: 0
+  m_Radius: 0.1
 --- !u!50 &5468815315786889365
 Rigidbody2D:
   serializedVersion: 5

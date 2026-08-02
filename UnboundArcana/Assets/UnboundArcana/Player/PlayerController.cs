@@ -48,6 +48,11 @@ namespace UnboundArcana.Player
 			Motor.SetMovementIntent(
 				playerInput.Movement
 			);
+			RefreshAimDirection();
+		}
+
+		private void RefreshAimDirection()
+		{
 			Vector3 mousePosition =
 				mainCamera.ScreenToWorldPoint(
 					Mouse.current.position.ReadValue()
@@ -66,6 +71,7 @@ namespace UnboundArcana.Player
 		}
 		private void OnCastStarted()
 		{
+			RefreshAimDirection();
 			SpellCaster.BeginCast();
 		}
 
