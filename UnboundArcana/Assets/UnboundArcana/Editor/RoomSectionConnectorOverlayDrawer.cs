@@ -63,14 +63,42 @@ namespace UnboundArcana.Core.Rooms.Editor
 				if (!tilemap.gameObject.activeInHierarchy)
 					continue;
 
-				DrawContract(
-					connector,
-					tilemap);
+				if (!RoomSectionConnectorAuthoringView.ShouldDraw(connector, tilemap))
+					continue;
 
-				DrawInvalid(
-					connector,
-					tilemap);
+				if (RoomSectionConnectorAuthoringView.ShowContract)
+					DrawContract(connector, tilemap);
+
+				if (RoomSectionConnectorAuthoringView.ShowInvalidCells)
+					DrawInvalid(connector, tilemap);
+
+				if (RoomSectionConnectorAuthoringView.ShowLayerBoundaries)
+					DrawLayerBoundaries(tilemap);
+
+				if (RoomSectionConnectorAuthoringView.ShowColliders)
+					DrawColliderBounds(tilemap);
 			}
+		}
+
+		private static void DrawLayerBoundaries(Tilemap tilemap)
+		{
+			Color color = tilemap.name == "Layer_2" ? new Color(0.2f, 0.6f, 1f, 0.18f) : new Color(1f, 0.75f, 0.2f, 0.18f);
+			foreach (Vector3Int position in tilemap.cellBounds.allPositionsWithin)
+			{
+				if (tilemap.GetTile(position) == null)
+					continue;
+				Vector3 center = tilemap.CellToWorld(position);
+				Handles.DrawSolidRectangleWithOutline(new Rect(center, tilemap.layoutGrid.cellSize), Color.clear, color);
+			}
+		}
+
+		private static void DrawColliderBounds(Tilemap tilemap)
+		{
+			TilemapCollider2D collider = tilemap.GetComponent<TilemapCollider2D>();
+			if (collider == null || !collider.enabled)
+				return;
+			Handles.color = new Color(1f, 0.2f, 0.1f, 0.8f);
+			Handles.DrawWireCube(collider.bounds.center, collider.bounds.size);
 		}
 
 		private static IEnumerable<Tilemap> GetTilemaps(

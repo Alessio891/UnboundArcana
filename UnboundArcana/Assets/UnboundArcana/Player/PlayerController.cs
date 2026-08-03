@@ -11,12 +11,15 @@ namespace UnboundArcana.Player
 	{
 		private PlayerInput playerInput;
 		private Camera mainCamera;
+		[SerializeField] private float movementAcceleration = 12f;
+		[SerializeField] private float movementDeceleration = 18f;
 
 		protected override void Awake()
 		{
 			base.Awake();
 			playerInput = GetComponent<PlayerInput>();
 			mainCamera = Camera.main;
+			Motor.SetMovementSmoothing(movementAcceleration, movementDeceleration);
 		}
 
 		private void OnEnable()

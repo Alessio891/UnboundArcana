@@ -51,6 +51,13 @@ public class MeleeAttacker : MonoBehaviour
 		return true;
 	}
 
+	public void CancelAttack()
+	{
+		attackHitPending = false;
+		lastTarget = null;
+		isAttacking = false;
+	}
+
 	private void Update()
 	{
 		if (onCooldown) {

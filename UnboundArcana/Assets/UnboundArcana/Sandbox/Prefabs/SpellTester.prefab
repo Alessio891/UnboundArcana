@@ -666,7 +666,7 @@ CircleCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 44e2276832c44a82a3979a76c6dd74e5, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -715,7 +715,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
@@ -781,6 +781,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6babac2bc46e02d4582184b6a3028b21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Player.PlayerController
+  movementAcceleration: 12
+  movementDeceleration: 18
 --- !u!114 &5867268251859782719
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -807,6 +809,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b62fb5e26a68d74baefa38d093f97c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EntityLifecycle
+  deathFeedbackDuration: 0
 --- !u!114 &5265852904588073924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -819,6 +822,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0430df88ed340c945be7711f2e633d02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.EntityAnimatorController
+  hitFlashColor: {r: 1, g: 0.3, b: 0.2, a: 1}
+  hitFlashDuration: 0.08
+  hitPunchScale: 1.12
+  deathReactionDuration: 0.14
+  deathHoldDuration: 0.14
+  deathFadeDuration: 0.22
+  deathDisplacement: 0.12
+  deathRotation: 8
+  deathScaleDeformation: {x: 1.08, y: 0.9}
 --- !u!114 &1363279346379533129
 MonoBehaviour:
   m_ObjectHideFlags: 0

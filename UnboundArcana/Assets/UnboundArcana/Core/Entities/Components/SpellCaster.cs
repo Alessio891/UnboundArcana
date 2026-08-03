@@ -251,6 +251,11 @@ namespace UnboundArcana.Core.Entities
 			activeSpell = null;
 		}
 
+		public void CancelActiveSpell()
+		{
+			EndCast();
+		}
+
 		private SpellInstance CreateSpellInstance(
 			SpellConfiguration configuration)
 		{

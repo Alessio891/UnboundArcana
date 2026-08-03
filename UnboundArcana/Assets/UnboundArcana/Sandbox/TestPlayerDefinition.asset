@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.EntityDefinition
   prefab: {fileID: 8682490158059739663, guid: de7916246cd1f3d45aab184850a6d3cb, type: 3}
   maxHealth: 50
-  moveSpeed: 3
+  moveSpeed: 2
   castSpeed: 1
   armor: 0
   attackSpeed: 1

@@ -347,6 +347,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b62fb5e26a68d74baefa38d093f97c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EntityLifecycle
+  deathFeedbackDuration: 0.55
 --- !u!114 &8329088605393888296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -359,6 +360,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0430df88ed340c945be7711f2e633d02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Core.Entities.EntityAnimatorController
+  hitFlashColor: {r: 1, g: 0.3, b: 0.2, a: 1}
+  hitFlashDuration: 0.08
+  hitPunchScale: 1.12
+  deathReactionDuration: 0.14
+  deathHoldDuration: 0.14
+  deathFadeDuration: 0.22
+  deathDisplacement: 0.12
+  deathRotation: 8
+  deathScaleDeformation: {x: 1.08, y: 0.9}
 --- !u!114 &397542289093822027
 MonoBehaviour:
   m_ObjectHideFlags: 0
