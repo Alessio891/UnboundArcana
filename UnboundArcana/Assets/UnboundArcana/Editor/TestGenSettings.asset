@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1800a3c65741ab74c89d0c42772e2c65, type: 3}
+  m_Name: TestGenSettings
+  m_EditorClassIdentifier: UnboundArcana.Editor::UnboundArcana.Core.Rooms.Editor.RoomSectionGeneratorSettings
+  CellSize: {x: 0.3, y: 0.3, z: 0.3}
+  RequireSquareCells: 0
+  SouthWallSortingOrder: 1
+  FloorTile: {fileID: 11400000, guid: a325919b92c01ed42badc9777e741c29, type: 2}
+  SouthWallTile: {fileID: 11400000, guid: b5a1d372993c8c14885ab3565dbb1741, type: 2}
+  EastWallTile: {fileID: 11400000, guid: 9549edca260359c4c9d6c737e438ce63, type: 2}
+  WestWallTile: {fileID: 11400000, guid: f01098a2a7983aa4991b9893104df259, type: 2}
+  NorthWallLayers:
+  - {fileID: 11400000, guid: b1d020a8255ceb8459e3e457b0c94a94, type: 2}
+  - {fileID: 11400000, guid: d918debe666428642ac0757f6dbab4b5, type: 2}
+  - {fileID: 11400000, guid: 4fbd84a15a63e39458bd303028b82dce, type: 2}
+  NorthWestCornerLayers:
+  - {fileID: 11400000, guid: a3d594ee4ffba1249aa53e792967827d, type: 2}
+  - {fileID: 11400000, guid: 89a326c1b5f1cc047a79d930aa033395, type: 2}
+  - {fileID: 11400000, guid: 3731d6444693f65438bdb89c32b658b7, type: 2}
+  NorthEastCornerLayers:
+  - {fileID: 11400000, guid: 3ed5cd30a3c464c4f97ff52e62578c47, type: 2}
+  - {fileID: 11400000, guid: 5c2b399acaf859e459fe1103f7f1e9fc, type: 2}
+  - {fileID: 11400000, guid: 0035b3dfaa7b7d449a35b3a0daacae3e, type: 2}
+  InnerNorthWestCornerLayers:
+  - {fileID: 11400000, guid: 11072f299af5c8648a94ebb83f48ce7a, type: 2}
+  - {fileID: 11400000, guid: 8146f729aad1663449930715b35a606c, type: 2}
+  - {fileID: 11400000, guid: c6d4697fe0d1df64dbe65d5dfda86b99, type: 2}
+  InnerNorthEastCornerLayers:
+  - {fileID: 11400000, guid: a89912f06d5feb14aad10cc5616c2fc9, type: 2}
+  - {fileID: 11400000, guid: 93217307f0c7d2e45acd39faaa0c98a2, type: 2}
+  - {fileID: 11400000, guid: 6023b4d8301816a4ba3da80a8d4af8e8, type: 2}
+  SouthWestCornerTile: {fileID: 11400000, guid: cf0433e4a6d7cc44e9dc7f629af123fd, type: 2}
+  SouthEastCornerTile: {fileID: 11400000, guid: 6a55e067f8510324283bd29e54882e9a, type: 2}
+  InnerSouthWestCornerTile: {fileID: 11400000, guid: c95f4873d7e7e404db624a52afc48538, type: 2}
+  InnerSouthEastCornerTile: {fileID: 11400000, guid: 6a55e067f8510324283bd29e54882e9a, type: 2}
+  SouthWestCapTile: {fileID: 11400000, guid: 999204779f099304d9317d7b8f4aca51, type: 2}
+  SouthEastCapTile: {fileID: 11400000, guid: a3b4867f53fc49840abac16ef575cd95, type: 2}
+  ConnectorShape: {fileID: 11400000, guid: af9811038d018a545af5baaaffbf64fd, type: 2}
+  ConnectorType: 0
+  NorthConnector: 0
+  EastConnector: 0
+  SouthConnector: 0
+  WestConnector: 0
+  Props: []

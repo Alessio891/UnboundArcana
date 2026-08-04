@@ -3,6 +3,7 @@
     "rootNamespace": "UnboundArcana.Tests",
     "references": [
         "UnboundArcana.Runtime",
+        "UnboundArcana.Editor",
         "UnityEditor.TestRunner",
         "UnityEngine.TestRunner"
     ],
