@@ -252,7 +252,7 @@ namespace UnboundArcana.UI
 				return null;
 			}
 
-			foreach (SpellModuleDefinition module in configuration.modules)
+			foreach (SpellModuleDefinition module in configuration.Modules)
 			{
 				if (module != null && module.Type == SpellModuleType.Principle && module.Icon != null)
 				{
@@ -260,7 +260,7 @@ namespace UnboundArcana.UI
 				}
 			}
 
-			return configuration.behavior != null ? configuration.behavior.Icon : null;
+			return configuration.Behavior != null ? configuration.Behavior.Icon : null;
 		}
 
 		private string GetName(SpellConfiguration configuration)
@@ -270,7 +270,7 @@ namespace UnboundArcana.UI
 				return "Empty";
 			}
 
-			foreach (SpellModuleDefinition module in configuration.modules)
+			foreach (SpellModuleDefinition module in configuration.Modules)
 			{
 				if (module != null && module.Type == SpellModuleType.Principle)
 				{
@@ -278,7 +278,7 @@ namespace UnboundArcana.UI
 				}
 			}
 
-			return configuration.behavior != null ? configuration.behavior.name.Replace("Behavior", "").Trim() : "Spell";
+			return configuration.Behavior != null ? configuration.Behavior.name.Replace("Behavior", "").Trim() : "Spell";
 		}
 	}
 }

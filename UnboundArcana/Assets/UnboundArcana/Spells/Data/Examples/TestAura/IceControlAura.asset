@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: IceControlAura
   m_EditorClassIdentifier: UnboundArcana.Runtime::UnboundArcana.Spells.Data.SpellDefinition
   behavior: {fileID: 11400000, guid: 18bdfcdc9646b6840b8bc648976a72dc, type: 2}
-  modules:
-  - {fileID: 11400000, guid: 016541871a774b87996f9cc897115c79, type: 2}
-  - {fileID: 11400000, guid: 7409dd7a922b428e9bde69c44f552580, type: 2}
+  principle: {fileID: 11400000, guid: 7409dd7a922b428e9bde69c44f552580, type: 2}
+  catalystA: {fileID: 11400000, guid: 016541871a774b87996f9cc897115c79, type: 2}
+  catalystB: {fileID: 0}
+  flux: {fileID: 0}
   cooldown: 4

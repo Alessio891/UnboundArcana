@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: KineticProjectile
   m_EditorClassIdentifier: UnboundArcana.Runtime::UnboundArcana.Spells.Data.SpellDefinition
   behavior: {fileID: 11400000, guid: fbf2d3d06e26ae446949109b4a9f08fa, type: 2}
-  modules:
-  - {fileID: 11400000, guid: 7409dd7a922b428e9bde69c44f552580, type: 2}
-  - {fileID: 11400000, guid: 52c27441f5fb7bf4f9fb2e03239dfc6b, type: 2}
+  principle: {fileID: 11400000, guid: 7409dd7a922b428e9bde69c44f552580, type: 2}
+  catalystA: {fileID: 11400000, guid: 52c27441f5fb7bf4f9fb2e03239dfc6b, type: 2}
+  catalystB: {fileID: 0}
+  flux: {fileID: 0}
   cooldown: 0.6

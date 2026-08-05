@@ -45,17 +45,7 @@ namespace UnboundArcana.Spells.Modules
 
 		public virtual bool CanAddTo(SpellConfiguration configuration)
 		{
-			if (configuration == null || !SupportsBehavior(configuration.behavior)) { return false; }
-
-			if (Type == SpellModuleType.Principle)
-			{
-				foreach (SpellModuleDefinition module in configuration.modules)
-				{
-					if (module != null && module.Type == SpellModuleType.Principle) { return false; }
-				}
-			}
-
-			return true;
+			return configuration != null && SupportsBehavior(configuration.Behavior);
 		}
 
 		public abstract SpellModule CreateRuntime();

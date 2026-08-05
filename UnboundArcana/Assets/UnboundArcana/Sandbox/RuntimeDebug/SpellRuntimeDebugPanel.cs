@@ -94,12 +94,11 @@ namespace UnboundArcana.Sandbox.Debugging
 			{
 				if (behavior == null) { continue; }
 
-				bool selected = configuration.behavior == behavior;
+				bool selected = configuration.Behavior == behavior;
 				GUI.enabled = !selected;
 				if (GUILayout.Button(selected ? $"[{behavior.name}]" : behavior.name, GUILayout.Height(22f)))
 				{
-					RemoveIncompatibleModules(configuration, behavior);
-					configuration.SetBehavior(behavior);
+					GameRuntimeManager.Instance?.SpellModification?.TrySetBehavior(configuration, behavior);
 				}
 				GUI.enabled = true;
 			}
@@ -126,7 +125,7 @@ namespace UnboundArcana.Sandbox.Debugging
 			if (module == null) { return; }
 
 			bool selected = configuration.HasModule(module);
-			bool compatible = module.SupportsBehavior(configuration.behavior);
+			bool compatible = module.SupportsBehavior(configuration.Behavior);
 			GUI.enabled = selected || compatible;
 			if (GUILayout.Button(selected ? $"[-] {module.name}" : module.name, GUILayout.MinWidth(128f), GUILayout.Height(22f)))
 			{
@@ -137,33 +136,30 @@ namespace UnboundArcana.Sandbox.Debugging
 
 		private void ToggleModule(SpellConfiguration configuration, SpellModuleDefinition module, bool selected)
 		{
-			if (selected)
+			if (GameRuntimeManager.Instance?.SpellModification == null)
 			{
-				configuration.RemoveModule(module);
 				return;
 			}
 
-			if (module.Type == SpellModuleType.Principle)
+			if (selected)
 			{
-				for (int i = configuration.modules.Count - 1; i >= 0; i--)
-				{
-					if (configuration.modules[i] != null && configuration.modules[i].Type == SpellModuleType.Principle)
-					{
-						configuration.RemoveModule(configuration.modules[i]);
-					}
-				}
+				GameRuntimeManager.Instance.SpellModification.TryRemoveModule(configuration, module);
+				return;
 			}
 
-			configuration.AddModule(module);
-		}
-
-		private void RemoveIncompatibleModules(SpellConfiguration configuration, UnboundArcana.Spells.Behaviors.SpellBehaviorDefinition behavior)
-		{
-			for (int i = configuration.modules.Count - 1; i >= 0; i--)
+			if (GameRuntimeManager.Instance.SpellModification.TryAddModule(configuration, module))
 			{
-				SpellModuleDefinition module = configuration.modules[i];
-				if (module != null && !module.SupportsBehavior(behavior)) { configuration.RemoveModule(module); }
+				return;
 			}
+
+			SpellConfigurationSlot slot = module.Type switch
+			{
+				SpellModuleType.Principle => SpellConfigurationSlot.Principle,
+				SpellModuleType.Flux => SpellConfigurationSlot.Flux,
+				_ => SpellConfigurationSlot.CatalystA
+			};
+
+			GameRuntimeManager.Instance.SpellModification.TryReplaceModule(configuration, slot, module);
 		}
 	}
 }

@@ -15,7 +15,7 @@ namespace UnboundArcana.Spells.Modules.Pulse
 		{
 			if (!base.CanAddTo(configuration)) { return false; }
 
-			foreach (SpellModuleDefinition module in configuration.modules)
+			foreach (SpellModuleDefinition module in configuration.Modules)
 			{
 				if (module is ExplosionModuleDefinition || module is ExplosionOnDestroyModuleDefinition) { return true; }
 			}

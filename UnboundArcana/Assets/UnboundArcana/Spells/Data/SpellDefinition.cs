@@ -8,7 +8,10 @@ namespace UnboundArcana.Spells.Data
 	public class SpellDefinition : ScriptableObject
 	{
 		public SpellBehaviorDefinition behavior;
-		public SpellModuleDefinition[] modules;
+		public SpellModuleDefinition principle;
+		public SpellModuleDefinition catalystA;
+		public SpellModuleDefinition catalystB;
+		public SpellModuleDefinition flux;
 
 		[SerializeField]
 		public float cooldown = 0.25f;

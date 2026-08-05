@@ -80,12 +80,12 @@ namespace UnboundArcana.Tests
 		{
 			catalog.modules.Add(Create<ProjectileSpeedModuleDefinition>());
 			LaboratoryMajorRewardSession session = CreateSession();
-			int originalModuleCount = session.ActiveConfiguration?.modules.Count ?? 0;
+			int originalModuleCount = session.ActiveConfiguration?.ModuleCount ?? 0;
 
 			Assert.That(session.GenerateOffers(), Is.EqualTo(LaboratoryOfferStatus.NoCompatibleModules));
 			Assert.That(session.Offers, Is.Empty);
 			Assert.That(session.TrySelect(catalog.modules[0]).Status, Is.EqualTo(LaboratorySelectionStatus.SessionNotReady));
-			Assert.That(spellCaster.SpellLoadout.GetCurrentSpell().Configuration.modules, Has.Count.EqualTo(originalModuleCount));
+			Assert.That(spellCaster.SpellLoadout.GetCurrentSpell().Configuration.ModuleCount, Is.EqualTo(originalModuleCount));
 		}
 
 		[Test]
@@ -133,7 +133,7 @@ namespace UnboundArcana.Tests
 
 			Assert.That(result.Status, Is.EqualTo(LaboratorySelectionStatus.OfferNoLongerCompatible));
 			Assert.That(session.SelectionSucceeded, Is.False);
-			Assert.That(session.ActiveConfiguration.modules, Has.Count.EqualTo(1));
+			Assert.That(session.ActiveConfiguration.ModuleCount, Is.EqualTo(1));
 		}
 
 		private LaboratoryMajorRewardSession CreateSession()
@@ -153,7 +153,6 @@ namespace UnboundArcana.Tests
 			BeamBehaviorDefinition behavior = Create<BeamBehaviorDefinition>();
 			SpellDefinition definition = Create<SpellDefinition>();
 			definition.behavior = behavior;
-			definition.modules = new SpellModuleDefinition[0];
 			spellCaster.InitializeLoadout(new List<SpellDefinition> { definition });
 		}
 

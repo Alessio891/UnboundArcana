@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3cc1d15d63c5624a9162b5b7b6123d1, type: 3}
   m_Name: IcePrinciple
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Modules.Ice.IceModuleDefinition
-  category: 1
+  category: 0
   rarity: 0
   icon: {fileID: 5361114426108692022, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
   moduleName: 

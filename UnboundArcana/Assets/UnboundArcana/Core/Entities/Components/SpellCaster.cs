@@ -213,7 +213,7 @@ namespace UnboundArcana.Core.Entities
 
 			SpellConfiguration configuration = slot.Configuration;
 
-			if (configuration.behavior == null)
+			if (configuration.Behavior == null)
 			{
 				return;
 			}

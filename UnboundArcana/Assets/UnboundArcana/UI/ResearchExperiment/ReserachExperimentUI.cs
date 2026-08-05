@@ -144,15 +144,11 @@ public class ReserachExperimentUI : MonoBehaviour
 
 		if (spell == null) return;
 		Debug.Log("Setting spell config");
-		int index = 0;
-		foreach (var module in spell.modules)
-		{
-			if (index >= principleSlots.Count) break;
-
-			principleSlots[index].SetSpellModule(module);
-			index++;
-		}
-		coreSlot.SetSpellBehavior(spell.behavior);
+		if (principleSlots.Count > 0) principleSlots[0].SetSpellModule(spell.Principle);
+		if (catalystSlots.Count > 0) catalystSlots[0].SetSpellModule(spell.CatalystA);
+		if (catalystSlots.Count > 1) catalystSlots[1].SetSpellModule(spell.CatalystB);
+		if (fluxSlots.Count > 0) fluxSlots[0].SetSpellModule(spell.Flux);
+		coreSlot.SetSpellBehavior(spell.Behavior);
 
 	}
 }

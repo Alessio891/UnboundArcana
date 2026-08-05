@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: FireBeam
   m_EditorClassIdentifier: UnboundArcana.Runtime::UnboundArcana.Spells.Data.SpellDefinition
   behavior: {fileID: 11400000, guid: c0cee36dc7c11b647be7759645276300, type: 2}
-  modules:
-  - {fileID: 11400000, guid: 7409dd7a922b428e9bde69c44f552580, type: 2}
+  principle: {fileID: 11400000, guid: 7409dd7a922b428e9bde69c44f552580, type: 2}
+  catalystA: {fileID: 0}
+  catalystB: {fileID: 0}
+  flux: {fileID: 0}
   cooldown: 1

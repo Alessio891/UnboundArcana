@@ -13,4 +13,7 @@ MonoBehaviour:
   m_Name: EmptySlateSpell
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Data.SpellDefinition
   behavior: {fileID: 0}
-  modules: []
+  principle: {fileID: 0}
+  catalystA: {fileID: 0}
+  catalystB: {fileID: 0}
+  flux: {fileID: 0}

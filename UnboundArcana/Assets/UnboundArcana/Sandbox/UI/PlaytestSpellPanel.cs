@@ -20,12 +20,12 @@ namespace UnboundArcana.Sandbox.UI
 			string result = "Spell\n\n";
 
 			result += "Behavior:\n";
-			result += configuration.behavior.name;
+			result += configuration.Behavior != null ? configuration.Behavior.name : "Empty";
 			result += "\n\n";
 
 			result += "Modules:\n";
 
-			foreach (var module in configuration.modules)
+			foreach (var module in configuration.Modules)
 			{
 				result += "- ";
 				result += module.name;

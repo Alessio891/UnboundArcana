@@ -43,7 +43,6 @@ namespace UnboundArcana.Tests
 			BeamBehaviorDefinition behavior = Create<BeamBehaviorDefinition>();
 			SpellDefinition definition = Create<SpellDefinition>();
 			definition.behavior = behavior;
-			definition.modules = new SpellModuleDefinition[0];
 			spellCaster.InitializeLoadout(new List<SpellDefinition> { definition });
 		}
 

@@ -13,5 +13,8 @@ MonoBehaviour:
   m_Name: TestProjectileSpell
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Data.SpellDefinition
   behavior: {fileID: 11400000, guid: fbf2d3d06e26ae446949109b4a9f08fa, type: 2}
-  modules: []
+  principle: {fileID: 0}
+  catalystA: {fileID: 0}
+  catalystB: {fileID: 0}
+  flux: {fileID: 0}
   cooldown: 1

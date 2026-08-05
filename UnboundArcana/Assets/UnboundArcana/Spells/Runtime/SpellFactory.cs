@@ -6,20 +6,31 @@ namespace UnboundArcana.Spells.Runtime
 {
 	public static class SpellFactory
 	{
-		public static SpellInstance Create(
+		public static bool TryCreate(
 			SpellConfiguration configuration,
 			SpellRuntimeContext context,
-			GameObject owner)
+			GameObject owner,
+			out SpellInstance instance,
+			out SpellConfigurationValidationResult validation)
 		{
-			SpellInstance instance = new(context, owner);
+			instance = null;
+			validation = configuration == null
+				? new SpellConfigurationValidationResult(SpellConfigurationValidationError.MissingBehavior, "Spell configuration is null.")
+				: configuration.Validate();
 
-			instance.behavior = configuration.behavior.CreateRuntime();
+			if (!validation.IsValid)
+			{
+				return false;
+			}
 
-			configuration.behavior.ApplyStats(
+			instance = new SpellInstance(context, owner);
+			instance.behavior = configuration.Behavior.CreateRuntime();
+
+			configuration.Behavior.ApplyStats(
 				instance.Stats
 			);
 
-			foreach (SpellModuleDefinition moduleDefinition in configuration.modules)
+			foreach (SpellModuleDefinition moduleDefinition in configuration.Modules)
 			{
 				instance.modules.Add(
 					moduleDefinition.CreateRuntime()
@@ -32,7 +43,15 @@ namespace UnboundArcana.Spells.Runtime
 			}
 
 			instance.Initialize();
+			return true;
+		}
 
+		public static SpellInstance Create(
+			SpellConfiguration configuration,
+			SpellRuntimeContext context,
+			GameObject owner)
+		{
+			TryCreate(configuration, context, owner, out SpellInstance instance, out _);
 			return instance;
 		}
 	}
