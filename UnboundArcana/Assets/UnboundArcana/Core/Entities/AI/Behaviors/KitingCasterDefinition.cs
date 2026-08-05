@@ -69,6 +69,10 @@ namespace UnboundArcana.Core.Entities.AI
 			float radialCorrection = Mathf.Clamp((distance - definition.PreferredRange) / definition.PreferredRange, -0.5f, 0.5f);
 			Controller.SetMovementIntent((tangent - direction * radialCorrection).normalized);
 			Controller.Caster.BeginCast();
+			if (Controller.Caster.IsCharging && Controller.Caster.ChargeProgress >= 1f)
+			{
+				Controller.Caster.EndCast();
+			}
 		}
 
 		private void UpdateOrbitDirection()

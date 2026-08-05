@@ -56,7 +56,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		{
 			elapsedTime += deltaTime;
 			
-			this.speed = spell.Stats.Get(StatKeys.Spell.Speed);
+			this.speed = spell.GetChargedStat(StatKeys.Spell.Speed);
 			TickModifiers(deltaTime);
 			if (!modifiers.Exists(x => x.ControlsMovement))
 			{
@@ -65,10 +65,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 
 			if (view != null)
 			{
-				view.transform.position = position;
-				UpdateVisualScale();
-				float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-				view.transform.rotation = Quaternion.Euler(0, 0, angle);
+				SyncView();
 			}
 			if (elapsedTime >= lifetime)
 			{
@@ -127,20 +124,22 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		public void SetProjectileScale(float scale) {
 			this.scale = scale;
 		}
-		public void SetProjectileSprite(Sprite sprite) {
-			if (view) {
-				view.GetComponentInChildren<SpriteRenderer>().sprite = sprite;
-			}
-		}
-		public void SetProjectileAnimator(RuntimeAnimatorController controller) {
-			if (view) {
-				view.GetComponentInChildren<Animator>().runtimeAnimatorController = controller;
-			}
-		}
 		public void SetProjectileColor(Color color) {
 			if (view) {
-				view.GetComponentInChildren<SpriteRenderer>().color = color;
+				view.ApplyVisualColor(color);
 			}
+		}
+		public void SyncView()
+		{
+			if (view == null)
+			{
+				return;
+			}
+
+			view.transform.position = position;
+			UpdateVisualScale();
+			float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+			view.transform.rotation = Quaternion.Euler(0f, 0f, angle);
 		}
 		public override void OnDestroyed()
 		{
@@ -157,7 +156,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 
 		private void UpdateVisualScale()
 		{
-			SpriteRenderer renderer = view.GetComponentInChildren<SpriteRenderer>();
+			SpriteRenderer renderer = view.GetPrimaryRenderer();
 			float sizeMultiplier = Mathf.Max(0.01f, scale);
 
 			if (renderer == null || renderer.sprite == null)

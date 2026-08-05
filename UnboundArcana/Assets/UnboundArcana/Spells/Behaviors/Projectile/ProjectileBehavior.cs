@@ -29,7 +29,7 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 					new DamageEvent(
 						spell.Owner,
 						hitEvent.Target,
-						spell.Stats.Get(StatKeys.Spell.Damage),
+						spell.GetChargedStat(StatKeys.Spell.Damage),
 						DamageType.SpellPhysical
 					)
 				);
@@ -46,9 +46,13 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 				spell.Owner
 			);
 
+			float angle = Mathf.Atan2(context.Direction.y, context.Direction.x) * Mathf.Rad2Deg;
 			GameObject instance = Object.Instantiate(
-				definition.projectilePrefab
+				definition.projectilePrefab,
+				context.Position,
+				Quaternion.Euler(0f, 0f, angle)
 			);
+			instance.SetActive(false);
 
 			ProjectileView view = instance.GetComponent<ProjectileView>();
 
@@ -60,6 +64,7 @@ namespace UnboundArcana.Spells.Behaviors.Projectile
 					context.Position
 				)
 			);
+			instance.SetActive(true);
 
 		}
 

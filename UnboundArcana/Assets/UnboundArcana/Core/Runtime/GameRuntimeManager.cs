@@ -4,6 +4,7 @@ using UnboundArcana.Core.Expedition;
 using UnboundArcana.Core.Rooms;
 using UnboundArcana.Core.Runtime;
 using UnboundArcana.Spells.Services;
+using UnboundArcana.Core.Visuals;
 using UnityEngine;
 
 [RequireComponent(typeof(SpellRuntimeManager))]
@@ -44,6 +45,7 @@ public class GameRuntimeManager : MonoBehaviour
 		Floors = new FloorService();
 		SpellModification = new SpellModificationService(Events);
 		Damage.Initialize(Events);
+		ProceduralCombatFeedback.Attach(gameObject, Events);
 		DamageText = new DamageTextSystem(Events, damageTextPrefab);
 		spellRuntimeManager = GetComponent<SpellRuntimeManager>();
 		ModuleReward = new ModuleRewardService(RewardTable);

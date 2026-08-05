@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnboundArcana.Core.Visuals;
 using UnboundArcana.Core.Events;
 using UnboundArcana.Spells.Runtime.Views;
 using UnityEngine;
@@ -76,21 +77,14 @@ namespace UnboundArcana.Spells.Runtime.Objects
 
 		public void SetVisualAppearance(Sprite sprite, RuntimeAnimatorController animatorController, Color fallbackColor)
 		{
+			SetVisualStyle(fallbackColor, ProceduralPalette.SpellAccent(fallbackColor));
+		}
+
+		public void SetVisualStyle(Color color, Color accentColor)
+		{
 			if (view == null) { return; }
 
-			SpriteRenderer renderer = view.GetComponentInChildren<SpriteRenderer>();
-			Animator animator = view.GetComponentInChildren<Animator>();
-
-			if (renderer != null)
-			{
-				if (sprite != null) { renderer.sprite = sprite; }
-				renderer.color = fallbackColor;
-			}
-
-			if (animator != null && animatorController != null)
-			{
-				animator.runtimeAnimatorController = animatorController;
-			}
+			view.ApplyVisualStyle(color, accentColor);
 		}
 
 		public void PublishHit(HitEvent hitEvent)

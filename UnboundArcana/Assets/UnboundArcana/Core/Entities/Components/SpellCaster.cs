@@ -6,6 +6,7 @@ using UnboundArcana.Spells.Data;
 using UnboundArcana.Spells.Runtime;
 using System;
 using System.Collections.Generic;
+using UnboundArcana.Core.Visuals;
 
 namespace UnboundArcana.Core.Entities
 {
@@ -124,9 +125,13 @@ namespace UnboundArcana.Core.Entities
 
 		public SpellLoadout SpellLoadout =>
 			spellLoadout;
+		public bool IsCharging => activeSpell != null && activeSpell.IsCasting;
+		public float ChargeProgress => activeSpell?.CastChargeProgress ?? 0f;
+		public float MovementSpeedMultiplier => activeSpell?.ChargeMovementMultiplier ?? 1f;
 
 		private Vector3 aimDirection;
 		private bool ignoreNextCooldown;
+		private ProceduralTelegraphEffect castTelegraph;
 
 		public void ArmNextCooldownBypass()
 		{
@@ -172,6 +177,7 @@ namespace UnboundArcana.Core.Entities
 			if (activeSpell.IsCasting)
 			{
 				activeSpell.TickCast(Time.deltaTime, ctx);
+				castTelegraph?.SetChargeProgress(activeSpell.CastChargeProgress);
 			}
 
 			if (activeSpell.HasBeenCast && activeSpell.RequiresContinuousControl)
@@ -234,6 +240,12 @@ namespace UnboundArcana.Core.Entities
 				)
 			);
 
+			if (activeSpell.IsCasting)
+			{
+				castTelegraph = ProceduralVfx.SpawnTelegraph(transform, ProceduralPalette.Charging, activeSpell.CastDuration);
+				castTelegraph.SetChargeProgress(activeSpell.CastChargeProgress);
+			}
+
 			if (!activeSpell.IsCasting && !activeSpell.RequiresContinuousControl)
 			{
 				activeSpell = null;
@@ -244,6 +256,31 @@ namespace UnboundArcana.Core.Entities
 		{
 			if (activeSpell == null)
 			{
+				ClearCastTelegraph();
+				return;
+			}
+
+			SpellInstance spell = activeSpell;
+			CastContext context = new CastContext(gameObject, transform.position, aimDirection);
+			ApplyCastReleaseFeedback(spell);
+			if (spell.IsCasting && !spell.HasBeenCast)
+			{
+				spell.Release(context);
+			}
+			else
+			{
+				spell.End();
+			}
+
+			ClearCastTelegraph();
+			activeSpell = null;
+		}
+
+		public void CancelActiveSpell()
+		{
+			ClearCastTelegraph();
+			if (activeSpell == null)
+			{
 				return;
 			}
 
@@ -251,9 +288,26 @@ namespace UnboundArcana.Core.Entities
 			activeSpell = null;
 		}
 
-		public void CancelActiveSpell()
+		private void ClearCastTelegraph()
 		{
-			EndCast();
+			if (castTelegraph)
+			{
+				castTelegraph.Cancel();
+			}
+
+			castTelegraph = null;
+		}
+
+		private void ApplyCastReleaseFeedback(SpellInstance spell)
+		{
+			float impulse = spell.ReleaseImpulse;
+			if (impulse <= 0f)
+			{
+				return;
+			}
+
+			Vector2 castDirection = aimDirection.sqrMagnitude > 0.0001f ? (Vector2)aimDirection.normalized : Vector2.up;
+			GetComponent<CharacterMotor>()?.ApplyImpulse(-castDirection * impulse);
 		}
 
 		private SpellInstance CreateSpellInstance(

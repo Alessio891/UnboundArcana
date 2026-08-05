@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: AuraBehavior
   m_EditorClassIdentifier: Assembly-CSharp::UnboundArcana.Spells.Behaviors.Aura.AuraBehaviorDefinition
   icon: {fileID: 8719262700846709511, guid: a204b4d899771d748bfe562ddde700ac, type: 3}
+  castTime: 0.45
   auraPrefab: {fileID: 5858550927639837238, guid: 7a8780ca85a66a143acac8985bd8bdc2, type: 3}
   duration: 2
   radius: 0.9

@@ -1,9 +1,9 @@
 using UnboundArcana.Core.Entities;
 using UnboundArcana.Core.Events;
+using UnboundArcana.Core.Visuals;
 using UnboundArcana.Core.Stats;
 using UnboundArcana.Spells.Runtime;
 using UnboundArcana.Spells.Runtime.Objects;
-using UnityEngine;
 
 namespace UnboundArcana.Spells.Modules.Ice
 {
@@ -27,13 +27,13 @@ namespace UnboundArcana.Spells.Modules.Ice
 			switch (eventData.RuntimeObject)
 			{
 				case ProjectileRuntimeObject:
-					eventData.RuntimeObject.SetVisualAppearance(definition.projectileSprite, definition.controller, Color.white);
+					eventData.RuntimeObject.SetVisualStyle(ProceduralPalette.Ice, ProceduralPalette.IceAccent);
 					break;
 				case BeamRuntimeObject:
-					eventData.RuntimeObject.SetVisualAppearance(definition.beamSprite, definition.beamController, new Color(0.4f, 0.8f, 1f));
+					eventData.RuntimeObject.SetVisualStyle(ProceduralPalette.Ice, ProceduralPalette.IceAccent);
 					break;
 				case AuraRuntimeObject:
-					eventData.RuntimeObject.SetVisualAppearance(definition.auraSprite, definition.auraController, new Color(0.4f, 0.8f, 1f));
+					eventData.RuntimeObject.SetVisualStyle(ProceduralPalette.Ice, ProceduralPalette.IceAccent);
 					break;
 			}
 		}

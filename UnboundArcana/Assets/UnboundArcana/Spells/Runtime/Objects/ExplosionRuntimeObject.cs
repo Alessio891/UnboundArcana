@@ -18,7 +18,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		public Vector3 Position => position;
 		public float Duration => duration;
 
-		public float Radius => radius * spell.Stats.Get(StatKeys.Spell.Size);
+		public float Radius => radius * spell.GetChargedStat(StatKeys.Spell.Size);
 
 		public ExplosionRuntimeObject(
 			Vector3 position,
@@ -96,7 +96,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 
 		public override void UpdateView(Transform transform)
 		{
-			SpriteRenderer renderer = transform.GetComponentInChildren<SpriteRenderer>();
+			SpriteRenderer renderer = view.GetPrimaryRenderer();
 
 			if (renderer == null || renderer.sprite == null)
 			{

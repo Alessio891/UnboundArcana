@@ -57,6 +57,19 @@ Read for:
 
 Skip when the task already defines a narrow implementation goal.
 
+## MacroImplementationPlan.md
+
+Authoritative macro implementation checklist for the current releasable demo milestone.
+
+Read for:
+
+* macro task order and dependencies
+* demo scope and explicit exclusions
+* per-task acceptance criteria and validation
+* Codex session workflow
+
+Update task status and notes after each implementation session.
+
 ## Architecture.md
 
 Current cross-system ownership and technical boundaries.

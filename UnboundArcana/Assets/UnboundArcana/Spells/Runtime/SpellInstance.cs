@@ -13,7 +13,13 @@ namespace UnboundArcana.Spells.Runtime
 
 		private readonly List<SpellRuntimeObject> runtimeObjects = new();
 
-		private float castTimer;
+		private float castElapsed;
+
+		private const float CastTimeReference = 0.6f;
+		private const float DamageReference = 10f;
+		private const float DurationReference = 5f;
+		private const float SpeedReference = 8f;
+		private const float MinimumChargeEffect = 0.2f;
 
 		public GameObject Owner { get; private set; }
 		public SpellEventBus Events { get; } = new();
@@ -24,6 +30,12 @@ namespace UnboundArcana.Spells.Runtime
 		public bool HasBeenCast { get; private set; }
 		public bool IsCasting { get; private set; }
 		public bool IsFinished { get; private set; }
+		public float CastDuration { get; private set; }
+		public float CastChargeProgress { get; private set; }
+		public float ChargeEffectMultiplier => Mathf.Lerp(MinimumChargeEffect, 1f, CastChargeProgress);
+		public float CastBurden => CalculateCastBurden();
+		public float ChargeMovementMultiplier => RequiresContinuousControl || !IsCasting ? 1f : 1f - 0.58f * CastChargeProgress * CastBurden;
+		public float ReleaseImpulse => RequiresContinuousControl ? 0f : Mathf.Pow(CastChargeProgress, 2f) * CastBurden * 2.2f;
 		public bool RequiresContinuousControl => behavior is IContinuousSpellBehavior;
 
 		public SpellInstance(
@@ -71,15 +83,25 @@ namespace UnboundArcana.Spells.Runtime
 				Stats.Get(
 					StatKeys.Spell.CastTime
 				);
+			CastDuration = Mathf.Max(0f, castTime);
+			castElapsed = 0f;
+			CastChargeProgress = 0f;
 
 			if (castTime <= 0f)
 			{
+				CastChargeProgress = 1f;
+				Cast(context);
+				return;
+			}
+
+			if (RequiresContinuousControl)
+			{
+				CastChargeProgress = 1f;
 				Cast(context);
 				return;
 			}
 
 			IsCasting = true;
-			castTimer = castTime;
 		}
 
 
@@ -91,16 +113,42 @@ namespace UnboundArcana.Spells.Runtime
 				return;
 			}
 
-			castTimer -= deltaTime;
+			castElapsed += Mathf.Max(0f, deltaTime);
+			CastChargeProgress = CastDuration > 0f ? Mathf.Clamp01(castElapsed / CastDuration) : 1f;
+		}
 
-			if (castTimer <= 0f)
+		public void Release(
+			CastContext context)
+		{
+			if (!IsCasting || HasBeenCast || IsFinished)
 			{
-				IsCasting = false;
-
-				Cast(
-					context
-				);
+				return;
 			}
+
+			IsCasting = false;
+			CastChargeProgress = CastDuration > 0f ? Mathf.Clamp01(castElapsed / CastDuration) : 1f;
+			Cast(context);
+		}
+
+		public float GetChargedStat(string stat)
+		{
+			if (stat == StatKeys.Spell.CastTime || stat == StatKeys.Spell.Duration)
+			{
+				return Stats.Get(stat);
+			}
+
+			return Stats.Get(stat) * ChargeEffectMultiplier;
+		}
+
+		private float CalculateCastBurden()
+		{
+			float castTimeWeight = Mathf.Clamp01(Stats.Get(StatKeys.Spell.CastTime) / CastTimeReference);
+			float damageWeight = Mathf.Clamp01(Stats.Get(StatKeys.Spell.Damage) / DamageReference);
+			float sizeWeight = Mathf.Clamp01((Stats.Get(StatKeys.Spell.Size) - 0.3f) / 1.5f);
+			float durationWeight = Mathf.Clamp01(Stats.Get(StatKeys.Spell.Duration) / DurationReference);
+			float speedWeight = Mathf.Clamp01(Stats.Get(StatKeys.Spell.Speed) / SpeedReference);
+			float burden = castTimeWeight * 0.55f + damageWeight * 0.2f + sizeWeight * 0.1f + durationWeight * 0.15f;
+			return burden * Mathf.Lerp(1f, 0.88f, speedWeight);
 		}
 
 
@@ -187,6 +235,13 @@ namespace UnboundArcana.Spells.Runtime
 			if (IsCasting)
 			{
 				IsCasting = false;
+				if (HasBeenCast && RequiresContinuousControl)
+				{
+					behavior.End();
+					Destroy();
+					return;
+				}
+
 				IsFinished = true;
 				Destroy();
 				return;
@@ -195,6 +250,7 @@ namespace UnboundArcana.Spells.Runtime
 			if (HasBeenCast && RequiresContinuousControl)
 			{
 				behavior.End();
+				Destroy();
 			}
 		}
 

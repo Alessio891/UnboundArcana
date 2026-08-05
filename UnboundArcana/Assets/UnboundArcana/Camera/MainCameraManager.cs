@@ -35,12 +35,14 @@ namespace UnboundArcana.Core.Camera
 		private CameraMode mode = CameraMode.Follow;
 
 		private Vector3 targetPosition;
+		private Vector3 basePosition;
 
 		private float targetZoom;
 
 		private float shakeIntensity;
 		private float shakeDuration;
 		private float shakeTimer;
+		private Vector3 shakeOffset;
 
 		private void Awake()
 		{
@@ -51,20 +53,26 @@ namespace UnboundArcana.Core.Camera
 			instance = this;
 
 			targetZoom = defaultZoom;
+			basePosition = transform.position;
 
 			DontDestroyOnLoad(gameObject);
 		}
 
-		private void FixedUpdate()
+		private void LateUpdate()
 		{
 			UpdatePosition();
 			UpdateZoom();
 			UpdateShake();
+			transform.position = basePosition + shakeOffset;
 		}
 		public void SnapToTarget()
 		{
 			if (followTarget != null)
-				transform.position = followTarget.transform.position;
+			{
+				basePosition = followTarget.transform.position + followOffset;
+				basePosition.z = -10f;
+				transform.position = basePosition;
+			}
 		}
 		private void UpdatePosition()
 		{
@@ -82,8 +90,8 @@ namespace UnboundArcana.Core.Camera
 				desiredPosition = targetPosition;
 			}
 
-			transform.position = Vector3.Lerp(
-				transform.position,
+			basePosition = Vector3.Lerp(
+				basePosition,
 				desiredPosition,
 				Time.deltaTime * (
 					mode == CameraMode.Follow
@@ -95,6 +103,11 @@ namespace UnboundArcana.Core.Camera
 
 		private void UpdateZoom()
 		{
+			if (targetCamera == null)
+			{
+				return;
+			}
+
 			targetCamera.orthographicSize = Mathf.Lerp(
 				targetCamera.orthographicSize,
 				targetZoom,
@@ -104,18 +117,21 @@ namespace UnboundArcana.Core.Camera
 
 		private void UpdateShake()
 		{
-			if (shakeTimer <= 0)
+			shakeOffset = Vector3.zero;
+			if (shakeTimer <= 0f)
 			{
 				return;
 			}
 
-			shakeTimer -= Time.deltaTime;
-
-			Vector3 offset =
-				Random.insideUnitCircle *
-				shakeIntensity;
-
-			transform.position += offset;
+			shakeTimer -= Time.unscaledDeltaTime;
+			float progress = shakeDuration > 0f ? Mathf.Clamp01(shakeTimer / shakeDuration) : 0f;
+			shakeOffset = Random.insideUnitCircle * (shakeIntensity * progress);
+			if (shakeTimer <= 0f)
+			{
+				shakeIntensity = 0f;
+				shakeDuration = 0f;
+				shakeOffset = Vector3.zero;
+			}
 		}
 
 		public void SetFollowTarget(Transform target)

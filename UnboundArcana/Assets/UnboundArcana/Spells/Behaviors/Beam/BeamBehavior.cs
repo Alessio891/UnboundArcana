@@ -32,7 +32,7 @@ namespace UnboundArcana.Spells.Behaviors.Beam
 				context.Position,
 				context.Direction,
 				definition.range,
-				definition.width * spell.Stats.Get(StatKeys.Spell.Size),
+				definition.width,
 				definition.startupDelay,
 				definition.damageInterval
 			);
@@ -49,11 +49,14 @@ namespace UnboundArcana.Spells.Behaviors.Beam
 					) * Mathf.Rad2Deg
 				)
 			);
+			instance.SetActive(false);
 
 			BeamView view = instance.GetComponent<BeamView>();
 
 			view.Initialize(beam);
 			spell.RegisterRuntimeObject(beam);
+			beam.SyncView();
+			instance.SetActive(true);
 		}
 
 		public override void End()

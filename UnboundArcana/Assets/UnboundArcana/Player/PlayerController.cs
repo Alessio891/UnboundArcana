@@ -40,6 +40,8 @@ namespace UnboundArcana.Player
 
 		private void Update()
 		{
+			Motor.SetSpeedMultiplier(SpellCaster.MovementSpeedMultiplier);
+
 			if (!playerInput.InputEnabled)
 			{
 				Motor.SetMovementIntent(

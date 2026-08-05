@@ -5,6 +5,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 {
 	public class AuraRuntimeObject : SpellRuntimeObject
 	{
+		private const float VisualRadiusMultiplier = 0.78f;
 		private Vector3 position;
 		private float duration;
 		private float baseRadius;
@@ -14,7 +15,15 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		private Transform anchor;
 
 		public Vector3 Position => position;
-		public float Radius => baseRadius * spell.Stats.Get(StatKeys.Spell.Size);
+		public float Radius => baseRadius * (spell == null ? 1f : spell.GetChargedStat(StatKeys.Spell.Size));
+
+		public void SyncView()
+		{
+			if (view != null)
+			{
+				UpdateView(view.transform);
+			}
+		}
 
 		public void SetAnchor(Transform anchor)
 		{
@@ -46,10 +55,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			{
 				position = anchor.position;
 			}
-			if (view != null)
-			{
-				UpdateView(view.transform);
-			}
+			SyncView();
 			if (elapsedTime >= duration)
 			{
 				Destroy();
@@ -58,17 +64,22 @@ namespace UnboundArcana.Spells.Runtime.Objects
 
 		public override void UpdateView(Transform transform)
 		{
-			SpriteRenderer renderer = transform.GetComponentInChildren<SpriteRenderer>();
+			if (view == null)
+			{
+				return;
+			}
+
+			SpriteRenderer renderer = view.GetPrimaryRenderer();
 
 			if (renderer == null || renderer.sprite == null)
 			{
 				transform.position = position + (Vector3)visualOffset;
-				transform.localScale = Vector3.one * Radius * 2f;
+				transform.localScale = Vector3.one * Radius * VisualRadiusMultiplier * 2f;
 				return;
 			}
 
 			Bounds bounds = renderer.sprite.bounds;
-			float uniformScale = Radius * 2f / Mathf.Max(bounds.size.x, Mathf.Epsilon);
+		float uniformScale = Radius * VisualRadiusMultiplier * 2f / Mathf.Max(bounds.size.x, Mathf.Epsilon);
 			Vector3 scaledCenter = bounds.center * uniformScale;
 			transform.position = position + (Vector3)visualOffset - scaledCenter;
 			transform.localScale = Vector3.one * uniformScale;

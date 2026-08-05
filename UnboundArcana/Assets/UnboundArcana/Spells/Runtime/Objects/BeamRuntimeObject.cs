@@ -19,6 +19,16 @@ namespace UnboundArcana.Spells.Runtime.Objects
 
 		public Vector3 Position => position;
 		public Vector3 Direction => direction;
+		public float CurrentRange => currentRange;
+		public float Width => width;
+
+		public void SyncView()
+		{
+			if (view != null)
+			{
+				UpdateView(view.transform);
+			}
+		}
 
 		public void SetInitialState(
 			Vector3 position,
@@ -48,6 +58,7 @@ namespace UnboundArcana.Spells.Runtime.Objects
 			damageTimer = damageInterval;
 			hitTargets.Clear();
 			currentRange = CalculateCurrentRange();
+			SyncView();
 			Vector2 center = position + direction * currentRange * 0.5f;
 			float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 			Collider2D[] hits = Physics2D.OverlapBoxAll(center, new Vector2(currentRange, width), angle);
@@ -63,25 +74,19 @@ namespace UnboundArcana.Spells.Runtime.Objects
 		}
 		public void SetPosition(Vector3 position) {
 			this.position = position;
-			if (view != null)
-			{
-				UpdateView(view.transform);
-			}
+			SyncView();
 		}
 		public void SetDirection(Vector3 direction)
 		{
 			this.direction = direction.normalized;
 
-			if (view != null)
-			{
-				UpdateView(view.transform);
-			}
+			SyncView();
 		}
 		public override void UpdateView(Transform transform)
 		{
 			float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 			Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
-			SpriteRenderer renderer = transform.GetComponentInChildren<SpriteRenderer>();
+			SpriteRenderer renderer = view.GetPrimaryRenderer();
 
 			if (renderer == null || renderer.sprite == null)
 			{

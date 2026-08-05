@@ -3,6 +3,7 @@ using UnboundArcana.Core.Entities;
 using UnboundArcana.Core.Entities.Statuses;
 using UnboundArcana.Core.Events;
 using UnboundArcana.Core.Stats;
+using UnboundArcana.Core.Visuals;
 using UnboundArcana.Spells.Runtime;
 using UnboundArcana.Spells.Runtime.Objects;
 using UnityEngine;
@@ -37,13 +38,13 @@ namespace UnboundArcana.Spells.Modules.Principles
 			switch (eventData.RuntimeObject)
 			{
 				case ProjectileRuntimeObject:
-					eventData.RuntimeObject.SetVisualAppearance(definition.projectileSprite, definition.projectileController, definition.fallbackColor);
+					eventData.RuntimeObject.SetVisualStyle(GetVisualColor(), GetVisualAccent());
 					break;
 				case BeamRuntimeObject:
-					eventData.RuntimeObject.SetVisualAppearance(definition.beamSprite, definition.beamController, definition.fallbackColor);
+					eventData.RuntimeObject.SetVisualStyle(GetVisualColor(), GetVisualAccent());
 					break;
 				case AuraRuntimeObject:
-					eventData.RuntimeObject.SetVisualAppearance(definition.auraSprite, definition.auraController, definition.fallbackColor);
+					eventData.RuntimeObject.SetVisualStyle(GetVisualColor(), GetVisualAccent());
 					((AuraRuntimeObject)eventData.RuntimeObject).SetVisualOffset(definition.auraVisualOffset);
 					if (definition.principle == ElementalPrincipleType.Air)
 					{
@@ -51,6 +52,32 @@ namespace UnboundArcana.Spells.Modules.Principles
 					}
 					break;
 			}
+		}
+
+		private Color GetVisualColor()
+		{
+			return definition.principle switch
+			{
+				ElementalPrincipleType.Acid => ProceduralPalette.Acid,
+				ElementalPrincipleType.Air => ProceduralPalette.Air,
+				ElementalPrincipleType.Earth => ProceduralPalette.Earth,
+				ElementalPrincipleType.Lightning => ProceduralPalette.Lightning,
+				ElementalPrincipleType.Water => ProceduralPalette.Water,
+				_ => ProceduralPalette.SpellColor(definition.fallbackColor)
+			};
+		}
+
+		private Color GetVisualAccent()
+		{
+			return definition.principle switch
+			{
+				ElementalPrincipleType.Acid => ProceduralPalette.AcidAccent,
+				ElementalPrincipleType.Air => ProceduralPalette.AirAccent,
+				ElementalPrincipleType.Earth => ProceduralPalette.EarthAccent,
+				ElementalPrincipleType.Lightning => ProceduralPalette.LightningAccent,
+				ElementalPrincipleType.Water => ProceduralPalette.WaterAccent,
+				_ => ProceduralPalette.SpellAccent(definition.fallbackColor)
+			};
 		}
 
 		private void OnHit(HitEvent hitEvent)
@@ -132,7 +159,7 @@ namespace UnboundArcana.Spells.Modules.Principles
 
 			if (closestTarget == null) { return; }
 
-			float damage = spell.Stats.Get(StatKeys.Spell.Damage) * definition.arcDamageMultiplier;
+			float damage = spell.GetChargedStat(StatKeys.Spell.Damage) * definition.arcDamageMultiplier;
 			spell.Runtime.GameEvents.Publish(new DamageEvent(spell.Owner, closestTarget, damage, DamageType.Lightning));
 			LightningArcFeedback.Spawn(hitEvent.Target.transform.position, closestTarget.transform.position);
 		}

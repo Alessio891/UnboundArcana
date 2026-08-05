@@ -2,9 +2,9 @@ using UnboundArcana.Core.Combat;
 using UnboundArcana.Core.Entities;
 using UnboundArcana.Core.Events;
 using UnboundArcana.Core.Stats;
+using UnboundArcana.Core.Visuals;
 using UnboundArcana.Spells.Runtime;
 using UnboundArcana.Spells.Runtime.Objects;
-using UnityEngine;
 
 namespace UnboundArcana.Spells.Modules.Fire
 {
@@ -28,13 +28,13 @@ namespace UnboundArcana.Spells.Modules.Fire
 			switch (eventData.RuntimeObject)
 			{
 				case ProjectileRuntimeObject:
-					eventData.RuntimeObject.SetVisualAppearance(definition.projectileSprite, definition.controller, Color.white);
+					eventData.RuntimeObject.SetVisualStyle(ProceduralPalette.Fire, ProceduralPalette.FireAccent);
 					break;
 				case BeamRuntimeObject:
-					eventData.RuntimeObject.SetVisualAppearance(definition.beamSprite, definition.beamController, new Color(1f, 0.35f, 0.1f));
+					eventData.RuntimeObject.SetVisualStyle(ProceduralPalette.Fire, ProceduralPalette.FireAccent);
 					break;
 				case AuraRuntimeObject:
-					eventData.RuntimeObject.SetVisualAppearance(definition.auraSprite, definition.auraController, new Color(1f, 0.35f, 0.1f));
+					eventData.RuntimeObject.SetVisualStyle(ProceduralPalette.Fire, ProceduralPalette.FireAccent);
 					break;
 			}
 		}

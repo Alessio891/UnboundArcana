@@ -33,11 +33,14 @@ namespace UnboundArcana.Spells.Behaviors.Aura
 				context.Position,
 				Quaternion.identity
 			);
+			instance.SetActive(false);
 
 			AuraView view = instance.GetComponent<AuraView>();
 
 			view.Initialize(aura);
 			spell.RegisterRuntimeObject(aura);
+			aura.SyncView();
+			instance.SetActive(true);
 		}
 	}
 }
